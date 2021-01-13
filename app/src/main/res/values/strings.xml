@@ -1,0 +1,100 @@
+<resources>
+    <string name="app_name">KaynarGroup</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="kainarapp">KaynarGroup</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="validation">Поле не должно быть пустым</string>
+
+    <string name="menu_home">Главная</string>
+    <string name="menu_auth">Авторизация</string>
+    <string name="menu_basket">Корзина</string>
+    <string name="menu_restaurant">Рестораны</string>
+    <string name="menu_discount">Новости и Акции</string>
+    <string name="menu_food">Меню</string>
+    <string name="menu_profile">Профиль</string>
+    <string name="menu_food_detail">Блюдо</string>
+    <string name="menu_about">О нас</string>
+    <string name="menu_discount_detail">Инфо</string>
+
+    <string name="loading">Загрузка....</string>
+
+    <string name="signin">Войти</string>
+    <string name="phone_number">Введите номер</string>
+    <string name="verify_you_number">Введите ваш номер телефона</string>
+    <string name="all_menu">Все</string>
+    <string name="basket">Корзина</string>
+    <string name="write_code">Введите код</string>
+    <string name="confirm">Подтвердите код</string>
+    <string name="buy">Оплатить</string>
+    <string name="select_pay_type">Выберите способ оплаты</string>
+    <string name="name">Имя</string>
+    <string name="surname">Фамилия</string>
+    <string name="age">Дата рождения</string>
+    <string name="phone">Телефон</string>
+    <string name="bonus">Накопленные бонусы</string>
+    <string name="menu_register">Регистрация</string>
+    <string name="choose_gender">Выберите пол</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="profileExit">Выход</string>
+    <string name="language_male">Мужской</string>
+    <string name="language_female">Женский</string>
+    <string name="refuse">Отменить</string>
+    <string name="add">Добавить</string>
+    <string name="basket_warning">Цена без учёта скидки</string>
+    <string name="total">Итого</string>
+    <string name="change_restaurant">Выберите ресторан</string>
+    <string name="restaurant">Ресторан</string>
+    <string name="profile_bonus">Код Бонусной Физической Карты</string>
+    <string name="profile_discount_physical">Код Дисконтной Физической Карты</string>
+    <string name="order">Оформить заказ</string>
+    <string name="order_check">Проверить заказ</string>
+    <string name="address">Адрес</string>
+    <string name="comment">Комментарий</string>
+
+    <string name="menu_order">Оформление заказа</string>
+    <string name="menu_order_detail">Информация о заказе</string>
+    <string name="order_pay">Оплатить заказ</string>
+    <string name="order_date">Вермя доставки</string>
+    <string name="birthday">Дата рождения</string>
+    <string name="menu_restaurant_detail">Ресторан</string>
+    <string name="menu_pay">Оплата</string>
+    <string name="menu_history">История заказов</string>
+    <string name="cashback">Кэшбек</string>
+    <string name="aboutUs">О нас:</string>
+    <string name="testAboutText">ДОБРО ПОЖАЛОВАТЬ В JANNAT REGENCY Мы рады приветствовать Вас в месте, где каждое событие становится историей, которая начинается всякий раз, когда наши почетные гости переступают порог Jannat Regency. Чтобы Ваше пребывание было предельно комфортным, мы расположились с Южной части города Бишкек, экологически чистой и благоприятной для проживания зоне, где воздух чище, а сон легче и приятней. На Ваш выбор мы готовы</string>
+    <string name="menu">Меню</string>
+    <string name="item_food_title">Title</string>
+    <string name="my_order_checking">Проверка последнего заказа</string>
+    <string name="discount_name">Ваша скидка</string>
+    <string name="profile_paul">Пол</string>
+    <string name="our_contacts">Наши контакты</string>
+
+    <string name="sign_out">Выйти</string>
+    <string name="confirm_sign_out">Вы уверены, что хотите выйти из аккаунта?</string>
+    <string name="cancel">Отмена</string>
+    <string name="out">Выход</string>
+
+    <string name="delete">Удаление</string>
+    <string name="confirm_delete">Вы уверены, что хотите удалить блюдо?</string>
+    <string name="delete_ok">Удалить</string>
+    <string name="kaynar_dostavka">KAYNAR DOSTAVKA</string>
+    <string name="status">Статус:</string>
+    <string name="your_order">Ваш заказ</string>
+    <string name="modifications">Modifications</string>
+    <string name="modifier_name">Modifier Name</string>
+    <string name="price">Price</string>
+    <string name="countOfPortions">Количество порций</string>
+    <string name="sum">Sum:</string>
+    <string name="price_item">Цена: </string>
+    <string name="warning_beyound_range">Это блюдо можно заказать в ограниченном количестве</string>
+    <string name="successPayment">Успешно!</string>
+    <string name="success_payment_message">Оплата за ваш заказ прошла успешно</string>
+    <string name="download_check_string">Cкачать чек</string>
+
+
+</resources>

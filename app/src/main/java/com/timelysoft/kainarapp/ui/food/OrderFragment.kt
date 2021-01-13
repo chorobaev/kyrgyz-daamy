@@ -1,0 +1,684 @@
+package com.timelysoft.kainarapp.ui.food
+
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.app.TimePickerDialog.OnTimeSetListener
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.text.Html
+import android.view.*
+import android.widget.*
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
+import com.timelysoft.kainarapp.R
+import com.timelysoft.kainarapp.extension.*
+import com.timelysoft.kainarapp.service.*
+import com.timelysoft.kainarapp.service.model2.AddressInfo
+import com.timelysoft.kainarapp.service.model2.response2.*
+import com.timelysoft.kainarapp.service.model2.response2.MenuItem
+import com.timelysoft.kainarapp.utils.AutoCompleteAdapter
+import com.timelysoft.kainarapp.utils.Utils
+import kotlinx.android.synthetic.main.app_toolbar.*
+import kotlinx.android.synthetic.main.fragment_order.*
+import kotlinx.android.synthetic.main.fragment_order_waring_dialog.view.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.ext.getOrCreateScope
+import java.util.*
+import kotlin.collections.ArrayList
+
+
+class OrderFragment : Fragment() {
+    private val viewModel: FoodViewModel by viewModel()
+    private var cityId: Int = 0
+    private var streetId: Int = 0
+    private var addressId: Int = 0
+    private var discountId = -1
+    private var deliveryId = -1
+    private val calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        return inflater.inflate(R.layout.fragment_order, container, false)
+
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews()
+        initToolbar()
+        getAutoCities()
+        showWarning()
+
+        viewModel.listAddresses().observe(viewLifecycleOwner, Observer { result ->
+
+            result.doIfSuccess {
+                val listAddresses = it
+
+                val discountTypeAdapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line, listAddresses
+                )
+                order_list_addresses.setAdapter(discountTypeAdapter)
+                order_list_addresses.setOnItemClickListener { _, _, position, _ ->
+                    addressId = listAddresses[position].id
+
+                    order_cities.text = null
+                    order_streets.text = null
+                    cityId = 0
+                    streetId = 0
+                    order_building_out.hint = "Дом"
+                    order_apartment.hint = "Квартира"
+
+                }
+
+            }
+
+            result.doIfError {errorBody->
+                errorBody?.getCrmErrors {msg->
+                    toast(msg)
+                }
+            }
+        })
+
+        order_date.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
+
+                val dialog = DatePickerDialog(
+                    view.context,
+                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    { _, year, month, dayOfMonth ->
+                        order_date.setText(Utils.convertDate(dayOfMonth, month + 1, year))
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+                )
+                dialog.datePicker.maxDate = System.currentTimeMillis() - 1000
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                dialog.show()
+
+            }
+            false
+        }
+        order_time.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val dateAndTime = Calendar.getInstance()
+
+                val t =
+                    OnTimeSetListener { _: TimePicker?, hourOfDay: Int, minute: Int ->
+                        dateAndTime[Calendar.HOUR_OF_DAY] = hourOfDay
+                        dateAndTime[Calendar.MINUTE] = minute
+                        if (minute < 10) {
+                            if (hourOfDay < 10) {
+                                order_time.setText("0$hourOfDay:0$minute")
+                            } else {
+                                order_time.setText("$hourOfDay:0$minute")
+                            }
+                        } else {
+                            if (hourOfDay < 10) {
+                                order_time.setText("0$hourOfDay:$minute")
+                            } else {
+                                order_time.setText("$hourOfDay:$minute")
+                            }
+                        }
+
+                    }
+
+
+                val timePickerDialog = TimePickerDialog(
+                    activity, t,
+                    dateAndTime[Calendar.HOUR_OF_DAY],
+                    dateAndTime[Calendar.MINUTE], true
+                )
+                timePickerDialog.show()
+
+            }
+
+            false
+        }
+
+
+        order_validate.setOnClickListener {
+            if (isValid()) {
+                loadingShow()
+                viewModel.getBasketElements().observe(viewLifecycleOwner, Observer { basketItems ->
+                    val orderModel = Order()
+                    orderModel.discountType = discountId
+                    orderModel.deliveryType = deliveryId
+                    orderModel.products = convertToProductType(basketItems)
+                    val questValidate = GuestValidate(
+                        order_phone.text.toString(),
+                        order_name.text.toString(),
+                        order_surname.text.toString(),
+                        "middle",
+                        AddressInfo(
+                            1,
+                            cityId,
+                            streetId,
+                            order_building.text.toString(),
+                            order_entry.text.toString(),
+                            order_entry_code.text.toString(),
+                            order_floor.text.toString(),
+                            order_apartments_text.text.toString(),
+                            order_comment.text.toString()
+                        )
+                    )
+                    val orderValidate = OrderValidate(
+                        deliveryId, 2, discountId, convertToOrderType(
+                            basketItems
+                        ),if (order_date.text.toString().isNotEmpty()) order_date.text.toString()
+                            .toServerDate(order_time.text.toString()) else null
+                    )
+
+                    val validateOrder = ValidateOrder(questValidate, orderValidate)
+
+                    viewModel.orderValidate(validateOrder).observe(viewLifecycleOwner, Observer {
+                        loadingHide()
+
+                        it.doIfSuccess {
+                            val bundle = Bundle()
+
+                            var guestModel = Guest()
+                            if (deliveryId == 1) {
+                                guestModel = Guest(
+                                    null,
+                                    order_name.text.toString(),
+                                    order_phone.text.toString(),
+                                    order_surname.text.toString()
+                                )
+                            } else {
+                                if (streetId == -1) {
+                                    guestModel = Guest(
+                                        AddressInfo(
+                                            1,
+                                            cityId,
+                                            streetId,
+                                            order_building.text.toString(),
+                                            order_entry.text.toString(),
+                                            order_entry_code.text.toString(),
+                                            order_floor.text.toString(),
+                                            order_apartments_text.text.toString(),
+                                            order_comment.text.toString()
+                                        ),
+                                        order_name.text.toString(),
+                                        order_phone.text.toString(),
+                                        order_surname.text.toString()
+                                    )
+                                } else if (streetId != 0) {
+                                    guestModel = Guest(
+                                        AddressInfo(
+                                            1,
+                                            cityId,
+                                            streetId,
+                                            order_building.text.toString(),
+                                            order_entry.text.toString(),
+                                            order_entry_code.text.toString(),
+                                            order_floor.text.toString(),
+                                            order_apartments_text.text.toString(),
+                                            order_comment.text.toString()
+                                        ),
+                                        order_name.text.toString(),
+                                        order_phone.text.toString(),
+                                        order_surname.text.toString()
+                                    )
+                                    if (addressId != 0) {
+                                        guestModel.addressInfo?.cityId = addressId
+                                    }
+                                }
+                            }
+                            orderModel.comment = order_comment.text.toString()
+                            orderModel.deliverAt =
+                                order_date.text.toString()
+                                    .toServerDate(order_time.text.toString())
+
+                            val createOrder = CreateOrder(guestModel, orderModel)
+                            bundle.putParcelable("result", it as OrderValidateResponse)
+                            bundle.putParcelable("order", createOrder)
+                            findNavController().navigate(R.id.nav_order_detail, bundle)
+                        }
+
+                        it.doIfError {errorBody->
+
+                            errorBody?.getErrors {msg->
+                                toast(msg)
+                            }
+                        }
+
+
+                    })
+                })
+            }
+        }
+    }
+    private fun convertToProductType(list: List<MenuItem>): List<Product> {
+        val mutableList = mutableListOf<Product>()
+        var listTotal: MutableList<BaseModifier>
+        var listOfModOrderState: MutableList<Modifier>
+        list.forEach { menuItem ->
+            listTotal = ArrayList()
+            menuItem.modifierGroups.forEachIndexed { index, baseModifierGroup ->
+                baseModifierGroup.modifiersList.forEach {
+                    listTotal.add(it.value)
+                }
+                listTotal.addAll(baseModifierGroup.modifiersList.values)
+            }
+            listOfModOrderState = ArrayList()
+            listTotal.forEach {
+                val modifierOrderState = Modifier(it.code, it.count, it.name)
+                listOfModOrderState.add(modifierOrderState)
+            }
+            if (menuItem.modifierGroups.isNullOrEmpty()) {
+                val productOrderState = Product(
+                    menuItem.code,
+                    menuItem.amount,
+                    menuItem.name
+                )
+                mutableList.add(productOrderState)
+            } else {
+                val productOrderState = Product(
+                    menuItem.code,
+                    menuItem.amount,
+                    menuItem.name,
+                    listOfModOrderState
+
+                )
+                mutableList.add(productOrderState)
+            }
+
+        }
+
+        return mutableList
+    }
+
+    private fun convertToOrderType(list: List<MenuItem>): List<ProductOrderState> {
+
+        val mutableList = mutableListOf<ProductOrderState>()
+        var listTotal: MutableList<BaseModifier>
+        var listOfModOrderState: MutableList<ModifierOrderState>
+        list.forEach { menuItem ->
+            listTotal = ArrayList()
+            menuItem.modifierGroups.forEachIndexed { index, baseModifierGroup ->
+                baseModifierGroup.modifiersList.forEach {
+                    listTotal.add(it.value)
+                }
+            }
+            listOfModOrderState = ArrayList()
+            listTotal.forEach {
+                val modifierOrderState = ModifierOrderState(it.code, it.count, it.name)
+                listOfModOrderState.add(modifierOrderState)
+            }
+            if (menuItem.modifierGroups.isNullOrEmpty()) {
+                val productOrderState = ProductOrderState(
+                    menuItem.code,
+                    menuItem.amount,
+                    menuItem.name,
+                    menuItem.priceWithMod,
+                    menuItem.price
+                )
+                mutableList.add(productOrderState)
+            } else {
+                val productOrderState = ProductOrderState(
+                    menuItem.code,
+                    menuItem.amount,
+                    menuItem.name,
+                    menuItem.priceWithMod,
+                    menuItem.price,
+                    listOfModOrderState
+
+                )
+                mutableList.add(productOrderState)
+            }
+        }
+        return mutableList
+    }
+
+
+    private fun initViews() {
+
+        order_name.addTextChangedListener {
+            order_name_out.isErrorEnabled = false
+        }
+        order_surname.addTextChangedListener {
+            order_surname_out.isErrorEnabled = false
+
+        }
+        order_phone.addTextChangedListener {
+            order_phone_out.isErrorEnabled = false
+
+        }
+        order_type.addTextChangedListener {
+            order_type_out.isErrorEnabled = false
+
+        }
+        order_delivery_type.addTextChangedListener {
+            order_pay_delivery_out.isErrorEnabled = false
+
+        }
+        order_date.addTextChangedListener {
+            order_deliveryAt_out.isErrorEnabled = false
+
+        }
+        order_time.addTextChangedListener {
+            order_time_out.isErrorEnabled = false
+
+        }
+
+    }
+
+    private fun showWarning() {
+
+        order_warning_tv.setOnClickListener {
+            loadingShow()
+            viewModel.warning().observe(viewLifecycleOwner, Observer { result ->
+                loadingHide()
+                result.doIfSuccess { response ->
+                    if (response != null) {
+                        val builder = AlertDialog.Builder(requireContext())
+                        val inflater = requireActivity().layoutInflater
+                        val view = inflater.inflate(R.layout.fragment_order_waring_dialog, null)
+                        builder.setView(view)
+                        val dialog = builder.create()
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            view.warning_msg.text =
+                                Html.fromHtml(response, Html.FROM_HTML_MODE_LEGACY).trim()
+
+                        } else {
+                            view.warning_msg.text = Html.fromHtml(response)
+
+                        }
+
+                        view.warning_yes.setOnClickListener {
+                            order_warning_checkbox.isChecked = true
+                            dialog.dismiss()
+                        }
+                        view.warning_no.setOnClickListener {
+                            order_warning_checkbox.isChecked = false
+                            dialog.dismiss()
+                        }
+
+                        dialog.show()
+                    }
+                }
+
+                result.doIfError {
+                    it?.getErrors {msg->
+                        toast(msg)
+                    }
+
+                }
+
+            })
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        order_name.setText(AppPreferences.name)
+        order_surname.setText(AppPreferences.surname)
+        order_phone.setText(AppPreferences.phone)
+
+        val discountType = listOf("Бонус", "Скидка")
+        val discountTypeAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            discountType
+        )
+        order_type.setAdapter(discountTypeAdapter)
+        order_type.setOnItemClickListener { _, _, position, _ ->
+            discountId = (position + 1)
+        }
+
+        val orderType = listOf("Самовывоз", "Доставка")
+        val payTypeAdapter =
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                orderType
+            )
+        order_delivery_type.setAdapter(payTypeAdapter)
+
+        if (addressId != 0 || cityId != 0) {
+            order_list_addresses_out.visibility = View.VISIBLE
+            order_streets_out.visibility = View.VISIBLE
+            order_cities_out.visibility = View.VISIBLE
+            order_building_out.visibility = View.VISIBLE
+            order_apartment.visibility = View.VISIBLE
+        }
+        order_delivery_type.setOnItemClickListener { _, _, position, _ ->
+            deliveryId = position + 1
+            if (position == 0) {
+                cityId = 0
+                streetId = 0
+                setVisibility(View.GONE)
+                order_cities.text = null
+                order_streets.text = null
+                order_building.text = null
+                order_apartments_text.text = null
+                order_list_addresses.text = null
+            } else {
+                setVisibility(View.VISIBLE)
+            }
+        }
+    }
+
+    private fun setVisibility(visibility : Int){
+        order_list_addresses_out.visibility = visibility
+        order_streets_out.visibility = visibility
+        order_cities_out.visibility = visibility
+        order_building_out.visibility = visibility
+        order_apartment.visibility = visibility
+        order_entryCode_out.visibility = visibility
+        order_entry_out.visibility = visibility
+        order_floor_out.visibility = visibility
+    }
+
+
+    private fun initToolbar() {
+        toolbar_back.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        toolbar_text.text = getString(R.string.menu_order)
+    }
+
+
+    private fun getAutoCities() {
+        loadingShow()
+        viewModel.cities().observe(viewLifecycleOwner, Observer { result ->
+            loadingHide()
+            result.doIfError {errorBody->
+                errorBody?.getErrors {msg->
+                    toast(msg)
+                }
+            }
+            result.doIfSuccess {
+                val adapterAddress = it?.let { it1 ->
+                    ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        it1
+                    )
+                }
+                order_cities.setAdapter(adapterAddress)
+            }
+            result.doIfNetwork { msg->
+                toast(msg)
+            }
+        })
+
+        order_cities.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, position, _ ->
+                val item = order_cities.adapter.getItem(position) as CityRestResponse
+                cityId = item.id
+                streetId = 0
+                addressId = 0
+                order_cities.showDropDown()
+                getAutoStreets()
+
+                order_streets.setAdapter(null)
+                order_streets.setText("")
+                order_list_addresses.text = null
+            }
+    }
+
+
+    private fun getAutoStreets() {
+        loadingShow()
+        viewModel.streets(cityId).observe(viewLifecycleOwner, Observer { result ->
+            loadingHide()
+
+            result.doIfNetwork { msg->
+                toast(msg)
+            }
+            result.doIfSuccess {streetResponse->
+                val listOfResponse = mutableListOf<StreetResponse>()
+                streetResponse?.forEach {
+                    listOfResponse.add(it)
+                }
+                listOfResponse.add(
+                    StreetResponse(
+                        cityName = "Bishkek",
+                        id = -1,
+                        name = "Указать свой адрес..."
+                    )
+                )
+                val a = AutoCompleteAdapter(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    items = listOfResponse
+                )
+                order_streets.setAdapter(a)
+                order_streets.onItemClickListener =
+                    AdapterView.OnItemClickListener { _, _, position, _ ->
+                        val item =
+                            order_streets.adapter.getItem(position) as StreetResponse
+                        streetId = item.id
+                        addressId = 0
+                        if (streetId == -1) {
+                            order_building_out.hint = "Введите адрес"
+                            order_apartment.hint = "Введите адрес"
+                        } else {
+                            order_building_out.hint = "Дом"
+                            order_apartment.hint = "Квартира"
+                        }
+                    }
+            }
+
+            result.doIfError {errorBody->
+                errorBody?.getErrors {msg->
+                    toast(msg)
+                }
+            }
+
+        })
+
+
+    }
+
+    private fun isValid(): Boolean {
+        var valid = true
+
+        if (order_type.text!!.toString().isEmpty()) {
+            order_type_out.error = requireContext().getString(R.string.validation)
+            valid = false
+        } else {
+            order_type_out.isErrorEnabled = false
+        }
+        if (cityId != 0 && order_building.text.toString().isEmpty()) {
+            order_building_out.error = requireContext().getString(R.string.validation)
+            valid = false
+        } else {
+            order_building_out.isErrorEnabled = false
+            order_apartment.isErrorEnabled = false
+        }
+
+        if (order_delivery_type.isSelected) {
+            order_pay_delivery_out.error = requireContext().getString(R.string.validation)
+            valid = false
+        } else {
+            order_pay_delivery_out.isErrorEnabled = false
+        }
+
+        if (deliveryId == 2) {
+            if (addressId == 0) {
+                if (order_cities.text!!.toString().isEmpty()) {
+                    order_cities_out.error = requireContext().getString(R.string.validation)
+                    valid = false
+                } else {
+                    order_cities_out.isErrorEnabled = false
+                }
+
+                if (order_streets.text!!.toString().isEmpty()) {
+                    order_streets_out.error = requireContext().getString(R.string.validation)
+                    valid = false
+                } else {
+                    order_streets_out.isErrorEnabled = false
+                }
+            } else {
+                if (order_list_addresses.text!!.toString().isEmpty()) {
+                    order_list_addresses_out.error =
+                        requireContext().getString(R.string.validation)
+                    valid = false
+                } else {
+                    order_list_addresses_out.isErrorEnabled = false
+                }
+            }
+        }
+
+        if (order_time.text!!.toString().isEmpty()) {
+            order_time_out.error = requireContext().getString(R.string.validation)
+            valid = false
+        } else {
+            order_time_out.isErrorEnabled = false
+        }
+
+        if (order_date.text!!.toString().isEmpty()) {
+            order_deliveryAt_out.error = requireContext().getString(R.string.validation)
+            valid = false
+        } else {
+            order_deliveryAt_out.isErrorEnabled = false
+        }
+
+
+        if (order_time.text!!.isNotEmpty() && order_date.text!!.isNotEmpty()) {
+            val currentDayView = order_date.text?.substring(0, 2)?.toInt()
+            val currentDayAndroid = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val time = order_time.text.toString()
+            val hour = time.substring(0, 2).toInt()
+            println(hour)
+            //current_time = 00:06
+            //set_time = 01:07
+
+            val hourAndroid = calendar.get(Calendar.HOUR_OF_DAY)
+            println(hourAndroid)
+            if (currentDayAndroid == currentDayView) {
+                if (hour - 1 < hourAndroid) {
+                    order_time_out.error = "Выбирете на час позже"
+                    valid = false
+                } else {
+                    order_time_out.isErrorEnabled = false
+                }
+            }
+        }
+
+        if (!order_warning_checkbox.isChecked) {
+            toast("Без соглашения не можете заказать")
+            valid = false
+        }
+        return valid
+
+    }
+}

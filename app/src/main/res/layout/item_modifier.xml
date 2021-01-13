@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_weight="1"
+            android:text="Modification name"
+            android:button="@drawable/selector">
+        </com.google.android.material.checkbox.MaterialCheckBox>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginHorizontal="5dp"
+            android:text="@string/price"
+            android:id="@+id/modPrice"
+            app:layout_constraintStart_toEndOf="@+id/checkbox" />
+        <LinearLayout
+            android:id="@+id/plusMinus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/modPrice"
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageButton
+                android:id="@+id/foodAmountMinus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_minus_button"
+                android:background="#ffffff"/>
+            <TextView
+                android:id="@+id/item_modifier_amount"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:layout_marginStart="45dp"/>
+            <ImageButton
+                android:id="@+id/foodAmountPlus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="45dp"
+                android:layout_gravity="center"
+                android:background="#ffffff"
+                android:src="@drawable/ic_plus_button"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

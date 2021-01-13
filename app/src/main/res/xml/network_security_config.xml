@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="user" overridePins="true"/>
+        </trust-anchors>
+    </debug-overrides>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">http://158.69.52.119:10820</domain>
+        <domain includeSubdomains="true">http://158.69.52.119</domain>
+        <domain includeSubdomains="true">158.69.52.119</domain>
+        <domain includeSubdomains="true">158.69.52.119:10820</domain>
+    </domain-config>
+
+</network-security-config>

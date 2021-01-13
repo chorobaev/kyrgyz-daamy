@@ -1,0 +1,21 @@
+package com.timelysoft.kainarapp.service.response
+
+import android.os.Parcelable
+import com.timelysoft.kainarapp.service.model.DiscountInfoImage
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+class DiscountResponse(
+    val baseFileUrl: String,
+    val boldDescription: String,
+    val description: String,
+    val endDateUtc: String,
+    val id: Int,
+    val infoImages: List<DiscountInfoImage>,
+    val isShowOnTop: Boolean,
+    val name: String,
+    val restaurantGroupId: Int,
+    val restaurantId: Int,
+    val startDateUtc: String,
+    val type: Int
+) : Parcelable

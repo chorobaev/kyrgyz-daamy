@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="@string/select_pay_type"
+        android:textColor="@color/black"
+        android:textSize="22sp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/pay_type_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/style_button_outline"
+        android:text="Наличными"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/pay_type_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/style_button_outline"
+        android:text="Онлайн оплата"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/pay_type_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/style_button_outline"
+        android:text="Оплата картой"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/layoutCards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/logo_visa" />
+
+        <ImageView
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/logo_mastercard" />
+
+        <ImageView
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/logo_maestro" />
+
+        <ImageView
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/logo_elcart" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewOnlinePay"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="*Онлайн платежи осуществляется через" />
+
+    <ImageView
+        android:id="@+id/demirBankOnlinePayment"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:src="@drawable/logo_demir" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+</LinearLayout>

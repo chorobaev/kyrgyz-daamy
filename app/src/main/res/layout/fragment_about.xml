@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".ui.about.AboutFragment">
+
+   <ImageButton
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       android:id="@+id/about_back"
+       android:layout_width="?attr/actionBarSize"
+       android:layout_height="?attr/actionBarSize"
+       android:background="?attr/selectableItemBackgroundBorderless"
+       android:tint="@color/colorPrimary"
+       app:srcCompat="@drawable/ic_back" />
+
+   <TextView
+       app:layout_constraintStart_toEndOf="@id/about_back"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       android:id="@+id/about_toolbar_text"
+       android:layout_width="0dp"
+       android:layout_height="?attr/actionBarSize"
+       tools:text="О нас"
+       android:layout_marginStart="@dimen/activity_horizontal_margin"
+       android:gravity="center_vertical"
+       android:textColor="@color/colorPrimary"
+       android:textSize="20dp"
+       android:textStyle="bold" />
+
+    <ExpandableListView
+        android:id="@+id/about_expandablelist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

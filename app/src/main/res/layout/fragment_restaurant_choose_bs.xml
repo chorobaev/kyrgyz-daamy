@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".bottomsheet.chooseRestuarant.RestaurantChooseBottomSheet">
+
+    <TextView
+        android:layout_marginStart="12dp"
+        android:id="@+id/choose_rest_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:text="Ресторан"
+        android:textColor="@color/gradient"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/choose_restaurant_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        app:layout_constraintTop_toBottomOf="@id/choose_rest_tv"
+        tools:listitem="@layout/item_restaurant" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

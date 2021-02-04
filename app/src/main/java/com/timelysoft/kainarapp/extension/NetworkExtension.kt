@@ -18,7 +18,7 @@ inline fun ResponseBody.getErrors(message : (String) -> Unit){
                     val comment = Errors.errors_hashMap[msg]
                     string += "$comment"
                 }
-                msg +=string
+                msg+=string
             }
             else->{
                 var string = ""

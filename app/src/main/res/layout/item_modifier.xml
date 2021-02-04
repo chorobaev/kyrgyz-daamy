@@ -9,7 +9,7 @@
         android:orientation="horizontal">
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/checkbox"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="13dp"
             android:layout_weight="1"
@@ -18,43 +18,50 @@
         </com.google.android.material.checkbox.MaterialCheckBox>
 
         <TextView
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:layout_marginHorizontal="5dp"
             android:text="@string/price"
             android:id="@+id/modPrice"
-            app:layout_constraintStart_toEndOf="@+id/checkbox" />
-        <LinearLayout
+            android:layout_marginEnd="10dp"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/plusMinus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintStart_toEndOf="@id/modPrice"
             app:layout_constraintTop_toTopOf="parent">
             <ImageButton
                 android:id="@+id/foodAmountMinus"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:src="@drawable/ic_minus_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 android:background="#ffffff"/>
             <TextView
                 android:id="@+id/item_modifier_amount"
                 android:layout_width="wrap_content"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
-                android:text="1"
-                android:layout_marginStart="45dp"/>
+                android:text="0"
+                app:layout_constraintStart_toEndOf="@id/foodAmountMinus"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="20dp"/>
             <ImageButton
                 android:id="@+id/foodAmountPlus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
+                android:layout_marginStart="20dp"
                 android:layout_gravity="center"
                 android:background="#ffffff"
+                app:layout_constraintStart_toEndOf="@+id/item_modifier_amount"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/ic_plus_button"/>
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

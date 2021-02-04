@@ -1,13 +1,13 @@
 package com.timelysoft.kainarapp.ui.discount
 
-import android.app.Application
 import androidx.lifecycle.LiveData
-import com.timelysoft.kainarapp.base.BaseViewModel
+import androidx.lifecycle.ViewModel
 import com.timelysoft.kainarapp.service.ApiResult
+import com.timelysoft.kainarapp.service.NetworkRepositoryMod
 import com.timelysoft.kainarapp.service.model2.BaseResponse
 import com.timelysoft.kainarapp.service.model2.response2.NewsResponse
 
-class NewsViewModel(application: Application) : BaseViewModel(application) {
+class NewsViewModel(val network : NetworkRepositoryMod) : ViewModel() {
 
 
     fun news(restaurantId: String = ""): LiveData<ApiResult<BaseResponse<List<NewsResponse>>?>> {

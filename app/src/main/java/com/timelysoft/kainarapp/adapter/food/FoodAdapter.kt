@@ -25,8 +25,6 @@ class FoodAdapter(
         holder.itemView.food_image.loadImage(urlMod)
         holder.itemView.food_title.text = item.name
         holder.itemView.food_price.text = (item.price).toString() + " Сом"
-        //todo description
-        //holder.itemView.food_description.text = item.recipe
         holder.itemView.food_description.visibility = View.GONE
         holder.itemView.setOnClickListener {
             listener.onFoodClick(item, holder.adapterPosition)

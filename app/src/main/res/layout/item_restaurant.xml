@@ -50,7 +50,7 @@
             android:id="@+id/restaurant_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/gradient"
+            android:background="@color/colorPrimary"
             android:gravity="center"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"

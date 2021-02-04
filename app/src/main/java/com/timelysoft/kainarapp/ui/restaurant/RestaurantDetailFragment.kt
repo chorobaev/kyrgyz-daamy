@@ -63,7 +63,6 @@ class RestaurantDetailFragment : Fragment(), SocialListener {
 
         restaurant_detail_menu.setOnClickListener {
             AppPreferences.restaurant = restaurantId
-            // AppPreferences.globalId = globalId
             AppPreferences.restaurantPhoto = restaurantPhoto
             AppPreferences.restaurantLogo = restaurantLogo
             findNavController().navigate(R.id.nav_food)

@@ -4,29 +4,11 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
-            android:title="@string/menu_home" />
-
-<!--        <item-->
-<!--            android:id="@+id/nav_auth"-->
-<!--            android:icon="@drawable/ic_auth"-->
-<!--            android:title="@string/menu_auth" />-->
 
         <item
             android:id="@+id/nav_discount"
             android:icon="@drawable/ic_news"
             android:title="@string/menu_discount" />
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_profile"
-            android:title="@string/menu_profile" />
-
-        <item
-            android:id="@+id/nav_my_order"
-            android:icon="@drawable/ic_my_order"
-            android:title="@string/menu_history" />
 
         <item
             android:id="@+id/nav_restaurant"
@@ -38,14 +20,5 @@
             android:icon="@drawable/ic_restaurant"
             android:title="@string/menu_food" />
 
-        <item
-            android:id="@+id/nav_out"
-            android:icon="@drawable/ic_exit"
-            android:title="Выйти" />
-
-<!--        <item-->
-<!--            android:id="@+id/nav_about"-->
-<!--            android:icon="@drawable/ic_about"-->
-<!--            android:title="@string/menu_about" />-->
     </group>
 </menu>

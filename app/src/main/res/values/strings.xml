@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KaynarGroup</string>
+    <string name="app_name">Carbis</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -95,6 +95,9 @@
     <string name="successPayment">Успешно!</string>
     <string name="success_payment_message">Оплата за ваш заказ прошла успешно</string>
     <string name="download_check_string">Cкачать чек</string>
+    <string name="main">Главная</string>
+    <string name="news_title">Новости</string>
+    <string name="basket_title">Корзина</string>
 
 
 </resources>

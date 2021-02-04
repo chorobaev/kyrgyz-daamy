@@ -8,6 +8,6 @@ data class BaseModifier(
     @SerializedName("code") val code: Int,
     @SerializedName("price") var price :Int?=null,
     @SerializedName("limit") val limit :Int,
-    var isChecked : Boolean,
+    var isChecked : Boolean = false,
     var count : Int
 )

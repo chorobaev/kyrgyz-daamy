@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/basket_navigation"
+    app:startDestination="@id/nav_basket">
+
+
+    <fragment
+        android:id="@+id/nav_basket"
+        android:name="com.timelysoft.kainarapp.ui.food.BasketFragment"
+        android:label="@string/menu_basket"
+        tools:layout="@layout/fragment_basket"/>
+
+    <fragment
+        android:id="@+id/nav_pay"
+        android:name="com.timelysoft.kainarapp.ui.food.PayFragment"
+        android:label="@string/menu_pay"
+        tools:layout="@layout/fragment_pay">
+        <action
+            android:id="@+id/toSuccessPaymentFragment"
+            app:destination="@+id/nav_success_payment"
+            app:popUpTo="@id/nav_pay"
+            app:popUpToInclusive="true">
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_success_payment"
+        android:name="com.timelysoft.kainarapp.ui.food.SuccessPaymentFragment"
+        android:label="fragment_success_payment"
+        tools:layout="@layout/success_payment_fragment">
+        <action
+            android:id="@+id/toHistoryDetail"
+            app:destination="@+id/nav_order_detail"
+            app:popUpTo="@id/nav_order_detail"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_order"
+        android:name="com.timelysoft.kainarapp.ui.food.OrderFragment"
+        android:label="@string/menu_order"
+        tools:layout="@layout/fragment_order" />
+
+
+    <fragment
+        android:id="@+id/nav_order_detail"
+        android:name="com.timelysoft.kainarapp.ui.food.OrderDetailFragment"
+        android:label="@string/menu_order_detail"
+        tools:layout="@layout/fragment_order_detail">
+        <action
+            android:id="@+id/toMainGraph"
+            app:destination="@+id/mobile_navigation"/>
+    </fragment>
+    <include app:graph="@navigation/mobile_navigation"/>
+</navigation>

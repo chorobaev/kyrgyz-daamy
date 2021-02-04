@@ -15,8 +15,10 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.timelysoft.kainarapp.R
+import com.timelysoft.kainarapp.adapter.food.BasketCommands
 import com.timelysoft.kainarapp.extension.getErrors
 import com.timelysoft.kainarapp.extension.loadingHide
 import com.timelysoft.kainarapp.extension.toast
@@ -27,10 +29,11 @@ import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.success_payment_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+private const val STORAGE_PERMISION_CODE: Int = 1000
+
 class SuccessPaymentFragment : Fragment() {
     private var orderId: String? = null
     private var failMessage : String? = null
-    private val STORAGE_PERMISION_CODE: Int = 1000
     private val viewModel: FoodViewModel by viewModel()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +41,7 @@ class SuccessPaymentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         if (arguments != null){
-            orderId = requireArguments().getString("orderId", "")
+           // orderId = requireArguments().getString("orderId", "")
             failMessage = requireArguments().getString("failMessage", "")
         }
         return inflater.inflate(R.layout.success_payment_fragment,container, false)
@@ -52,34 +55,33 @@ class SuccessPaymentFragment : Fragment() {
             successPayment.visibility = View.GONE
             success_payment_message.visibility = View.GONE
             failPaymentMessage.visibility = View.VISIBLE
-
-            viewModel.getExceptionOfPayment(failMessage!!).observe(viewLifecycleOwner, Observer { resource->
-                var message = ""
-                resource.doIfSuccess {
-                    if (it.containsKey("RawText")){
-                        it["RawText"]?.forEach {text->
-                            println(text)
-                            message += "$text "
-                        }
-                    }
-                    failPaymentMessage.text = message
-                }
-                resource.doIfError {
-                    it?.getErrors { msg->
-                        toast(msg)
-                    }
-                }
-            })
+            yesNo.visibility = View.VISIBLE
+        }else{
+            BasketCommands.deleteAll()
         }
-
-        toolbar_back.setOnClickListener {
-            findNavController().popBackStack(R.id.nav_home, true)
-
-        }
+        initToolbar()
         downloadCheckPayment.setOnClickListener {
-            if (orderId != null){
-                downloadCheck(orderId!!)
-            }
+            downloadCheck(AppPreferences.lastOrderId)
+        }
+        yesClickListener.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        noClickListener.setOnClickListener {
+            BasketCommands.deleteAll()
+           findNavController().popBackStack(R.id.nav_basket, true)
+        }
+
+    }
+
+    private fun initToolbar() {
+        val navHostFragment: NavHostFragment = this.parentFragment as NavHostFragment
+
+        val count = navHostFragment.childFragmentManager.backStackEntryCount
+        if (count > 0) {
+            toolbar_back.visibility = View.VISIBLE
+        }
+        toolbar_back.setOnClickListener {
+            findNavController().popBackStack(R.id.nav_basket, true)
         }
     }
     private fun downloadCheck(orderId: String) {
@@ -118,21 +120,20 @@ class SuccessPaymentFragment : Fragment() {
         when (requestCode) {
             STORAGE_PERMISION_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    findNavController().navigate(R.id.nav_home)
+                    findNavController().navigate(R.id.nav_food)
                 } else {
-                    downloadFile(orderId!!)
+                    downloadFile(AppPreferences.lastOrderId)
                 }
             }
         }
     }
 
     private fun downloadFile(orderId: String) {
-       //loadingShow()
         val downloadUrl = "${AppPreferences.baseUrl}api/orders/${orderId}/checks/pdf"
         Toast.makeText(context, "Файл загружается...", Toast.LENGTH_LONG).show()
         val reguest = DownloadManager.Request(Uri.parse(downloadUrl))
         reguest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-        reguest.setTitle("Kaynar")
+        reguest.setTitle("Carbis")
         reguest.setDescription("Файл загружается...")
 
         reguest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -143,7 +144,7 @@ class SuccessPaymentFragment : Fragment() {
 
         val manager = activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         manager.enqueue(reguest)
-        findNavController().navigate(R.id.nav_home)
+        findNavController().popBackStack(R.id.nav_basket, true)
 
 
     }

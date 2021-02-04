@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mobile_navigation"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/main"/>
+
+    <item
+        android:id="@+id/news_navigation"
+        android:icon="@drawable/ic_news"
+        android:title="@string/news_title"/>
+
+    <item
+        android:id="@+id/basket_navigation"
+        android:icon="@drawable/ic_basket"
+        android:title="@string/basket_title"/>
+</menu>

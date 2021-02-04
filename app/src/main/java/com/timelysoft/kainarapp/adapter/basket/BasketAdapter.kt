@@ -7,8 +7,8 @@ import com.timelysoft.kainarapp.R
 import com.timelysoft.kainarapp.adapter.food.CustomAdapterForMod
 import com.timelysoft.kainarapp.base.GenericRecyclerAdapter
 import com.timelysoft.kainarapp.base.ViewHolder
-import com.timelysoft.kainarapp.extension.countCost
-import com.timelysoft.kainarapp.extension.countPriceOfMod
+import com.timelysoft.kainarapp.bottomsheet.basket.Mode
+
 import com.timelysoft.kainarapp.service.model2.response2.BaseModifierGroup
 import com.timelysoft.kainarapp.service.model2.response2.MenuItem
 import kotlinx.android.synthetic.main.item_basket.view.*
@@ -25,13 +25,13 @@ class BasketAdapter(
         basket_name.text = item.name
         if (item.modifierGroups.isNotEmpty()) {
             item_basket_recycler.adapter =
-                CustomAdapterForMod(item.modifierGroups as ArrayList<BaseModifierGroup>, null, true)
+                CustomAdapterForMod(item.modifierGroups as ArrayList<BaseModifierGroup>, Mode.Basket, null)
         }
         sumAmount.text = "${item.priceWithMod} сом"
 
         
-        this.setOnClickListener {
-            listener.onClickItem(item)
+        basket_edit.setOnClickListener {
+            listener.onClickItem(item, holder.adapterPosition)
         }
 
         basket_delete.setOnClickListener {

@@ -24,5 +24,30 @@ object  Errors {
         "SYS003ER" to "Неизвестная ошибка",
         "VAL004ER" to "Неправильные данные"
     )
+    val properties = hashMapOf(
+        "cankInfo" to "Банковская информация",
+                "Base" to "base",
+        "callCenter" to "Колл-центр",
+        "carbis"  to "Карбис",
+        "check" to "Чек",
+        "city" to "Город",
+        "currency" to "Валюта",
+        "externalClient" to "Внешний клиент",
+        "file" to "Файл",
+        "ignore" to "Не учитывать",
+        "Info" to "Информация",
+        "link" to "Ссылка",
+        "loginOrPassword" to "Логин или пароль",
+        "order" to "Заказ",
+        "payment" to "Оплата",
+        "paymentConfirmation" to "Подтверждение оплаты",
+        "rawText" to "Необработанный текст",
+        "restaurant" to "Ресторан",
+        "restaurantGroup" to "Ресторанная группа",
+        "setting" to "Настройки",
+        "street" to "Улица",
+        "text" to "Текст",
+        "user" to "Пользователь"
+    )
 
 }

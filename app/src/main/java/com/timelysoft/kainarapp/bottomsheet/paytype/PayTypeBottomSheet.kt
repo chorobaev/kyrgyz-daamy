@@ -28,12 +28,15 @@ class PayTypeBottomSheet(
             listener.onClickPay(1)
             dismiss()
         }
+
+        pay_type_3.setOnClickListener {
+            listener.onClickPay(2)
+        }
         if (!AppPreferences.bankPay) {
             pay_type_2.visibility = View.GONE
             layoutCards.visibility =View.GONE
             textViewOnlinePay.visibility = View.GONE
             demirBankOnlinePayment.visibility = View.GONE
-
         }
 
         pay_type_2.setOnClickListener {
@@ -41,9 +44,5 @@ class PayTypeBottomSheet(
             dismiss()
         }
 
-        pay_type_3.setOnClickListener {
-            listener.onClickPay(2)
-            dismiss()
-        }
     }
 }

@@ -14,12 +14,9 @@ import com.timelysoft.kainarapp.extension.getErrors
 import com.timelysoft.kainarapp.extension.loadingHide
 import com.timelysoft.kainarapp.extension.loadingShow
 import com.timelysoft.kainarapp.extension.toast
-import com.timelysoft.kainarapp.service.Status
 import com.timelysoft.kainarapp.service.doIfError
 import com.timelysoft.kainarapp.service.doIfSuccess
-import com.timelysoft.kainarapp.service.model2.Restaurant
 import com.timelysoft.kainarapp.service.model2.RestaurantResponse
-import com.timelysoft.kainarapp.service.response.RestaurantInfoResponse
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_restaurant.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -82,7 +79,7 @@ class RestaurantFragment : Fragment(), RestaurantListener {
         bundle.putString("restaurantId", restaurantId)
         bundle.putString("restaurantPhoto", photo)
         bundle.putString("restaurantLogo", logo)
-        findNavController().navigate(R.id.nav_restaurant_detail, bundle)
+       // findNavController().navigate(R.id.nav_restaurant_detail, bundle)
     }
 
 }

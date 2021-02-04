@@ -1,51 +1,57 @@
 package com.timelysoft.kainarapp.ui.food
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager.widget.ViewPager
 import com.timelysoft.kainarapp.R
-import com.timelysoft.kainarapp.bottomsheet.basket.FoodAddUpdateBottomSheet
+import com.xwray.groupie.ExpandableGroup
+import com.xwray.groupie.groupiex.plusAssign
 import com.timelysoft.kainarapp.adapter.category.CategoryAdapter
 import com.timelysoft.kainarapp.adapter.category.CategoryListener
-import com.timelysoft.kainarapp.adapter.food.AddToBasketListener
 import com.timelysoft.kainarapp.adapter.food.BasketCommands
-import com.timelysoft.kainarapp.adapter.food.FoodAdapter
-import com.timelysoft.kainarapp.adapter.food.FoodListener
+import com.timelysoft.kainarapp.adapter.image.ImagePageAdapter
 import com.timelysoft.kainarapp.bottomsheet.chooseRestuarant.RestaurantChooseListener
-import com.timelysoft.kainarapp.bottomsheet.chooseRestuarant.RestaurantChooseBottomSheet
-import com.timelysoft.kainarapp.extension.*
-import com.timelysoft.kainarapp.service.*
-import com.timelysoft.kainarapp.service.model2.RestaurantResponse
-import com.timelysoft.kainarapp.service.model2.response2.BaseModifier
-import com.timelysoft.kainarapp.service.model2.response2.BaseModifierGroup
+import com.timelysoft.kainarapp.extension.getErrors
+import com.timelysoft.kainarapp.extension.loadingHide
+import com.timelysoft.kainarapp.extension.loadingShow
+import com.timelysoft.kainarapp.extension.toast
+import com.timelysoft.kainarapp.service.AppPreferences
+import com.timelysoft.kainarapp.service.doIfError
+import com.timelysoft.kainarapp.service.doIfNetwork
+import com.timelysoft.kainarapp.service.doIfSuccess
 import com.timelysoft.kainarapp.service.model2.response2.Category
 import com.timelysoft.kainarapp.service.model2.response2.MenuItem
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.app_toolbar.*
-import kotlinx.android.synthetic.main.fragment_basket.*
-import kotlinx.android.synthetic.main.fragment_basket.view.*
 import kotlinx.android.synthetic.main.fragment_food.*
 import kotlinx.android.synthetic.main.fragment_food.view.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class FoodFragment : Fragment(), CategoryListener, FoodListener,FoodAddToBasket,
-    RestaurantChooseListener {
 
-    private val viewModel: FoodViewModel by viewModel()
+class FoodFragment : Fragment(), CategoryListener,
+    RestaurantChooseListener, OnExpandableAdapterClick, OnChildItemListener {
+    private val viewModel: FoodViewModel by sharedViewModel()
     private val categoryAdapter = CategoryAdapter(this)
-    private val foodAdapter = FoodAdapter(this, this)
     private var categoryList: ArrayList<Category>? = null
-    private var hasItem: Boolean? = null
+    private lateinit var viewPager: ViewPager
+    private var categoryId: String? = null
+    private var categoryName: String? = null
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
+            categoryName = requireArguments().getString("categoryName")
             categoryList = requireArguments().getParcelableArrayList<Category>("categories")
-            hasItem = requireArguments().getBoolean("hasItems")
+            categoryId = requireArguments().getString("CategoryId")
         }
     }
 
@@ -53,168 +59,162 @@ class FoodFragment : Fragment(), CategoryListener, FoodListener,FoodAddToBasket,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val view = inflater.inflate(R.layout.fragment_food, container, false)
-        if (hasItem == false) {
-            view.linearLayoutFood.visibility = View.GONE
+
+        viewPager = view.findViewById(R.id.restaurant_detail_image_viewPager)
+        if (categoryList != null) {
+            view.constraintLayout.visibility = View.GONE
+        }
+        else{
+            view.main_toolbar.visibility = View.GONE
         }
         return view
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
-        initPhoto()
-        initAdapters()
-        initButtons()
-
         if (categoryList != null) {
-            categoryAdapter.set(categoryList!!)
+
+            implementExpandableAdapter(generateExpandableHeader(categoryList!!))
+
         } else {
+            loadRestaurant()
+            //BasketCommands.deleteAll()
             initData()
         }
 
 
-        //checkMenu()
-        food_basket_price.text = "${AppPreferences.amount / 100} с"
-
-        BasketCommands.sumOfBasket.observe(viewLifecycleOwner, Observer {
-            food_basket_price.text = "${it}c"
-        })
-
-
     }
 
-    private fun initPhoto() {
-        food_selected_restaurant.loadImageWithoutCorner(AppPreferences.restaurantPhoto)
-    }
+    private fun loadRestaurant(  ) {
+        viewModel.restaurants().observe(viewLifecycleOwner, Observer { restaurants ->
 
-
-    private fun initAdapters() {
-        food_category_rv.adapter = categoryAdapter
-        food_rv.adapter = foodAdapter
-    }
-
-    private fun initButtons() {
-
-
-        food_basket.setOnClickListener {
-            if (BasketCommands.listOfMenuItems.size > 0) {
-                findNavController().navigate(R.id.nav_basket)
-            }
-        }
-
-        food_change_restaurant.setOnClickListener {
-            showBottomSheet()
-        }
-
-
-    }
-
-    private fun showBottomSheet() {
-        loadingShow()
-        viewModel.restaurants().observe(viewLifecycleOwner, Observer {response->
-            loadingHide()
-            response.doIfError {errorBody->
-                errorBody?.getErrors {msg->
+            restaurants.doIfError { errorBody ->
+                 errorBody?.getErrors { msg ->
                     toast(msg)
                 }
+            }
+            restaurants.doIfNetwork { msg ->
+                toast(msg)
 
             }
-            response.doIfSuccess {
-                val bottomSheetDialogFragment = RestaurantChooseBottomSheet(
-                    this,
-                    it as ArrayList<RestaurantResponse>
-                )
-                bottomSheetDialogFragment.isCancelable = AppPreferences.restaurant != ""
-                bottomSheetDialogFragment.show(
-                    childFragmentManager,
-                    bottomSheetDialogFragment.tag
-                )
+            restaurants.doIfSuccess {
+                val urls = arrayListOf<String>()
+                if (it.firstOrNull() != null) {
+                    AppPreferences.restaurant = it.first().id
+                    AppPreferences.bankPay = it.first().onlinePaymentSupported
+
+                    if (it.first().files.isEmpty()){
+                        urls.add("")
+                    }else {
+                        it.first().files.forEach { file ->
+                            urls.add(AppPreferences.baseUrl + file.relativeUrl)
+                        }
+                    }
+
+                }
+                val adapter = ImagePageAdapter(urls)
+                viewPager.adapter = adapter
+                if (urls.size == 1) {
+                    tabLayout.visibility = View.GONE
+                }
+                tabLayout.setupWithViewPager(viewPager)
+                restaurant_detail_title.text = it.first().name
+
             }
         })
     }
 
 
     private fun initData() {
-
         loadingShow()
         viewModel.categoriesByRestaurantId(AppPreferences.restaurant)
-            .observe(viewLifecycleOwner, Observer {response->
-                loadingHide()
-                response.doIfSuccess {categoriesResponse->
-                    if (categoriesResponse != null){
+            .observe(viewLifecycleOwner, Observer { response ->
+                response.doIfSuccess { categoriesResponse ->
+                    loadingHide()
+                    if (categoriesResponse != null) {
+
                         categoryAdapter.set(categoriesResponse.data.categories as ArrayList<Category>)
+                        food_category_rv.apply {
+                            adapter = categoryAdapter
+                            setHasFixedSize(true)
+                        }
                     }
                 }
-                response.doIfError {errorBody->
-                    errorBody?.getErrors {msg->
+                response.doIfError { errorBody ->
+                    loadingHide()
+                    errorBody?.getErrors { msg ->
                         toast(msg)
                     }
-
                 }
                 response.doIfNetwork {
+                    loadingHide()
                     toast(it)
                 }
             })
 
-    }
 
-    private fun getMenuItems(categoryId: String) {
-        viewModel.itemsByCategories(AppPreferences.restaurant, categoryId)
-            .observe(viewLifecycleOwner, Observer {
-                it.doIfSuccess {itemsResponse->
-                    foodAdapter.set(itemsResponse.menuItems as ArrayList<MenuItem>)
-                }
-                it.doIfError {errorBody->
-                    errorBody?.getErrors {msg->
-                        toast(msg)
-                    }
-
-                }
-            })
     }
 
     private fun initToolbar() {
-        toolbar_back.setOnClickListener {
-            findNavController().popBackStack()
-        }
+        val navHostFragment: NavHostFragment = this.parentFragment as NavHostFragment
 
-        toolbar_text.text = getString(R.string.menu_food)
+        val count = navHostFragment.childFragmentManager.backStackEntryCount
+        if (count > 0) {
+            toolbar_back.visibility = View.VISIBLE
+            toolbar_text.text = categoryName
+        } else {
+            toolbar_text.text = getString(R.string.menu_food)
+        }
+        toolbar_back.setOnClickListener {
+            if (count > 0) {
+                findNavController().popBackStack()
+            }
+
+        }
     }
+
+    private fun generateExpandableHeader(list: List<Category>): List<ExpandableHeaderItem> {
+        return list.map {
+            ExpandableHeaderItem(it, this)
+        }
+    }
+
+    private fun implementExpandableAdapter(list: List<ExpandableHeaderItem>) {
+        groupAdapter.clear()
+        groupAdapter.apply {
+            list.forEach { expandableHeader ->
+                this.add(ExpandableGroup(expandableHeader).apply {
+                    expandableHeader.category.categories?.forEach { subCategory ->
+                        add(ChildItem(subCategory, this@FoodFragment))
+                    }
+                })
+            }
+        }
+        food_category_rv.apply {
+            adapter = groupAdapter
+            addItemDecoration(
+                CustomPositionItemDecoration(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.divider
+                    )!!
+                )
+            )
+        }
+    }
+
 
     override fun onCategoryClick(item: Category) {
-        restaurant_category_name.text = item.name
-        val bundle = Bundle()
 
         if (item.categories != null) {
+
+            val bundle = Bundle()
+            bundle.putString("categoryName", item.name)
             bundle.putParcelableArrayList("categories", item.categories as ArrayList<Category>)
-            bundle.putBoolean("hasItems", item.hasProducts)
-            getMenuItems(item.id)
             findNavController().navigate(R.id.nav_food, bundle)
-        }
-
-        if (item.hasProducts) {
-            linearLayoutFood.visibility = View.VISIBLE
-            getMenuItems(item.id)
-        }
-
-    }
-
-
-    override fun onFoodClick(menuItem: MenuItem, position: Int) {
-
-        if (menuItem.modifierGroups.isNotEmpty()) {
-            val bottom =
-                FoodAddUpdateBottomSheet(
-                    menuItem,
-                    position
-                )
-            bottom.show(parentFragmentManager, bottom.tag)
-        } else {
-            val bottom =
-                FoodAddUpdateBottomSheet(menuItem, position)
-            bottom.show(parentFragmentManager,bottom.tag)
 
         }
 
@@ -222,57 +222,32 @@ class FoodFragment : Fragment(), CategoryListener, FoodListener,FoodAddToBasket,
 
 
     override fun onClickRestaurant(restaurantId: String, previousRestaurantId: String, crmId: Int) {
-        if (restaurantId != previousRestaurantId) {
-            BasketCommands.deleteAll()
-        }
 
-        loadingShow()
-        initPhoto()
-        restaurant_category_name.text = "Все"
 
-        viewModel.categoriesByRestaurantId(restaurantId)
-            .observe(viewLifecycleOwner, Observer { menu ->
-
-                menu.doIfSuccess { categoriesResponse ->
-                    if (categoriesResponse != null) {
-                        categoryAdapter.set(categoriesResponse.data.categories as ArrayList<Category>)
-                        categoryAdapter.row = -1
-                        BasketCommands.sumOfBasket.observe(viewLifecycleOwner, Observer {
-                            food_basket_price.text = "${it}c"
-                        })
-                        food_category_rv.adapter = categoryAdapter
-                        loadingHide(2000L)
-                    }
-                }
-
-                menu.doIfError {
-                    it?.getErrors {msg->
-                        toast(msg)
-                    }
-                    loadingHide()
-                }
-
-                menu.doIfNetwork {
-                    toast(it)
-                }
-            })
     }
 
-    override fun addToBasket(item: MenuItem, position: Int) {
-        if (item.modifierGroups.isNotEmpty()){
-            val bottom =
-                FoodAddUpdateBottomSheet(
-                    item,
-                    position
-                )
-            bottom.show(parentFragmentManager, bottom.tag)
+    override fun onItemClick(category: Category) {
+        if (category.categories == null && category.hasProducts) {
+            viewModel.setCategoryId(category.id, category.name)
+            findNavController().navigate(R.id.nav_food_item)
         }
-        else{
-            item.amount = 1
-            item.positionInList = position
-            viewModel.insertMenuItemWithoutModifiers(item, 0, emptyList())
-        }
+
     }
 
+    override fun onChildClick(category: Category) {
+        when{
+            category.categories != null ->{
+                val bundle = Bundle()
+                bundle.putParcelableArrayList("categories", this as ArrayList<Category>)
+                findNavController().navigate(R.id.nav_food, bundle)
+            }
+            else->{
+                if (category.hasProducts){
+                    viewModel.setCategoryId(category.id, category.name)
+                    findNavController().navigate(R.id.nav_food_item)
+                }
+            }
+        }
+    }
 
 }

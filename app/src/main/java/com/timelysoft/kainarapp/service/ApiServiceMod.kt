@@ -40,6 +40,18 @@ interface ApiServiceMod {
     ): Response<BaseResponse<CategoryItemResponse>>
 
 
+    @GET("payments/robokassa/{restaurantId}/creadentials/{orderId}")
+    suspend fun getPaymentLink(
+        @Path("restaurantId") restaurantId: String,
+        @Path("orderId") orderId: String
+    ) : Response<BaseResponse<RobokassaResponse>>
+
+    @POST("auth/login")
+    suspend fun getAccessToken(
+        @Body authBody: AuthBody
+    ):Response<BaseResponse<AccessToken>>
+
+
     @Cacheable
     @GET("groups/{restaurantGroupId}/infos")
     suspend fun getRestraurantGroupInfo(
@@ -70,7 +82,6 @@ interface ApiServiceMod {
         @Body createOrder: CreateOrder
     ): Response<BaseResponse<String>>
 
-    @Cacheable
     @POST("orders/{restaurantId}/validate/full")
     suspend fun validateOrder(
         @Path("restaurantId") restaurantId: String,

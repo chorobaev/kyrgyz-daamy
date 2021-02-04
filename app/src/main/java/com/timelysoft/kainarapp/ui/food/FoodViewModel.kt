@@ -1,60 +1,49 @@
 package com.timelysoft.kainarapp.ui.food
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.ViewModel
 import com.timelysoft.kainarapp.adapter.food.BasketCommands
-import com.timelysoft.kainarapp.base.BaseViewModel
+import com.timelysoft.kainarapp.bottomsheet.basket.Mode
 import com.timelysoft.kainarapp.service.ApiResult
-import com.timelysoft.kainarapp.service.Resource
-import com.timelysoft.kainarapp.service.ResultWrapper
-import com.timelysoft.kainarapp.service.db.entity.BasketEntity
-import com.timelysoft.kainarapp.service.db.entity.CategoryEntity
-import com.timelysoft.kainarapp.service.db.entity.MenuItemEntity
+import com.timelysoft.kainarapp.service.NetworkRepositoryMod
+
 import com.timelysoft.kainarapp.service.model2.BaseResponse
-import com.timelysoft.kainarapp.service.model2.ErrorResponse
 import com.timelysoft.kainarapp.service.model2.RestaurantResponse
-import com.timelysoft.kainarapp.service.model2.ValidateGuest
 import com.timelysoft.kainarapp.service.model2.response2.*
-import com.timelysoft.kainarapp.service.response.*
-import kotlinx.coroutines.launch
-
-class FoodViewModel(application: Application) : BaseViewModel(application) {
 
 
-    fun categories(): LiveData<List<CategoryEntity>> {
-        return db.findAllCategories()
+class FoodViewModel(private val network: NetworkRepositoryMod) :ViewModel(){
+
+    private val _categoryIdLiveData: MutableLiveData<String> = MutableLiveData()
+    private val _categoryName: MutableLiveData<String> = MutableLiveData()
+
+
+    val categoryLiveData: LiveData<String>
+        get() = _categoryIdLiveData
+
+    val categoryNameLiveData: LiveData<String>
+        get() = _categoryName
+
+
+    fun setCategoryId(categoryId: String, categoryName: String) {
+        _categoryIdLiveData.value = categoryId
+        _categoryName.value = categoryName
     }
 
-    fun getExceptionOfPayment(token: String): LiveData<ApiResult<HashMap<String, List<String>>>> {
-        return network.getExceptionMessage(token)
-    }
-
-    fun insertMenuItem(menuItem: MenuItem, index: Int, modGroup: List<BaseModifierGroup>) {
-        BasketCommands.insertMenuItemSecondVersion(menuItem, index, modGroup)
+    fun insertMenuItem(menuItem: MenuItem, index: Int, modGroup: List<BaseModifierGroup>, mode: Mode) {
+        BasketCommands.insertMenuItemSecondVersion(menuItem, index, modGroup, mode)
     }
 
     fun deleteMenuItem(position: Int) {
         BasketCommands.deleteFromBasket(position)
     }
 
-    fun insertMenuItemWithoutModifiers(
-        menuItem: MenuItem,
-        index: Int,
-        list: List<BaseModifierGroup>
-    ) {
-        BasketCommands.insertMenuItemSecondVersion(menuItem, index, list)
-    }
-
-    fun basket(): LiveData<List<BasketEntity>> {
-        return db.findAllBaskets()
-    }
-
     fun getBasketElements(): LiveData<List<MenuItem>> {
         return BasketCommands.liveDataOfMenuItems
     }
-    fun orderValidate(orderModel: ValidateOrder) : LiveData<ApiResult<OrderValidateResponse?>>{
+
+    fun orderValidate(orderModel: ValidateOrder): LiveData<ApiResult<OrderValidateResponse?>> {
         return network.orderValidate(orderModel)
 
     }
@@ -66,12 +55,9 @@ class FoodViewModel(application: Application) : BaseViewModel(application) {
     fun payOnline(
         restaurantId: String,
         orderId: String
-    ): LiveData<ApiResult<OnlinePaymentResponse?>> {
+    ): LiveData<ApiResult<RobokassaResponse?>> {
         return network.onlinePayment(restaurantId, orderId)
     }
-
-    //TODO("Ask about online payment")
-
 
     fun restaurants(): LiveData<ApiResult<List<RestaurantResponse>>> {
         return network.restaurants()
@@ -85,7 +71,7 @@ class FoodViewModel(application: Application) : BaseViewModel(application) {
         return network.streets(id)
     }
 
-    fun categoriesByRestaurantId(id: String) : LiveData<ApiResult<BaseResponse<CategoriesResponse>?>> {
+    fun categoriesByRestaurantId(id: String): LiveData<ApiResult<BaseResponse<CategoriesResponse>?>> {
         return network.getMenuCategories(id)
     }
 
@@ -99,10 +85,6 @@ class FoodViewModel(application: Application) : BaseViewModel(application) {
 
     fun warning(): LiveData<ApiResult<String?>> {
         return network.warning()
-    }
-
-    fun listAddresses(): LiveData<ApiResult<ArrayList<ListAddressesResponse>>> {
-        return networkCRM.addresses()
     }
 
 

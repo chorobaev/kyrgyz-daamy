@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.timelysoft.kainarapp.di.module
 import com.timelysoft.kainarapp.di.viewModelModule
 import com.timelysoft.kainarapp.service.AppPreferences
 import org.koin.android.ext.koin.androidContext
@@ -19,9 +20,6 @@ class App : Application() {
     companion object {
         var instance: App? = null
 
-        fun applicationContext(): App {
-            return instance as App
-        }
     }
     override fun onCreate() {
         super.onCreate()
@@ -34,7 +32,7 @@ class App : Application() {
     }
 
     private fun getModule(): List<Module> {
-        return listOf(viewModelModule)
+        return listOf(viewModelModule, module)
     }
 
     override fun attachBaseContext(base: Context) {

@@ -24,7 +24,6 @@ class OfflineCacheInterceptor : Interceptor {
 
                 Log.d("CacheInterceptor : ", "was called")
                 request = request.newBuilder()
-                    .removeHeader(HEADER_CACHE_CONTROL)
                     .cacheControl(cacheControl)
                     .build()
             }

@@ -18,7 +18,6 @@ class RestaurantAdapter(
     private val titleVisible: Boolean = false
 ) : GenericRecyclerAdapter<RestaurantResponse>(items) {
     override fun bind(item: RestaurantResponse, holder: ViewHolder) {
-        //holder.itemView.restaurant_image.loadImageWithoutCorner(AppPreferences.baseUrl + item.restaurantDetail?.relativePictureUrl)
 
         holder.itemView.restaurant_image.loadImageWithoutCorner(AppPreferences.baseUrl +item.logo.relativeUrl)
         holder.itemView.restaurant_title.text = item.name

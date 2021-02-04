@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.kainarapp.R
 import com.timelysoft.kainarapp.adapter.restaurant.RestaurantAdapter
@@ -45,6 +46,7 @@ class RestaurantChooseBottomSheet(
         logo: String,
         crmId: Int
     ) {
+
         val previousRestaurantId = AppPreferences.restaurant
             if (!AppPreferences.change){
             AppPreferences.restaurant = restaurantId
@@ -53,7 +55,6 @@ class RestaurantChooseBottomSheet(
             AppPreferences.restaurantLogo = logo
         }
         listener.onClickRestaurant(restaurantId, previousRestaurantId,crmId)
-
 
         this.dismiss()
     }

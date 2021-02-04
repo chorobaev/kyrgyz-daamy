@@ -6,6 +6,7 @@ import com.timelysoft.kainarapp.R
 import com.timelysoft.kainarapp.adapter.basket.CustomBasketModifiers
 import com.timelysoft.kainarapp.base.GenericRecyclerAdapter
 import com.timelysoft.kainarapp.base.ViewHolder
+import com.timelysoft.kainarapp.bottomsheet.basket.Mode
 import com.timelysoft.kainarapp.extension.getIndex
 import com.timelysoft.kainarapp.service.model2.response2.BaseModifier
 import com.timelysoft.kainarapp.service.model2.response2.BaseModifierGroup
@@ -13,28 +14,49 @@ import kotlinx.android.synthetic.main.item_modification.view.*
 
 class CustomAdapterForMod(
     val list: ArrayList<BaseModifierGroup> = ArrayList(),
-    val listener: ItemModGroupListener?,
-    private val isBasket: Boolean
+    private val mode : Mode,
+    val listener: ItemModGroupListener?
 ) : GenericRecyclerAdapter<BaseModifierGroup>(list), AddToBasketListener {
     private val modifiersMap = hashMapOf<Int, BaseModifier>()
     private val listOfModGroup = mutableListOf<BaseModifierGroup>()
     override fun bind(item: BaseModifierGroup, holder: ViewHolder) = with(holder.itemView) {
-
         groupName.text = item.name
-        if (!isBasket) {
+        when(mode){
 
-            listViewModifier.adapter = CustomAdapterForModifier(
-                item.modifiers as ArrayList<BaseModifier>,
-                item,
-                this@CustomAdapterForMod
-            )
-        } else {
-            val list = mutableListOf<BaseModifier>()
-            item.modifiersList.values.forEach { baseModifier ->
-                list.add(baseModifier)
+            Mode.Basket->{
+                val list = mutableListOf<BaseModifier>()
+                item.modifiersList.values.forEach { baseModifier ->
+                    if (baseModifier.count>0) {
+                        list.add(baseModifier)
+                    }
+                }
+                listViewModifier.adapter =
+                    CustomBasketModifiers(list as ArrayList<BaseModifier>)
             }
-            listViewModifier.adapter =
-                CustomBasketModifiers(list as ArrayList<BaseModifier>)
+            Mode.Editable->{
+                var sum = 0
+                item.modifiersList.forEach {
+                    sum+=it.value.count
+                }
+                listViewModifier.adapter = CustomAdapterForModifier(
+                    item.modifiersList,
+                    item.modifiers as ArrayList<BaseModifier>,
+                    item,
+                    Mode.Editable,
+                    this@CustomAdapterForMod,
+                    sum
+
+                )
+            }
+            Mode.NotBasket->{
+                listViewModifier.adapter = CustomAdapterForModifier(
+                    null,
+                    item.modifiers as ArrayList<BaseModifier>,
+                    item,
+                    Mode.NotBasket,
+                    this@CustomAdapterForMod
+                )
+            }
         }
 
     }
@@ -46,7 +68,7 @@ class CustomAdapterForMod(
     override fun addToBasket(item: BaseModifier, baseModifierGroup: BaseModifierGroup) {
         modifiersMap[item.code] = item
 
-        val modGroup = BaseModifierGroup(baseModifierGroup.schemeId, baseModifierGroup.name,
+        val modGroup = BaseModifierGroup(baseModifierGroup.schemeId, baseModifierGroup.groupId,baseModifierGroup.name,
         baseModifierGroup.maximumSelected, baseModifierGroup.minimumSelected, baseModifierGroup.freeCount, baseModifierGroup.changesPrice,
             baseModifierGroup.modifiers, modifiersMap)
 

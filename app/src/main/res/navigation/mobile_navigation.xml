@@ -3,126 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
-
-    <fragment
-        android:id="@+id/nav_home"
-        android:name="com.timelysoft.kainarapp.ui.home.HomeFragment"
-        tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/nav_auth"
-        android:name="com.timelysoft.kainarapp.ui.auth.AuthFragment"
-        android:label="@string/menu_auth"
-        tools:layout="@layout/fragment_auth">
-
-<!--        <action-->
-<!--            android:id="@+id/nav_home_clean"-->
-<!--            app:destination="@id/nav_home"-->
-<!--            app:launchSingleTop="true"-->
-<!--            app:popUpTo="@+id/mobile_navigation"-->
-<!--            app:popUpToInclusive="true" />-->
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_basket"
-        android:name="com.timelysoft.kainarapp.ui.food.BasketFragment"
-        android:label="@string/menu_basket"
-        tools:layout="@layout/fragment_basket" >
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_restaurant"
-        android:name="com.timelysoft.kainarapp.ui.restaurant.RestaurantFragment"
-        android:label="@string/menu_restaurant"
-        tools:layout="@layout/fragment_restaurant" />
+    app:startDestination="@+id/nav_food">
 
 
     <fragment
-        android:id="@+id/nav_discount"
-        android:name="com.timelysoft.kainarapp.ui.discount.NewsFragment"
-        android:label="@string/menu_discount"
-        tools:layout="@layout/fragment_news" />
+        android:id="@+id/nav_food_item"
+        android:name="com.timelysoft.kainarapp.ui.food.FoodItemsFragment"
+        android:label="Список блюд"
+        tools:layout="@layout/food_items_fragment"/>
+
+
     <fragment
         android:id="@+id/nav_food"
         android:name="com.timelysoft.kainarapp.ui.food.FoodFragment"
         android:label="@string/menu_food"
-        tools:layout="@layout/fragment_food" >
+        tools:layout="@layout/fragment_food">
         <action
-            app:destination="@+id/nav_food"
-            android:id="@+id/toNavFood"/>
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_profile"
-        android:name="com.timelysoft.kainarapp.ui.auth.ProfileFragment"
-        android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" />
-    <fragment
-
-        android:id="@+id/nav_about"
-        android:name="com.timelysoft.kainarapp.ui.about.AboutFragment"
-        android:label="@string/menu_about"
-        tools:layout="@layout/fragment_about" />
-
-    <fragment
-        android:id="@+id/nav_discount_detail"
-        android:name="com.timelysoft.kainarapp.ui.discount.NewsDetailFragment"
-        android:label="@string/menu_discount_detail"
-        tools:layout="@layout/fragment_news_detail" />
-
-    <fragment
-        android:id="@+id/nav_register"
-        android:name="com.timelysoft.kainarapp.ui.auth.RegisterFragment"
-        android:label="@string/menu_register"
-        tools:layout="@layout/fragment_register" />
-
-    <fragment
-        android:id="@+id/navigation_restaurant_bs"
-        android:name="com.timelysoft.kainarapp.bottomsheet.chooseRestuarant.RestaurantChooseBottomSheet"
-        android:label="fragment_restaurant_choose_bottom_sheet"
-        tools:layout="@layout/fragment_restaurant_choose_bs" />
-
-    <fragment
-        android:id="@+id/nav_order"
-        android:name="com.timelysoft.kainarapp.ui.food.OrderFragment"
-        android:label="@string/menu_order"
-        tools:layout="@layout/fragment_order" />
-
-    <fragment
-        android:id="@+id/nav_order_detail"
-        android:name="com.timelysoft.kainarapp.ui.food.OrderDetailFragment"
-        android:label="@string/menu_order_detail"
-        tools:layout="@layout/fragment_order_detail" />
-
-    <fragment
-        android:id="@+id/nav_restaurant_detail"
-        android:name="com.timelysoft.kainarapp.ui.restaurant.RestaurantDetailFragment"
-        android:label="@string/menu_restaurant_detail"
-        tools:layout="@layout/fragment_restaurant_detail" />
-    <fragment
-        android:id="@+id/nav_pay"
-        android:name="com.timelysoft.kainarapp.ui.food.PayFragment"
-        android:label="@string/menu_pay"
-        tools:layout="@layout/fragment_pay" />
-    <fragment
-        android:id="@+id/nav_my_order"
-        android:name="com.timelysoft.kainarapp.ui.history.HistoryFragment"
-        android:label="@string/menu_history"
-        tools:layout="@layout/fragment_my_order" />
-    <fragment
-        android:id="@+id/nav_history_detail"
-        android:name="com.timelysoft.kainarapp.ui.history.HistoryDetailFragment"
-        android:label="fragment_history_detail"
-        tools:layout="@layout/fragment_history_detail" />
-
-    <fragment
-        android:id="@+id/nav_success_payment"
-        android:name="com.timelysoft.kainarapp.ui.food.SuccessPaymentFragment"
-        android:label="fragment_success_payment"
-        tools:layout="@layout/success_payment_fragment">
+            android:id="@+id/toNavFood"
+            app:popUpTo="@id/nav_food"
+            app:popUpToInclusive="true"
+            app:destination="@+id/nav_food" />
+        <action
+            android:id="@+id/toNavFoodItem"
+            app:destination="@+id/nav_food_item"/>
 
     </fragment>
 

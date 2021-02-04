@@ -2,13 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
-        applicationId "com.timelysoft.kainarapp"
+        applicationId "com.timelysoft.carbis"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 3
@@ -57,7 +59,6 @@ dependencies {
 
     implementation 'com.synnapps:carouselview:0.1.4'
 
-
     //test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
@@ -69,12 +70,19 @@ dependencies {
     //viewpager2
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
+    //groupie library
+    implementation "com.xwray:groupie:2.8.0"
+    implementation "com.xwray:groupie-kotlin-android-extensions:2.8.0"
+
     //phone mask
     implementation 'com.github.santalu:mask-edittext:1.1.1'
 
-    //recyclerview
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation "androidx.recyclerview:recyclerview:1.2.0-beta01"
 
+    implementation "de.hdodenhof:circleimageview:3.0.0"
+
+
+    //recyclerview
     //Retrofit2
     implementation "com.squareup.retrofit2:retrofit:2.7.2"
     implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
@@ -85,6 +93,8 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
+    implementation 'com.thoughtbot:expandablerecyclerview:1.4'
+    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
     //Kotlin Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0"

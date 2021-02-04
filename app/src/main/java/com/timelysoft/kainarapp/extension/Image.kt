@@ -1,10 +1,8 @@
 package com.timelysoft.kainarapp.extension
 
-import android.util.Log
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.timelysoft.kainarapp.R
 
 
@@ -16,8 +14,8 @@ fun ImageView.loadImage(url: String?) {
             .thumbnail(Glide.with(this).load(R.drawable.img_placeholder_not_found))
             .into(this)
     } catch (e: Exception) {
+          
     }
-
 }
 
 fun ImageView.loadImageOrHide(url: String?) {

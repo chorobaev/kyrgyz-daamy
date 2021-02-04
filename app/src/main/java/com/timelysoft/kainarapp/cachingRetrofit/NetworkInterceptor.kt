@@ -10,7 +10,7 @@ class NetworkInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
 
-        val cacheControl = CacheControl.Builder().maxAge(5, TimeUnit.SECONDS)
+        val cacheControl = CacheControl.Builder().maxAge(15, TimeUnit.MINUTES)
             .build()
 
         return response.newBuilder()

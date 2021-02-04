@@ -2,22 +2,21 @@ package com.timelysoft.kainarapp.service
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.google.gson.Gson
-import com.timelysoft.kainarapp.service.db.entity.BasketEntity
 import com.timelysoft.kainarapp.service.model.TokenModel
-import com.timelysoft.kainarapp.service.model2.response2.MenuItem
-import com.timelysoft.kainarapp.service.model2.response2.OnlinePaymentResponse
+
 
 
 object AppPreferences {
-
     var change: Boolean = false
 
     const val baseUrlCRM = "https://kaynar-test.timelysoft.org:8041/"
-    const val baseUrl = "https://delivery-test.timelysoft.org:8051/"
+   // const val baseUrl = "https://delivery-test.timelysoft.org:8051/"
+    const val baseUrl = "https://deliverycarbis-test.timelysoft.org:5096/"
     const val HEADER_CACHE_CONTROL = "Cache-Control"
 
-    fun group() = "242faadb-8abe-421c-ffa6-08d89114aa62"
+    //fun group() = "242faadb-8abe-421c-ffa6-08d89114aa62"
+
+    fun group() = "C6CA8037-3667-400B-80C8-08D8C13995D1"
 
     private const val NAME = "KainarApp"
     private const val MODE = Context.MODE_PRIVATE

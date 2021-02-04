@@ -1,5 +1,6 @@
 package com.timelysoft.kainarapp.adapter.basket
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.timelysoft.kainarapp.R
@@ -12,10 +13,12 @@ class CustomBasketModifiers(val list: ArrayList<BaseModifier>)  :GenericRecycler
 
 
     override fun bind(item: BaseModifier, holder: ViewHolder) = with(holder.itemView){
-
+        if (item.price == 0){
+            modifierPrice.visibility = View.GONE
+        }
         item_mod_basket_modifierName.text = item.name
-        amount.text = item.count.toString()
-        modifierPrice.text = item.price.toString()
+        amount.text = "${item.count}"
+        modifierPrice.text = "${item.price}"
 
     }
 

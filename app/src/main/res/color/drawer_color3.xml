@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--    backround  -->
-    <item android:color="#FF0000" android:state_checked="true" />
+    <item android:color="#5AB41E" android:state_checked="true" />
     <item android:color="#C8C5C5" android:state_checked="false" />
 
 

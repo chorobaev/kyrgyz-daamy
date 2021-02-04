@@ -2,11 +2,11 @@ package com.timelysoft.kainarapp.service
 
 import okhttp3.ResponseBody
 
+
 sealed class ApiResult<out T> {
     data class Success<out T>(val data: T) : ApiResult<T>()
     data class Error(val errorResponse: ResponseBody?) : ApiResult<Nothing>()
     data class NetworkError(val message: String) : ApiResult<Nothing>()
-
 }
 inline fun <T> ApiResult<T>.doIfError(callback: (errorResponse : ResponseBody?) -> Unit) {
     if (this is ApiResult.Error) {

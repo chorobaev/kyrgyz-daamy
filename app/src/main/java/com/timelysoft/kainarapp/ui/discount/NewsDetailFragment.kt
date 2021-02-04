@@ -35,6 +35,7 @@ class NewsDetailFragment : Fragment() {
         initArguments()
         initToolbar()
         initData()
+        news_name.text = newsModel?.name
     }
 
     private fun initArguments() {
@@ -66,10 +67,11 @@ class NewsDetailFragment : Fragment() {
     }
 
     private fun initToolbar() {
+        toolbar_back.visibility = View.VISIBLE
         toolbar_back.setOnClickListener {
             findNavController().popBackStack()
         }
-        toolbar_text.text = newsModel?.name
+        toolbar_text.text =getString(R.string.menu_discount)
 
     }
 }

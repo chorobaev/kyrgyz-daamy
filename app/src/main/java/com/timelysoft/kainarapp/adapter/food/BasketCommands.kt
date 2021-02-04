@@ -1,6 +1,7 @@
 package com.timelysoft.kainarapp.adapter.food
 
 import androidx.lifecycle.MutableLiveData
+import com.timelysoft.kainarapp.bottomsheet.basket.Mode
 import com.timelysoft.kainarapp.extension.countCost
 import com.timelysoft.kainarapp.extension.countPriceOfMod
 import com.timelysoft.kainarapp.extension.getIndex
@@ -14,7 +15,14 @@ object BasketCommands {
     var listOfMenuItems = mutableListOf<MenuItem>()
     val sumOfBasket = MutableLiveData<Int>()
 
-    fun insertMenuItemSecondVersion(menuItem: MenuItem, ind: Int, group: List<BaseModifierGroup>) {
+
+    fun insertMenuItemSecondVersion(
+        menuItem: MenuItem,
+        ind: Int,
+        group: List<BaseModifierGroup>,
+        mode: Mode
+    ) {
+
         val basketItem = createNewMenuItem(menuItem, group)
         val index = listOfMenuItems.getIndex(basketItem, ind)
         if (index == -1) {
@@ -24,20 +32,27 @@ object BasketCommands {
                 basketItem.amount = 1
             }
             val existsItem = listOfMenuItems[index]
-            if (existsItem.modifierGroups.isNotEmpty() && group.isNotEmpty()) {
-                when{
-                    areModGroupAreEqual(basketItem.modifierGroups, existsItem.modifierGroups)-> updateMenuItem(existsItem, basketItem,index)
-                    else-> insertMenuItemSecondVersion(basketItem, index+1, group)
-                }
-
-            }
-            else{
-                when{
-                    group.isEmpty() && existsItem.modifierGroups.isEmpty() ->{
-                      updateMenuItem(existsItem, basketItem, index)
+            if (mode == Mode.Editable) {
+                val map = updateEditableMenuItem(group, basketItem.positionInList)
+                basketItem.modifierGroups = map
+            } else {
+                if (existsItem.modifierGroups.isNotEmpty() && group.isNotEmpty()) {
+                    when {
+                        areModGroupAreEqual(
+                            basketItem.modifierGroups,
+                            existsItem.modifierGroups
+                        ) -> updateMenuItem(existsItem, basketItem, index, mode)
+                        else -> insertMenuItemSecondVersion(basketItem, index + 1, group, mode)
                     }
-                    else->{
-                        listOfMenuItems.add(basketItem)
+
+                } else {
+                    when {
+                        group.isEmpty() && existsItem.modifierGroups.isEmpty() -> {
+                            updateMenuItem(existsItem, basketItem, index, mode)
+                        }
+                        else -> {
+                            listOfMenuItems.add(basketItem)
+                        }
                     }
                 }
             }
@@ -45,34 +60,89 @@ object BasketCommands {
 
         liveDataOfMenuItems.value = listOfMenuItems
         sumOfBasket.value = calculatePrices()
+        refresh(mode)
 
     }
 
-    fun deleteAll(){
+    fun refresh(mode: Mode){
+        if (mode == Mode.Editable) {
+            val data = listOfMenuItems.map { it }
+            deleteAll()
+            data.forEach {
+                insertMenuItemSecondVersion(it, 0, it.modifierGroups, Mode.NotBasket)
+            }
+        }
+
+    }
+
+    fun deleteAll() {
 
         listOfMenuItems.clear()
         liveDataOfMenuItems.value = listOfMenuItems
         sumOfBasket.value = 0
     }
-    private fun updateMenuItem(existsMenuItem : MenuItem, newItem: MenuItem, index: Int){
-        existsMenuItem.amount += newItem.amount
+
+    private fun updateMenuItem(
+        existsMenuItem: MenuItem,
+        newItem: MenuItem,
+        index: Int,
+        mode: Mode
+    ) {
+        if (mode == Mode.Editable) {
+            existsMenuItem.amount = newItem.amount
+        } else {
+            existsMenuItem.amount += newItem.amount
+        }
         listOfMenuItems[index] = existsMenuItem
     }
 
-    private fun calculatePrices():Int{
+    private fun calculatePrices(): Int {
         var totalBasketPrice = 0
         listOfMenuItems.forEach { menuItem ->
             var priceOfMod = 0
-            menuItem.modifierGroups.forEach {baseModifierGroup->
+            menuItem.modifierGroups.forEach { baseModifierGroup ->
                 priceOfMod += countPriceOfMod(baseModifierGroup)
             }
             val itemPrice = countCost(menuItem.amount, menuItem.price, priceOfMod)
             menuItem.priceWithMod = itemPrice
-            totalBasketPrice+=itemPrice
+            totalBasketPrice += itemPrice
         }
         return totalBasketPrice
     }
 
+    private fun updateEditableMenuItem(
+        updatedModifierGroup: List<BaseModifierGroup>,
+        position: Int
+    ): List<BaseModifierGroup> {
+        if (updatedModifierGroup.isNotEmpty()) {
+            listOfMenuItems[position].modifierGroups.forEachIndexed { index, baseModifierGroup ->
+                if (baseModifierGroup.maximumSelected == 1) {
+                    val group = updatedModifierGroup[index].modifiersList.filter {
+                        it.value.count > 0
+                    }
+                    baseModifierGroup.modifiersList = group as HashMap<Int, BaseModifier>
+
+                } else {
+                    val modifierList = hashMapOf<Int, BaseModifier>()
+                    if (baseModifierGroup.modifiersList.isNotEmpty()) {
+
+                        baseModifierGroup.modifiersList.forEach {
+                            if (updatedModifierGroup[index].modifiersList.containsKey(it.value.code)) {
+                                modifierList[it.value.code] =
+                                    updatedModifierGroup[index].modifiersList[it.value.code]!!
+                            } else {
+                                modifierList[it.value.code] = it.value
+                            }
+                        }
+                        baseModifierGroup.modifiersList = modifierList
+                    }
+                }
+            }
+            return listOfMenuItems[position].modifierGroups
+        } else {
+            return listOf()
+        }
+    }
 
 
     private fun areModGroupAreEqual(
@@ -131,7 +201,7 @@ object BasketCommands {
         sumOfBasket.value = calculatePrices()
     }
 
-    private fun createNewMenuItem(menuItem: MenuItem, group: List<BaseModifierGroup>) : MenuItem{
+    private fun createNewMenuItem(menuItem: MenuItem, group: List<BaseModifierGroup>): MenuItem {
         return MenuItem(
             menuItem.code,
             menuItem.description,
@@ -148,12 +218,12 @@ object BasketCommands {
             menuItem.positionInList
         )
     }
-    fun basketIsEmpty() : Boolean{
-        if (listOfMenuItems.size>0)
+
+    fun basketIsEmpty(): Boolean {
+        if (listOfMenuItems.size > 0)
             return false
         return true
     }
-
 
 
 }

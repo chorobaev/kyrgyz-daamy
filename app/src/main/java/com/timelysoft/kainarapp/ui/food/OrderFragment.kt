@@ -14,7 +14,9 @@ import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.timelysoft.kainarapp.R
 import com.timelysoft.kainarapp.extension.*
@@ -60,36 +62,6 @@ class OrderFragment : Fragment() {
         getAutoCities()
         showWarning()
 
-        viewModel.listAddresses().observe(viewLifecycleOwner, Observer { result ->
-
-            result.doIfSuccess {
-                val listAddresses = it
-
-                val discountTypeAdapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line, listAddresses
-                )
-                order_list_addresses.setAdapter(discountTypeAdapter)
-                order_list_addresses.setOnItemClickListener { _, _, position, _ ->
-                    addressId = listAddresses[position].id
-
-                    order_cities.text = null
-                    order_streets.text = null
-                    cityId = 0
-                    streetId = 0
-                    order_building_out.hint = "Дом"
-                    order_apartment.hint = "Квартира"
-
-                }
-
-            }
-
-            result.doIfError {errorBody->
-                errorBody?.getCrmErrors {msg->
-                    toast(msg)
-                }
-            }
-        })
 
         order_date.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
@@ -176,7 +148,7 @@ class OrderFragment : Fragment() {
                         )
                     )
                     val orderValidate = OrderValidate(
-                        deliveryId, 2, discountId, convertToOrderType(
+                        deliveryId, 2, convertToOrderType(
                             basketItems
                         ),if (order_date.text.toString().isNotEmpty()) order_date.text.toString()
                             .toServerDate(order_time.text.toString()) else null
@@ -255,6 +227,9 @@ class OrderFragment : Fragment() {
                                 toast(msg)
                             }
                         }
+                        it.doIfNetwork {msg->
+                            toast(msg)
+                        }
 
 
                     })
@@ -262,6 +237,7 @@ class OrderFragment : Fragment() {
             }
         }
     }
+
     private fun convertToProductType(list: List<MenuItem>): List<Product> {
         val mutableList = mutableListOf<Product>()
         var listTotal: MutableList<BaseModifier>
@@ -272,7 +248,7 @@ class OrderFragment : Fragment() {
                 baseModifierGroup.modifiersList.forEach {
                     listTotal.add(it.value)
                 }
-                listTotal.addAll(baseModifierGroup.modifiersList.values)
+                //listTotal.addAll(baseModifierGroup.modifiersList.values)
             }
             listOfModOrderState = ArrayList()
             listTotal.forEach {
@@ -292,7 +268,6 @@ class OrderFragment : Fragment() {
                     menuItem.amount,
                     menuItem.name,
                     listOfModOrderState
-
                 )
                 mutableList.add(productOrderState)
             }
@@ -362,18 +337,27 @@ class OrderFragment : Fragment() {
             order_type_out.isErrorEnabled = false
 
         }
+        order_building.addTextChangedListener {
+            order_building_out.isErrorEnabled = false
+        }
         order_delivery_type.addTextChangedListener {
             order_pay_delivery_out.isErrorEnabled = false
 
         }
         order_date.addTextChangedListener {
             order_deliveryAt_out.isErrorEnabled = false
-
         }
         order_time.addTextChangedListener {
             order_time_out.isErrorEnabled = false
 
         }
+        order_cities.addTextChangedListener {
+            order_cities_out.isErrorEnabled = false
+        }
+        order_streets.addTextChangedListener {
+            order_streets_out.isErrorEnabled = false
+        }
+
 
     }
 
@@ -388,7 +372,7 @@ class OrderFragment : Fragment() {
                         val builder = AlertDialog.Builder(requireContext())
                         val inflater = requireActivity().layoutInflater
                         val view = inflater.inflate(R.layout.fragment_order_waring_dialog, null)
-                        builder.setView(view)
+                         builder.setView(view)
                         val dialog = builder.create()
 
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -426,9 +410,6 @@ class OrderFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        order_name.setText(AppPreferences.name)
-        order_surname.setText(AppPreferences.surname)
-        order_phone.setText(AppPreferences.phone)
 
         val discountType = listOf("Бонус", "Скидка")
         val discountTypeAdapter = ArrayAdapter(
@@ -475,7 +456,6 @@ class OrderFragment : Fragment() {
     }
 
     private fun setVisibility(visibility : Int){
-        order_list_addresses_out.visibility = visibility
         order_streets_out.visibility = visibility
         order_cities_out.visibility = visibility
         order_building_out.visibility = visibility
@@ -487,10 +467,19 @@ class OrderFragment : Fragment() {
 
 
     private fun initToolbar() {
-        toolbar_back.setOnClickListener {
-            findNavController().popBackStack()
+        val navHostFragment: NavHostFragment = this.parentFragment as NavHostFragment
+
+        val count = navHostFragment.childFragmentManager.backStackEntryCount
+        if (count > 0) {
+            toolbar_back.visibility = View.VISIBLE
         }
         toolbar_text.text = getString(R.string.menu_order)
+        toolbar_back.setOnClickListener {
+            if (count > 0) {
+                findNavController().popBackStack()
+            }
+
+        }
     }
 
 
@@ -588,70 +577,67 @@ class OrderFragment : Fragment() {
     }
 
     private fun isValid(): Boolean {
-        var valid = true
+        var valid  = true
 
-        if (order_type.text!!.toString().isEmpty()) {
-            order_type_out.error = requireContext().getString(R.string.validation)
+        if (!validateField(order_name.text.toString(), order_name_out)){
             valid = false
-        } else {
-            order_type_out.isErrorEnabled = false
-        }
-        if (cityId != 0 && order_building.text.toString().isEmpty()) {
-            order_building_out.error = requireContext().getString(R.string.validation)
-            valid = false
-        } else {
-            order_building_out.isErrorEnabled = false
-            order_apartment.isErrorEnabled = false
         }
 
-        if (order_delivery_type.isSelected) {
-            order_pay_delivery_out.error = requireContext().getString(R.string.validation)
+        if(!validateField(order_surname.text.toString(), order_surname_out)){
             valid = false
-        } else {
-            order_pay_delivery_out.isErrorEnabled = false
+        }
+        if (!validateField(order_phone.text.toString(), order_phone_out)){
+            valid = false
+        }
+        if (!validateField(order_delivery_type.text.toString(), order_pay_delivery_out)){
+            valid = false
+        }
+        if (!validateField(order_time.text.toString(), order_time_out)){
+            valid = false
+        }
+        if (!validateField(order_date.text.toString(), order_deliveryAt_out)){
+            valid = false
+        }
+        if (order_phone.text.toString().isNotEmpty()){
+            val phoneNumber = order_phone.text.toString()
+            val numbers = phoneNumber.filter {
+                it.isDigit()
+            }
+            if (numbers.length <11){
+                order_phone_out.error = "Введите номер полностью"
+                valid = false
+            }else{
+                order_phone_out.isErrorEnabled = false
+            }
         }
 
+        if (cityId != 0) {
+            if (!validateField(order_building.text.toString(), order_building_out)){
+                valid =false
+            }
+        }
         if (deliveryId == 2) {
             if (addressId == 0) {
-                if (order_cities.text!!.toString().isEmpty()) {
-                    order_cities_out.error = requireContext().getString(R.string.validation)
-                    valid = false
-                } else {
+                if (!validateField(order_cities.text.toString(),order_cities_out)){
+                    valid =false
+                }
+                else {
                     order_cities_out.isErrorEnabled = false
                 }
 
-                if (order_streets.text!!.toString().isEmpty()) {
-                    order_streets_out.error = requireContext().getString(R.string.validation)
+                if (!validateField(order_streets.text.toString(), order_streets_out)){
                     valid = false
-                } else {
+                }else{
                     order_streets_out.isErrorEnabled = false
                 }
             } else {
-                if (order_list_addresses.text!!.toString().isEmpty()) {
-                    order_list_addresses_out.error =
-                        requireContext().getString(R.string.validation)
+                if (!validateField(order_list_addresses.text.toString(), order_list_addresses_out)){
                     valid = false
-                } else {
+                }else{
                     order_list_addresses_out.isErrorEnabled = false
                 }
             }
         }
-
-        if (order_time.text!!.toString().isEmpty()) {
-            order_time_out.error = requireContext().getString(R.string.validation)
-            valid = false
-        } else {
-            order_time_out.isErrorEnabled = false
-        }
-
-        if (order_date.text!!.toString().isEmpty()) {
-            order_deliveryAt_out.error = requireContext().getString(R.string.validation)
-            valid = false
-        } else {
-            order_deliveryAt_out.isErrorEnabled = false
-        }
-
-
         if (order_time.text!!.isNotEmpty() && order_date.text!!.isNotEmpty()) {
             val currentDayView = order_date.text?.substring(0, 2)?.toInt()
             val currentDayAndroid = calendar.get(Calendar.DAY_OF_MONTH)
@@ -659,9 +645,6 @@ class OrderFragment : Fragment() {
             val time = order_time.text.toString()
             val hour = time.substring(0, 2).toInt()
             println(hour)
-            //current_time = 00:06
-            //set_time = 01:07
-
             val hourAndroid = calendar.get(Calendar.HOUR_OF_DAY)
             println(hourAndroid)
             if (currentDayAndroid == currentDayView) {
@@ -680,5 +663,15 @@ class OrderFragment : Fragment() {
         }
         return valid
 
+    }
+
+    private fun validateField(input: String, textInputLayout: TextInputLayout) :Boolean{
+        if (input.isEmpty()){
+            textInputLayout.error = requireContext().getString(R.string.validation)
+            return false
+        }else{
+            textInputLayout.isErrorEnabled = false
+        }
+        return true
     }
 }

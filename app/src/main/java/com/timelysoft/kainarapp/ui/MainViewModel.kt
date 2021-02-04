@@ -1,18 +1,14 @@
 package com.timelysoft.kainarapp.ui
 
-import android.app.Application
-import com.timelysoft.kainarapp.base.BaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-class MainViewModel (application: Application) : BaseViewModel(application) {
-    /*
-    fun clearBasket() {
-        CoroutineScope(Dispatchers.IO).launch {
-            db.clearBasket()
-        }
+class MainViewModel  : ViewModel() {
+
+    private val backToMainLiveData : MutableLiveData<Boolean> = MutableLiveData()
+    fun backToMain(backToMain : Boolean) :LiveData<Boolean>{
+        backToMainLiveData.value = backToMain
+        return backToMainLiveData
     }
-
-     */
 }

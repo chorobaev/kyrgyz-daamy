@@ -2,6 +2,7 @@ package com.timelysoft.kainarapp.service
 
 import androidx.lifecycle.liveData
 import com.timelysoft.kainarapp.extension.toMyDate
+import com.timelysoft.kainarapp.service.model2.AuthBody
 
 import com.timelysoft.kainarapp.service.model2.response2.CreateOrder
 import com.timelysoft.kainarapp.service.model2.response2.ValidateOrder
@@ -11,10 +12,27 @@ import kotlinx.coroutines.Dispatchers
 
 class NetworkRepositoryMod(
     private val apiService: ApiServiceMod,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher
 ) {
 
     private var error = "Ошибка при получении данных"
+
+    fun getToken(authBody: AuthBody)=
+        liveData(dispatcher){
+            try {
+                val tokenBody = apiService.getAccessToken(authBody)
+
+                when{
+                    tokenBody.isSuccessful->emit(ApiResult.Success(tokenBody.body()?.data))
+                    else->{
+                        emit(ApiResult.Error(tokenBody.errorBody()))
+                    }
+                }
+            }catch (e: Exception){
+                emit(ApiResult.NetworkError(error))
+            }
+        }
+
 
 
     fun getExceptionMessage(token: String) =
@@ -150,24 +168,6 @@ class NetworkRepositoryMod(
 
     }
 
-
-    fun restaurantsCRM() = liveData(dispatcher) {
-        try {
-            val response =
-                apiService.restaurantsСRM()
-            when {
-                response.isSuccessful -> {
-                    emit(ApiResult.Success(response.body()?.data))
-                }
-                else -> {
-                    emit(ApiResult.Error(response.errorBody()))
-                }
-            }
-        } catch (e: Exception) {
-            emit(ApiResult.NetworkError(error))
-        }
-    }
-
     fun cities() =
         liveData(dispatcher) {
             try {
@@ -206,8 +206,9 @@ class NetworkRepositoryMod(
 
     fun orderValidate(orderModel: ValidateOrder) =
         liveData(dispatcher) {
-            val response = apiService.validateOrder(AppPreferences.restaurant, orderModel)
+
             try {
+                val response = apiService.validateOrder(AppPreferences.restaurant, orderModel)
                 when {
                     response.isSuccessful -> {
                         emit(ApiResult.Success(response.body()?.data))
@@ -244,7 +245,7 @@ class NetworkRepositoryMod(
         liveData(dispatcher) {
 
             try {
-                val response = apiService.createOrderOnline(restaurantId, orderId)
+                val response = apiService.getPaymentLink(restaurantId, orderId)
                 when {
                     response.isSuccessful -> {
                         emit(ApiResult.Success(response.body()?.data))

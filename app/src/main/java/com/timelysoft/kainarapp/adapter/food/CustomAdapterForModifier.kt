@@ -8,55 +8,91 @@ import androidx.recyclerview.widget.RecyclerView
 import com.timelysoft.kainarapp.R
 import com.timelysoft.kainarapp.base.GenericRecyclerAdapter
 import com.timelysoft.kainarapp.base.ViewHolder
+import com.timelysoft.kainarapp.bottomsheet.basket.Mode
 import com.timelysoft.kainarapp.service.model2.response2.BaseModifier
 import com.timelysoft.kainarapp.service.model2.response2.BaseModifierGroup
 import kotlinx.android.synthetic.main.item_modifier.view.*
 
 class CustomAdapterForModifier(
+    private val selectedModifiersList: HashMap<Int, BaseModifier>? = null,
     val list: ArrayList<BaseModifier>,
-    val baseModifierGroup: BaseModifierGroup,
-    private val listenerAddToBasket  : AddToBasketListener) :
+    private val baseModifierGroup: BaseModifierGroup,
+    private val mode: Mode,
+    private val listenerAddToBasket: AddToBasketListener,
+    sum : Int = 0
+) :
     GenericRecyclerAdapter<BaseModifier>(list) {
     private var count = 0
-    private var lastCheckedPosition = -1
-    private var checkedItemCount: Int = 0
-    private var sumOfCount: Int = 0
+    private var sumOfCount: Int = sum
 
-    init {
-        checkedItemCount = list.count { it.isChecked }
-    }
+
 
     override fun bind(item: BaseModifier, holder: ViewHolder) = with(holder.itemView) {
+
+        if (selectedModifiersList != null) {
+            println("SumOfCount: $sumOfCount")
+            if (selectedModifiersList.containsKey(item.code)) {
+                val modifier = selectedModifiersList[item.code]!!
+                if (modifier.count >= 1) {
+                    checkbox.isChecked = true
+                }
+                item.count = modifier.count
+                item.isChecked = modifier.isChecked
+                item_modifier_amount.text = item.count.toString()
+                //item.isChecked = selectedModifiersList[item.code]!!.isChecked
+
+            }
+
+        }
+
         checkbox.text = item.name
-
-
+        println("Checkbox: ${item.isChecked}")
 
         checkbox.setOnClickListener {
-            lastCheckedPosition = holder.adapterPosition
-            notifyDataSetChanged()
-
 
             if (checkbox.isChecked) {
                 if (sumOfCount >= baseModifierGroup.maximumSelected) {
                     Toast.makeText(
                         context,
-                        "You can't select more than ${baseModifierGroup.maximumSelected} modifiers",
+                        "Вы не можете выбрать больше чем ${baseModifierGroup.maximumSelected} модификаторов",
                         Toast.LENGTH_LONG
                     ).show()
                     checkbox.isChecked = false
                 } else {
-                    item.count = 1
-                    listenerAddToBasket.addToBasket(BaseModifier(item.ident, item.name, item.code, item.price, item.limit, checkbox.isChecked, item.count), baseModifierGroup)
-                    sumOfCount += 1
-                    Toast.makeText(context, "$sumOfCount", Toast.LENGTH_LONG).show()
-                    Toast.makeText(context, "itemCount: ${item.count}", Toast.LENGTH_LONG).show()
-                }
-            } else {
-                sumOfCount -= item.count
-                item_modifier_amount.text = "1"
-                item.count = 0
-                listenerAddToBasket.addToBasket(BaseModifier(item.ident, item.name, item.code, item.price, item.limit, checkbox.isChecked, item.count), baseModifierGroup)
 
+                    item.count = 1
+                    item_modifier_amount.text = item.count.toString()
+
+                    listenerAddToBasket.addToBasket(
+                        BaseModifier(
+                            item.ident,
+                            item.name,
+                            item.code,
+                            item.price,
+                            item.limit,
+                            checkbox.isChecked,
+                            item.count
+                        ), baseModifierGroup
+                    )
+                    sumOfCount += 1
+                }
+
+            } else {
+
+                sumOfCount -= item.count
+                item_modifier_amount.text = "0"
+                item.count = 0
+                listenerAddToBasket.addToBasket(
+                    BaseModifier(
+                        item.ident,
+                        item.name,
+                        item.code,
+                        item.price,
+                        item.limit,
+                        checkbox.isChecked,
+                        item.count
+                    ), baseModifierGroup
+                )
             }
 
         }
@@ -66,7 +102,7 @@ class CustomAdapterForModifier(
         foodAmountMinus.setOnClickListener {
 
             if (checkbox.isChecked) {
-                if (item.count>1) {
+                if (item.count > 1) {
                     count = item_modifier_amount.text.toString().toInt()
                     count -= 1
                     sumOfCount -= 1
@@ -75,18 +111,35 @@ class CustomAdapterForModifier(
                 }
 
             }
-            listenerAddToBasket.addToBasket(BaseModifier(item.ident, item.name, item.code, item.price, item.limit, checkbox.isChecked, count),baseModifierGroup)
+            listenerAddToBasket.addToBasket(
+                BaseModifier(
+                    item.ident,
+                    item.name,
+                    item.code,
+                    item.price,
+                    item.limit,
+                    checkbox.isChecked,
+                    count
+                ), baseModifierGroup
+            )
 
         }
         foodAmountPlus.setOnClickListener {
 
             if (checkbox.isChecked) {
                 if (sumOfCount >= baseModifierGroup.maximumSelected) {
-                    Toast.makeText(context, "You can't take more than ${baseModifierGroup.maximumSelected} modifiers", Toast.LENGTH_LONG).show()
-                }
-                else{
+                    Toast.makeText(
+                        context,
+                        "Вы не можете выбрать больше чем ${baseModifierGroup.maximumSelected} модификаторов",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
                     if (item.count >= item.limit) {
-                        Toast.makeText(context, "You can't take more than ${item.limit}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            "Вы не можете выбрать больше ${item.limit}",
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else {
                         count = item_modifier_amount.text.toString().toInt()
                         sumOfCount += 1
@@ -97,7 +150,17 @@ class CustomAdapterForModifier(
                     }
                 }
             }
-            listenerAddToBasket.addToBasket(BaseModifier(item.ident, item.name, item.code, item.price, item.limit, checkbox.isChecked, item.count), baseModifierGroup)
+            listenerAddToBasket.addToBasket(
+                BaseModifier(
+                    item.ident,
+                    item.name,
+                    item.code,
+                    item.price,
+                    item.limit,
+                    checkbox.isChecked,
+                    item.count
+                ), baseModifierGroup
+            )
         }
 
 

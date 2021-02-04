@@ -7,10 +7,12 @@
     android:orientation="vertical"
     tools:context=".ui.food.OrderFragment">
 
-    <include layout="@layout/app_toolbar" />
+    <include
+        layout="@layout/app_toolbar"/>
 
 
     <androidx.core.widget.NestedScrollView
+        android:layout_marginBottom="65dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -57,16 +59,20 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/phone">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.santalu.maskedittext.MaskEditText
                     android:id="@+id/order_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:maxLines="1"/>
+                    android:inputType="phone"
+                    android:scrollHorizontally="true"
+                    android:digits="0123456789"
+                    android:maxLines="1"
+                    app:met_mask="+7(###)###-##-##"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:visibility="gone"
                 android:id="@+id/order_type_out"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
@@ -78,7 +84,6 @@
                     android:id="@+id/order_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:editable="false"
                     android:padding="16dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -330,7 +335,7 @@
                 android:id="@+id/order_validate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/style_button_backround"
+                android:background="@drawable/style_button_background"
                 android:gravity="center"
                 android:text="@string/order_check"
                 android:textColor="@color/white"

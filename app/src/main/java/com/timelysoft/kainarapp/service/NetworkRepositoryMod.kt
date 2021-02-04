@@ -33,8 +33,6 @@ class NetworkRepositoryMod(
             }
         }
 
-
-
     fun getExceptionMessage(token: String) =
         liveData(dispatcher) {
             try {

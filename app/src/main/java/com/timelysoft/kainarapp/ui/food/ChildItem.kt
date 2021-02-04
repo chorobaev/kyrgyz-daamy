@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.item_content.view.*
 open class ChildItem( val category: Category, val listener : OnChildItemListener) : Item() {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        viewHolder.itemView.setBackgroundResource(R.drawable.background_categories)
         viewHolder.itemView.setOnClickListener {
             listener.onChildClick(category)
         }

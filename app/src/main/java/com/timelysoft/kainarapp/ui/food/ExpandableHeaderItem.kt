@@ -19,6 +19,7 @@ class ExpandableHeaderItem(val category: Category, val listener : OnExpandableAd
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.root.nameOfFood.text = category.name
+        viewHolder.itemView.setBackgroundResource(R.drawable.background_categories)
 
         Glide.with(viewHolder.root.imageOfHeader)
             .load(AppPreferences.baseUrl + "api/restaurants/${AppPreferences.restaurant}/menu/items/${category.hashCode}/image")

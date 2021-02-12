@@ -35,7 +35,7 @@ class SplashActivity : AppCompatActivity(){
             splashViewModel.sendAuthCredentials(authBody).observe(this, Observer { response ->
                 response.doIfSuccess {
                     it?.let { token ->
-                        AppPreferences.restaurant = "c7b1a0d1-6928-4512-f859-08d8c13995d7"
+                        AppPreferences.restaurant = "d1946984-d536-4bf0-1fd2-08d8cf124852"
                         AppPreferences.accessToken = token.accessToken
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
@@ -57,11 +57,5 @@ class SplashActivity : AppCompatActivity(){
             })
         }
 
-        /*
-        Handler().postDelayed({
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }, 3000)
-         */
     }
 }

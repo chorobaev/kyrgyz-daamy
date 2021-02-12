@@ -81,14 +81,13 @@ class FoodFragment : Fragment(), CategoryListener,
 
         } else {
             loadRestaurant()
-            //BasketCommands.deleteAll()
             initData()
         }
 
 
     }
 
-    private fun loadRestaurant(  ) {
+    private fun loadRestaurant() {
         viewModel.restaurants().observe(viewLifecycleOwner, Observer { restaurants ->
 
             restaurants.doIfError { errorBody ->
@@ -127,33 +126,35 @@ class FoodFragment : Fragment(), CategoryListener,
         })
     }
 
-
     private fun initData() {
         loadingShow()
-        viewModel.categoriesByRestaurantId(AppPreferences.restaurant)
-            .observe(viewLifecycleOwner, Observer { response ->
-                response.doIfSuccess { categoriesResponse ->
-                    loadingHide()
-                    if (categoriesResponse != null) {
+        AppPreferences.preferences.getString("restaurant","")?.let {
+            viewModel.categoriesByRestaurantId(it)
 
-                        categoryAdapter.set(categoriesResponse.data.categories as ArrayList<Category>)
-                        food_category_rv.apply {
-                            adapter = categoryAdapter
-                            setHasFixedSize(true)
+                .observe(viewLifecycleOwner, Observer { response ->
+                    response.doIfSuccess { categoriesResponse ->
+                        loadingHide()
+                        if (categoriesResponse != null) {
+
+                            categoryAdapter.set(categoriesResponse.data.categories as ArrayList<Category>)
+                            food_category_rv.apply {
+                                adapter = categoryAdapter
+                                setHasFixedSize(true)
+                            }
                         }
                     }
-                }
-                response.doIfError { errorBody ->
-                    loadingHide()
-                    errorBody?.getErrors { msg ->
-                        toast(msg)
+                    response.doIfError { errorBody ->
+                        loadingHide()
+                        errorBody?.getErrors { msg ->
+                            toast(msg)
+                        }
                     }
-                }
-                response.doIfNetwork {
-                    loadingHide()
-                    toast(it)
-                }
-            })
+                    response.doIfNetwork {
+                        loadingHide()
+                        toast(it)
+                    }
+                })
+        }
 
 
     }

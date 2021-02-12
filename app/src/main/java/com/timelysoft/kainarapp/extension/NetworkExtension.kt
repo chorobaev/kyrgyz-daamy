@@ -11,8 +11,7 @@ inline fun ResponseBody.getErrors(message : (String) -> Unit){
     var msg = ""
     responseError.errors.forEach {
         when(it.key){
-
-            "text"->{
+            "Alert"->{
                 var string = ""
                 it.value.forEach { msg->
                     val comment = Errors.errors_hashMap[msg]

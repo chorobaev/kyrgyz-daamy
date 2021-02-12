@@ -61,7 +61,7 @@ interface ApiServiceMod {
     @Cacheable
     @GET("restaurants/{restaurantId}/menu/version")
     suspend fun getMenuVersionForRes(
-        @Path("restaurantId") restaurantId: String? = AppPreferences.group()
+        @Path("restaurantId") restaurantId: String? = AppPreferences.restaurant
     ): Response<BaseResponse<String>>
 
     @Cacheable
@@ -112,9 +112,6 @@ interface ApiServiceMod {
     @GET("groups/{restaurantGroupId}/restaurants/public")
     suspend fun restaurants(@Path("restaurantGroupId") id: String = AppPreferences.group()): Response<BaseResponse<List<RestaurantResponse>>>
 
-    @Cacheable
-    @GET("groups/{restaurantGroupId}/restaurants/public")
-    suspend fun restaurantsСRM(@Path("restaurantGroupId") id: String = AppPreferences.group()): Response<BaseResponse<List<RestaurantResponseCRM>>>
 
     @Cacheable
     @GET("payments/demir/{restaurantId}/creadentials/{orderId}")

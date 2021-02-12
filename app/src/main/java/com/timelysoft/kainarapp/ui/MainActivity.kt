@@ -1,28 +1,19 @@
 package com.timelysoft.kainarapp.ui
 
 
-import android.graphics.Color
 import android.os.Bundle
 
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
+
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.FirebaseApp
-import com.google.firebase.messaging.FirebaseMessaging
 import com.timelysoft.kainarapp.R
 import com.timelysoft.kainarapp.adapter.food.BasketCommands
 import com.timelysoft.kainarapp.extension.setupWithNavController
-import com.timelysoft.kainarapp.ui.food.FoodViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-
 class MainActivity : AppCompatActivity() {
 
     private var currentNavController: LiveData<NavController>? = null

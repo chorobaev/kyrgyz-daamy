@@ -21,7 +21,6 @@ class NetworkRepositoryMod(
         liveData(dispatcher){
             try {
                 val tokenBody = apiService.getAccessToken(authBody)
-
                 when{
                     tokenBody.isSuccessful->emit(ApiResult.Success(tokenBody.body()?.data))
                     else->{

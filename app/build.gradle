@@ -10,7 +10,7 @@ android {
     buildToolsVersion "29.0.3"
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
-        applicationId "com.timelysoft.carbis"
+        applicationId "com.timelysoft.amore"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 3

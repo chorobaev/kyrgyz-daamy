@@ -8,13 +8,13 @@
 
     <fragment
         android:id="@+id/nav_basket"
-        android:name="com.timelysoft.kainarapp.ui.food.BasketFragment"
+        android:name="com.timelysoft.amore.ui.food.BasketFragment"
         android:label="@string/menu_basket"
         tools:layout="@layout/fragment_basket"/>
 
     <fragment
         android:id="@+id/nav_pay"
-        android:name="com.timelysoft.kainarapp.ui.food.PayFragment"
+        android:name="com.timelysoft.amore.ui.food.PayFragment"
         android:label="@string/menu_pay"
         tools:layout="@layout/fragment_pay">
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/nav_success_payment"
-        android:name="com.timelysoft.kainarapp.ui.food.SuccessPaymentFragment"
+        android:name="com.timelysoft.amore.ui.food.SuccessPaymentFragment"
         android:label="fragment_success_payment"
         tools:layout="@layout/success_payment_fragment">
         <action
@@ -39,14 +39,14 @@
 
     <fragment
         android:id="@+id/nav_order"
-        android:name="com.timelysoft.kainarapp.ui.food.OrderFragment"
+        android:name="com.timelysoft.amore.ui.food.OrderFragment"
         android:label="@string/menu_order"
         tools:layout="@layout/fragment_order" />
 
 
     <fragment
         android:id="@+id/nav_order_detail"
-        android:name="com.timelysoft.kainarapp.ui.food.OrderDetailFragment"
+        android:name="com.timelysoft.amore.ui.food.OrderDetailFragment"
         android:label="@string/menu_order_detail"
         tools:layout="@layout/fragment_order_detail">
         <action

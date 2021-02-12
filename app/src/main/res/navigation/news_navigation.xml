@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/nav_discount"
-        android:name="com.timelysoft.kainarapp.ui.discount.NewsFragment"
+        android:name="com.timelysoft.amore.ui.discount.NewsFragment"
         android:label="@string/menu_discount"
         tools:layout="@layout/fragment_news" />
 
     <fragment
         android:id="@+id/nav_discount_detail"
-        android:name="com.timelysoft.kainarapp.ui.discount.NewsDetailFragment"
+        android:name="com.timelysoft.amore.ui.discount.NewsDetailFragment"
         android:label="@string/menu_discount_detail"
         tools:layout="@layout/fragment_news_detail" />
 

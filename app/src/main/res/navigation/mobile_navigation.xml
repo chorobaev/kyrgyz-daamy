@@ -8,14 +8,14 @@
 
     <fragment
         android:id="@+id/nav_food_item"
-        android:name="com.timelysoft.kainarapp.ui.food.FoodItemsFragment"
+        android:name="com.timelysoft.amore.ui.food.FoodItemsFragment"
         android:label="Список блюд"
         tools:layout="@layout/food_items_fragment"/>
 
 
     <fragment
         android:id="@+id/nav_food"
-        android:name="com.timelysoft.kainarapp.ui.food.FoodFragment"
+        android:name="com.timelysoft.amore.ui.food.FoodFragment"
         android:label="@string/menu_food"
         tools:layout="@layout/fragment_food">
         <action

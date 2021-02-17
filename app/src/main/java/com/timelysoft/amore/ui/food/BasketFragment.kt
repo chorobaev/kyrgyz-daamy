@@ -16,7 +16,7 @@ import com.timelysoft.amore.bottomsheet.basket.FoodAddUpdateBottomSheet
 import com.timelysoft.amore.bottomsheet.basket.FoodAddUpdateListener
 import com.timelysoft.amore.bottomsheet.basket.Mode
 import com.timelysoft.amore.extension.toast
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.response.MenuItem
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_basket.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

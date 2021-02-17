@@ -1,7 +1,7 @@
 package com.timelysoft.amore.ui.food
 
 import com.timelysoft.amore.R
-import com.timelysoft.amore.service.model2.response2.Category
+import com.timelysoft.amore.service.response.Category
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_content.view.*

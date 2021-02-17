@@ -5,9 +5,9 @@ import com.timelysoft.amore.bottomsheet.basket.Mode
 import com.timelysoft.amore.extension.countCost
 import com.timelysoft.amore.extension.countPriceOfMod
 import com.timelysoft.amore.extension.getIndex
-import com.timelysoft.amore.service.model2.response2.BaseModifier
-import com.timelysoft.amore.service.model2.response2.BaseModifierGroup
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.response.BaseModifier
+import com.timelysoft.amore.service.response.BaseModifierGroup
+import com.timelysoft.amore.service.response.MenuItem
 
 
 object BasketCommands {
@@ -211,6 +211,7 @@ object BasketCommands {
             menuItem.price,
             menuItem.recipe,
             menuItem.rests,
+            menuItem.imageLink,
             menuItem.weight,
             menuItem.amount,
             false,

@@ -1,6 +1,6 @@
 package com.timelysoft.amore.extension
 
-import com.timelysoft.amore.service.model2.response2.BaseModifierGroup
+import com.timelysoft.amore.service.response.BaseModifierGroup
 
 
 fun countCost(count: Int, menuItemPrice: Int, sumOfPrices: Int): Int {

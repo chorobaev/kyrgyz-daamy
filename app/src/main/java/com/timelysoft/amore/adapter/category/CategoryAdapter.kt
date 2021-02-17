@@ -4,13 +4,10 @@ package com.timelysoft.amore.adapter.category
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.timelysoft.amore.R
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
-import com.timelysoft.amore.service.AppPreferences
-import com.timelysoft.amore.service.model2.response2.Category
+import com.timelysoft.amore.service.response.Category
 import kotlinx.android.synthetic.main.item_category.view.*
 
 class CategoryAdapter(
@@ -21,11 +18,13 @@ class CategoryAdapter(
     override fun bind(item: Category, holder: ViewHolder) {
 
         holder.itemView.nameOfFood.text = item.name
-        val url  = AppPreferences.baseUrl+"api/restaurants/${AppPreferences.restaurant}/menu/items/${item.hashCode}/image"
+        /*val url  = "https://images.carbis.ru/amore/${item.code}.png"
         Glide.with(holder.itemView.imageOfHeader)
             .load(url)
             .apply(RequestOptions.circleCropTransform())
             .into(holder.itemView.imageOfHeader)
+
+         */
         holder.itemView.icExpand.visibility = View.GONE
         holder.itemView.setBackgroundResource(R.drawable.background_categories)
 

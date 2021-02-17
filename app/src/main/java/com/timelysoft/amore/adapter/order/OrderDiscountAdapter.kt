@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.timelysoft.amore.R
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
-import com.timelysoft.amore.service.model2.response2.Discount
+import com.timelysoft.amore.service.response.Discount
 import kotlinx.android.synthetic.main.item_order_discount.view.*
 
 

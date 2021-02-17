@@ -1,11 +1,12 @@
 package com.timelysoft.amore.service
 
 import androidx.lifecycle.liveData
-import com.timelysoft.amore.service.model2.AuthBody
+import com.timelysoft.amore.service.model.AuthBody
 
-import com.timelysoft.amore.service.model2.response2.CreateOrder
-import com.timelysoft.amore.service.model2.response2.ValidateOrder
+import com.timelysoft.amore.service.response.CreateOrder
+import com.timelysoft.amore.service.response.ValidateOrder
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 
 
 class NetworkRepositoryMod(
@@ -13,7 +14,7 @@ class NetworkRepositoryMod(
     private val dispatcher: CoroutineDispatcher
 ) {
 
-    private var error = "Ошибка при получении данных"
+    private var error = "Проверьте интернет подключение"
 
     fun getToken(authBody: AuthBody)=
         liveData(dispatcher){
@@ -51,8 +52,8 @@ class NetworkRepositoryMod(
 
         liveData(dispatcher) {
             try {
+                emit(ApiResult.Loading("loading"))
                 val menuVersion = apiService.getMenuVersionForRes(id)
-
                 when {
                     menuVersion.isSuccessful -> {
                         val a = AppPreferences.version()
@@ -61,6 +62,7 @@ class NetworkRepositoryMod(
                             val menu =
                                 apiService.getCategoriesForRestaurant(id)
                             if (menu.isSuccessful) {
+                                delay(1000)
                                 emit(ApiResult.Success(menu.body()))
                             } else {
                                 emit(ApiResult.Error(menu.errorBody()))
@@ -86,7 +88,8 @@ class NetworkRepositoryMod(
             try {
                 val restaurants = apiService.restaurants(AppPreferences.group())
                 when {
-                    restaurants.isSuccessful -> emit(ApiResult.Success(restaurants.body()!!.data))
+                    restaurants.isSuccessful -> {
+                         emit(ApiResult.Success(restaurants.body()!!.data))}
                     else -> {
                         ApiResult.Error(restaurants.errorBody()!!)
                     }
@@ -112,12 +115,13 @@ class NetworkRepositoryMod(
         }
     }
 
-    fun foodItemByCategoryId(restaurantId: String, categoryId: String) = liveData(dispatcher) {
+    fun foodItemByCategoryId(categoryId: String) = liveData(dispatcher) {
         try {
-            val response = apiService.getItemsByCategory(restaurantId, categoryId)
-
+            emit(ApiResult.Loading("loading"))
+            val response = apiService.getItemsByCategory(categoryId)
             when {
                 response.isSuccessful -> {
+                    delay(1000)
                     emit(ApiResult.Success(response.body()!!.data))
                 }
                 else -> {

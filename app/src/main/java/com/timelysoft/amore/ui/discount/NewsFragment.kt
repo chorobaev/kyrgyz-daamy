@@ -15,7 +15,7 @@ import com.timelysoft.amore.extension.loadingHide
 import com.timelysoft.amore.extension.loadingShow
 import com.timelysoft.amore.extension.toast
 import com.timelysoft.amore.service.*
-import com.timelysoft.amore.service.model2.response2.NewsResponse
+import com.timelysoft.amore.service.response.NewsResponse
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import org.koin.androidx.viewmodel.ext.android.viewModel

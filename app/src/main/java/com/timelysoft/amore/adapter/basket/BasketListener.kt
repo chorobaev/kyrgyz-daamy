@@ -1,7 +1,7 @@
 package com.timelysoft.amore.adapter.basket
 
 
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.response.MenuItem
 
 interface BasketListener {
     fun onClickItem(item: MenuItem, position: Int)

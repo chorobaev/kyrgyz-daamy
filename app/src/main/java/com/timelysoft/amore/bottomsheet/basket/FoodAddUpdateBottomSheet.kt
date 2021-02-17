@@ -13,11 +13,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.amore.R
 import com.timelysoft.amore.adapter.food.CustomAdapterForMod
 import com.timelysoft.amore.adapter.food.ItemModGroupListener
-import com.timelysoft.amore.extension.loadImageOrHide
+import com.timelysoft.amore.extension.loadImage
 import com.timelysoft.amore.extension.toast
-import com.timelysoft.amore.service.AppPreferences
-import com.timelysoft.amore.service.model2.response2.BaseModifierGroup
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.response.BaseModifierGroup
+import com.timelysoft.amore.service.response.MenuItem
 import com.timelysoft.amore.ui.food.FoodViewModel
 import kotlinx.android.synthetic.main.fragment_food_order.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -112,7 +111,7 @@ class FoodAddUpdateBottomSheet(
         }
         food_order_title.text = menuItem.name
         food_order_cost.text = menuItem.price.toString() + "сом"
-        food_order_photo.loadImageOrHide(AppPreferences.baseUrl + "api/restaurants/${AppPreferences.restaurant}/menu/items/${menuItem.code}/image")
+        food_order_photo.loadImage("https://images.carbis.ru/amore/${menuItem.code}.png")
         food_order_description.visibility = View.VISIBLE
         food_order_description.text = menuItem.recipe
 

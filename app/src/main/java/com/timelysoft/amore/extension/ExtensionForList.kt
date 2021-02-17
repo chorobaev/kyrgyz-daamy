@@ -1,7 +1,7 @@
 package com.timelysoft.amore.extension
 
-import com.timelysoft.amore.service.model2.response2.BaseModifierGroup
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.response.BaseModifierGroup
+import com.timelysoft.amore.service.response.MenuItem
 
 fun List<MenuItem>.getIndex(menuItem: MenuItem, index : Int) : Int{
     if (this.isEmpty()) {

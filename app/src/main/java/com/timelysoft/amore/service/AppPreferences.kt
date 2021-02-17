@@ -2,8 +2,6 @@ package com.timelysoft.amore.service
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.timelysoft.amore.service.model.TokenModel
-
 
 
 object AppPreferences {
@@ -33,17 +31,6 @@ object AppPreferences {
         editor.apply()
     }
 
-
-    fun updateToken(tokenResponse: TokenModel) {
-        accessToken = tokenResponse.accessToken
-        refreshToken = tokenResponse.refreshToken
-    }
-
-    fun saveToken(tokenResponse: TokenModel) {
-        isLogined = true
-        accessToken = tokenResponse.accessToken
-        refreshToken = tokenResponse.refreshToken
-    }
 
     var categoryId: String?
         set(value) = preferences.edit {

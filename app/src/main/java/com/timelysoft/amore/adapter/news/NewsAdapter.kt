@@ -8,7 +8,7 @@ import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
 import com.timelysoft.amore.extension.loadImage
 import com.timelysoft.amore.service.AppPreferences
-import com.timelysoft.amore.service.model2.response2.NewsResponse
+import com.timelysoft.amore.service.response.NewsResponse
 import kotlinx.android.synthetic.main.item_discount.view.*
 
 class NewsAdapter(

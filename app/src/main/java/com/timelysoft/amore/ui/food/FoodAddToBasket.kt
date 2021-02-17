@@ -1,6 +1,6 @@
 package com.timelysoft.amore.ui.food
 
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.response.MenuItem
 
 interface FoodAddToBasket {
     fun addToBasket(item :MenuItem, position : Int)

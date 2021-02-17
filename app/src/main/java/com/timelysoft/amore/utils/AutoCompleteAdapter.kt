@@ -5,7 +5,7 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
-import com.timelysoft.amore.service.model2.response2.StreetResponse
+import com.timelysoft.amore.service.response.StreetResponse
 import java.util.*
 import kotlin.collections.ArrayList
 

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import com.timelysoft.amore.R
-import com.timelysoft.amore.service.model2.response2.Category
+import com.timelysoft.amore.service.response.Category
 
 class CategoryExpandableAdapter(groups: List<ExpandableGroup<*>>?) :
     ExpandableRecyclerViewAdapter<ContinentViewHolder, CountryViewHolder>(

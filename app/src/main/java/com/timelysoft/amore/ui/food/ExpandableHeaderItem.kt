@@ -1,11 +1,8 @@
 package com.timelysoft.amore.ui.food
 
 import android.graphics.Typeface
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.timelysoft.amore.R
-import com.timelysoft.amore.service.AppPreferences
-import com.timelysoft.amore.service.model2.response2.Category
+import com.timelysoft.amore.service.response.Category
 import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.ExpandableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -20,10 +17,6 @@ class ExpandableHeaderItem(val category: Category, val listener : OnExpandableAd
         viewHolder.root.nameOfFood.text = category.name
         viewHolder.itemView.setBackgroundResource(R.drawable.background_categories)
 
-        Glide.with(viewHolder.root.imageOfHeader)
-            .load(AppPreferences.baseUrl + "api/restaurants/${AppPreferences.restaurant}/menu/items/${category.hashCode}/image")
-            .apply(RequestOptions.circleCropTransform())
-            .into(viewHolder.root.imageOfHeader)
         viewHolder.itemView.setOnClickListener {
             expandableGroup.onToggleExpanded()
             listener.onItemClick(category)

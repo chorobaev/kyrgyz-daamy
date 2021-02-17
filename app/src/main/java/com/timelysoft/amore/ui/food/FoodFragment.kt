@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -15,16 +14,13 @@ import com.xwray.groupie.ExpandableGroup
 import com.timelysoft.amore.adapter.category.CategoryAdapter
 import com.timelysoft.amore.adapter.category.CategoryListener
 import com.timelysoft.amore.adapter.image.ImagePageAdapter
-import com.timelysoft.amore.bottomsheet.chooseRestuarant.RestaurantChooseListener
+import com.timelysoft.amore.adapter.shimmer.Layout
+import com.timelysoft.amore.adapter.shimmer.ShimmeringAdapter
 import com.timelysoft.amore.extension.getErrors
-import com.timelysoft.amore.extension.loadingHide
-import com.timelysoft.amore.extension.loadingShow
 import com.timelysoft.amore.extension.toast
-import com.timelysoft.amore.service.AppPreferences
-import com.timelysoft.amore.service.doIfError
-import com.timelysoft.amore.service.doIfNetwork
-import com.timelysoft.amore.service.doIfSuccess
-import com.timelysoft.amore.service.model2.response2.Category
+import com.timelysoft.amore.service.*
+import com.timelysoft.amore.service.response.Category
+import com.timelysoft.amore.ui.base.BaseFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.app_toolbar.*
@@ -33,10 +29,10 @@ import kotlinx.android.synthetic.main.fragment_food.view.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class FoodFragment : Fragment(), CategoryListener,
-    RestaurantChooseListener, OnExpandableAdapterClick, OnChildItemListener {
+class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick, OnChildItemListener {
     private val viewModel: FoodViewModel by sharedViewModel()
     private val categoryAdapter = CategoryAdapter(this)
+
     private var categoryList: ArrayList<Category>? = null
     private lateinit var viewPager: ViewPager
     private var categoryId: String? = null
@@ -56,9 +52,9 @@ class FoodFragment : Fragment(), CategoryListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_food, container, false)
+        val view = getPersistentView(inflater,container,savedInstanceState, R.layout.fragment_food)
 
-        viewPager = view.findViewById(R.id.restaurant_detail_image_viewPager)
+        viewPager = view?.findViewById(R.id.restaurant_detail_image_viewPager)!!
         if (categoryList != null) {
             view.constraintLayout.visibility = View.GONE
         } else {
@@ -70,14 +66,18 @@ class FoodFragment : Fragment(), CategoryListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initToolbar()
-        if (categoryList != null) {
+        if (!hasInitializedRootView){
+            hasInitializedRootView = true
+            initToolbar()
+            if (categoryList != null) {
 
-            implementExpandableAdapter(generateExpandableHeader(categoryList!!))
+                implementExpandableAdapter(generateExpandableHeader(categoryList!!))
 
-        } else {
-            loadRestaurant()
+            } else {
+                loadRestaurant()
+            }
         }
+
 
 
     }
@@ -92,7 +92,6 @@ class FoodFragment : Fragment(), CategoryListener,
             }
             restaurants.doIfNetwork { msg ->
                 toast(msg)
-
             }
             restaurants.doIfSuccess {
                 val urls = arrayListOf<String>()
@@ -103,7 +102,7 @@ class FoodFragment : Fragment(), CategoryListener,
                     if (it.first().files.isEmpty()) {
                         urls.add("")
                     } else {
-                        it.first().files.forEach { file ->
+                        it.first().files.forEach { file->
                             urls.add(AppPreferences.baseUrl + file.relativeUrl)
                         }
                     }
@@ -116,40 +115,39 @@ class FoodFragment : Fragment(), CategoryListener,
                 }
                 tabLayout.setupWithViewPager(viewPager)
                 restaurant_detail_title.text = it.first().name
-                initData(it.first().id)
+                initData()
 
             }
         })
     }
 
-    private fun initData(id : String) {
-        loadingShow()
+    private fun initData() {
+        viewModel.categoriesLiveData.observe(viewLifecycleOwner, Observer { response ->
+            response.doIfSuccess { categoriesResponse ->
+                if (categoriesResponse != null) {
 
-        viewModel.categoriesByRestaurantId(id)
-
-            .observe(viewLifecycleOwner, Observer { response ->
-                response.doIfSuccess { categoriesResponse ->
-                    loadingHide()
-                    if (categoriesResponse != null) {
-
-                        categoryAdapter.set(categoriesResponse.data.categories as ArrayList<Category>)
-                        food_category_rv.apply {
-                            adapter = categoryAdapter
-                            setHasFixedSize(true)
-                        }
+                    categoryAdapter.set(categoriesResponse.data.categories as ArrayList<Category>)
+                    food_category_rv.apply {
+                        adapter = categoryAdapter
+                        setHasFixedSize(true)
                     }
                 }
-                response.doIfError { errorBody ->
-                    loadingHide()
-                    errorBody?.getErrors { msg ->
-                        toast(msg)
-                    }
+            }
+            response.doIfLoading {
+                val shimmerAdapter = ShimmeringAdapter(Layout.Menu, 4)
+                food_category_rv.apply {
+                    adapter = shimmerAdapter
                 }
-                response.doIfNetwork {
-                    loadingHide()
-                    toast(it)
+            }
+            response.doIfError { errorBody ->
+                errorBody?.getErrors { msg ->
+                    toast(msg)
                 }
-            })
+            }
+            response.doIfNetwork {
+                toast(it)
+            }
+        })
 
 
     }
@@ -203,6 +201,7 @@ class FoodFragment : Fragment(), CategoryListener,
     }
 
 
+
     override fun onCategoryClick(item: Category) {
 
         if (item.categories != null) {
@@ -213,12 +212,6 @@ class FoodFragment : Fragment(), CategoryListener,
             findNavController().navigate(R.id.nav_food, bundle)
 
         }
-
-    }
-
-
-    override fun onClickRestaurant(restaurantId: String, previousRestaurantId: String, crmId: Int) {
-
 
     }
 
@@ -234,7 +227,7 @@ class FoodFragment : Fragment(), CategoryListener,
         when {
             category.categories != null -> {
                 val bundle = Bundle()
-                bundle.putParcelableArrayList("categories", this as ArrayList<Category>)
+                bundle.putParcelableArrayList("categories", category.categories as ArrayList<Category>)
                 findNavController().navigate(R.id.nav_food, bundle)
             }
             else -> {

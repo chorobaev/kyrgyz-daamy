@@ -9,8 +9,8 @@ import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
 import com.timelysoft.amore.bottomsheet.basket.Mode
 
-import com.timelysoft.amore.service.model2.response2.BaseModifierGroup
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.response.BaseModifierGroup
+import com.timelysoft.amore.service.response.MenuItem
 import kotlinx.android.synthetic.main.item_basket.view.*
 
 class BasketAdapter(

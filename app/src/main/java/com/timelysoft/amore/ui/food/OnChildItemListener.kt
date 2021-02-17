@@ -1,6 +1,6 @@
 package com.timelysoft.amore.ui.food
 
-import com.timelysoft.amore.service.model2.response2.Category
+import com.timelysoft.amore.service.response.Category
 
 interface OnChildItemListener {
 

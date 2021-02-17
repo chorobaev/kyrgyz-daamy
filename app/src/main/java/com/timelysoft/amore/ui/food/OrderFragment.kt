@@ -20,9 +20,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.timelysoft.amore.R
 import com.timelysoft.amore.extension.*
 import com.timelysoft.amore.service.*
-import com.timelysoft.amore.service.model2.AddressInfo
-import com.timelysoft.amore.service.model2.response2.*
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.model.AddressInfo
+import com.timelysoft.amore.service.response.*
+import com.timelysoft.amore.service.response.MenuItem
 import com.timelysoft.amore.utils.AutoCompleteAdapter
 import com.timelysoft.amore.utils.Utils
 import kotlinx.android.synthetic.main.app_toolbar.*

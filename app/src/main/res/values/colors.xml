@@ -23,6 +23,7 @@
     -->
     <color name="modificationColor">#5E5E5E</color>
 
+    <color name="shimmerMenuItem">#B3B3B3</color>
     <color name="backgroundView">#A3A0A0</color>
     <color name="colorPrimary">#5AB41E</color>
     <color name="colorDrawer">#5AB41E</color>

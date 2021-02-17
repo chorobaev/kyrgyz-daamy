@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.timelysoft.amore.R
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
-import com.timelysoft.amore.service.model2.response2.BaseModifier
+import com.timelysoft.amore.service.response.BaseModifier
 import kotlinx.android.synthetic.main.item_mod_basket.view.*
 
 class CustomBasketModifiers(val list: ArrayList<BaseModifier>)  :GenericRecyclerAdapter<BaseModifier>(list) {

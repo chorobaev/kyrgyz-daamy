@@ -6,19 +6,22 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.timelysoft.amore.R
 import com.timelysoft.amore.ui.MainActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SplashActivity : AppCompatActivity(){
+class SplashActivity : AppCompatActivity() {
 
-   // private val splashViewModel : SplashViewModel by viewModel()
+    private val splashViewModel: SplashViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_activity)
 
-       Handler().postDelayed({
-           startActivity(Intent(this, MainActivity::class.java))
-           finish()
-       }, 3000)
+
+
+        Handler().postDelayed({
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }, 3000)
 
 
     }

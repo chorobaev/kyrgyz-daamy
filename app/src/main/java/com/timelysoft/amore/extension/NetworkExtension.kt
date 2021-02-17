@@ -1,7 +1,7 @@
 package com.timelysoft.amore.extension
 
 import com.google.gson.Gson
-import com.timelysoft.amore.service.model2.ErrorResponse
+import com.timelysoft.amore.service.model.ErrorResponse
 import okhttp3.ResponseBody
 
 inline fun ResponseBody.getErrors(message : (String) -> Unit){

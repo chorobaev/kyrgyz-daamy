@@ -1,6 +1,6 @@
 package com.timelysoft.amore.adapter.food
 
-import com.timelysoft.amore.service.model2.response2.MenuItem
+import com.timelysoft.amore.service.response.MenuItem
 
 interface FoodListener {
 

@@ -10,14 +10,13 @@ import androidx.navigation.fragment.findNavController
 import com.timelysoft.amore.R
 import com.timelysoft.amore.adapter.image.ImagePageAdapter
 import com.timelysoft.amore.service.AppPreferences
-import com.timelysoft.amore.service.model2.response2.NewsResponse
+import com.timelysoft.amore.service.response.NewsResponse
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_news_detail.*
 
 
 class NewsDetailFragment : Fragment() {
     private var newsModel: NewsResponse? = null
-
 
 
     override fun onCreateView(

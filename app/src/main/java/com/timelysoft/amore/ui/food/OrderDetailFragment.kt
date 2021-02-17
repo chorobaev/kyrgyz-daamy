@@ -22,7 +22,7 @@ import com.timelysoft.amore.extension.toast
 import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.doIfError
 import com.timelysoft.amore.service.doIfSuccess
-import com.timelysoft.amore.service.model2.response2.*
+import com.timelysoft.amore.service.response.*
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_order_detail.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

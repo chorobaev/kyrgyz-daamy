@@ -1,8 +1,8 @@
 package com.timelysoft.amore.service
 
 import com.timelysoft.amore.cachingRetrofit.Cacheable
-import com.timelysoft.amore.service.model2.*
-import com.timelysoft.amore.service.model2.response2.*
+import com.timelysoft.amore.service.model.*
+import com.timelysoft.amore.service.response.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -33,10 +33,9 @@ interface ApiServiceMod {
     suspend fun getCategoriesForRestaurant(@Path("restaurantId") restaurantId: String): Response<BaseResponse<CategoriesResponse>>
 
     @Cacheable
-    @GET("restaurants/{restaurantId}/menu/categories/{categoryId}/items")
+    @GET("restaurants/menu/categories/{id}/items")
     suspend fun getItemsByCategory(
-        @Path("restaurantId") restaurantId: String?,
-        @Path("categoryId") categoryId: String
+        @Path("id") categoryId: String
     ): Response<BaseResponse<CategoryItemResponse>>
 
 

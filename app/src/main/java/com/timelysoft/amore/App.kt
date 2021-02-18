@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.appcompat.app.AppCompatDelegate
 import com.timelysoft.amore.di.module
 import com.timelysoft.amore.di.viewModelModule
 import com.timelysoft.amore.service.AppPreferences
@@ -23,7 +24,8 @@ class App : Application() {
     }
     override fun onCreate() {
         super.onCreate()
-       instance = this
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        instance = this
         startKoin {
             androidLogger(Level.NONE)
             androidContext(this@App)

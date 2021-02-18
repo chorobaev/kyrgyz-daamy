@@ -51,6 +51,7 @@ class NetworkRepositoryMod(
     fun getMenuCategories(id: String) =
 
         liveData(dispatcher) {
+            /*
             try {
                 emit(ApiResult.Loading("loading"))
                 val menuVersion = apiService.getMenuVersionForRes(id)
@@ -81,25 +82,37 @@ class NetworkRepositoryMod(
             } catch (e: Exception) {
                 emit(ApiResult.NetworkError(error))
             }
+
+             */
+            emit(ApiResult.Loading("loading"))
+            try {
+                val menu = apiService.getCategoriesForRestaurant(id)
+                if (menu.isSuccessful) {
+                    emit(ApiResult.Success(menu.body()))
+                } else {
+                    emit(ApiResult.Error(menu.errorBody()))
+                    println("dsdsdsdsdsds")
+                }
+            }catch (e: Exception){
+                emit(ApiResult.NetworkError(error))
+            }
         }
 
     fun restaurants() =
         liveData(dispatcher) {
             try {
                 val restaurants = apiService.restaurants(AppPreferences.group())
-                when {
-                    restaurants.isSuccessful -> {
-                        emit(ApiResult.Success(restaurants.body()!!.data))
+                    if(restaurants.isSuccessful) {
+                         emit(ApiResult.Success(restaurants.body()!!.data))}
+                    else {
+                                           emit(ApiResult.Error(restaurants.errorBody()!!))
                     }
-                    else -> {
-                        emit(ApiResult.Error(restaurants.errorBody()!!))
-                    }
-                }
 
             } catch (throwable: Exception) {
                 emit(ApiResult.NetworkError(throwable.message!!))
             }
         }
+
 
     fun restaurantById(restaurantId: String) = liveData(dispatcher) {
 
@@ -133,7 +146,6 @@ class NetworkRepositoryMod(
         } catch (e: Exception) {
             emit(ApiResult.NetworkError(e.printStackTrace().toString()))
         }
-
     }
 
     fun groupNews() = liveData(dispatcher) {
@@ -147,7 +159,6 @@ class NetworkRepositoryMod(
                 emit(ApiResult.Error(response.errorBody()))
             }
         }
-
 
     }
 

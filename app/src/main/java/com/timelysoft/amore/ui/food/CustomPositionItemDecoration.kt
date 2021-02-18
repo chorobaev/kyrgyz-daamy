@@ -28,7 +28,7 @@ class CustomPositionItemDecoration(private val dividerDrawable: Drawable) :
 
 
     private fun convertDpToPx(context: Context): Float {
-        return 56 * context.resources.displayMetrics.density
+        return  context.resources.displayMetrics.density
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {

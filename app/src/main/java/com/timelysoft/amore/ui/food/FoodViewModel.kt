@@ -20,9 +20,6 @@ class FoodViewModel(private val network: NetworkRepositoryMod) :ViewModel(){
     private val _categoryName: MutableLiveData<String> = MutableLiveData()
     val _categoryItemResponse: MutableLiveData<CategoryItemResponse> = MutableLiveData()
 
-    private var _categoriesMutableLiveData : MutableLiveData<ApiResult<BaseResponse<CategoriesResponse>?>> = MutableLiveData()
-    val categoriesLiveData : LiveData<ApiResult<BaseResponse<CategoriesResponse>?>>
-    get() = _categoriesMutableLiveData
 
     val categoryLiveData: LiveData<String>
         get() = _categoryIdLiveData
@@ -34,10 +31,6 @@ class FoodViewModel(private val network: NetworkRepositoryMod) :ViewModel(){
     fun setCategoryId(categoryId: String, categoryName: String) {
         _categoryIdLiveData.value = categoryId
         _categoryName.value = categoryName
-    }
-
-    init {
-        categoriesByRestaurantId(AppPreferences.restaurant)
     }
 
     fun insertMenuItem(menuItem: MenuItem, index: Int, modGroup: List<BaseModifierGroup>, mode: Mode) {
@@ -80,8 +73,8 @@ class FoodViewModel(private val network: NetworkRepositoryMod) :ViewModel(){
         return network.streets(id)
     }
 
-    private fun categoriesByRestaurantId(id: String) {
-        _categoriesMutableLiveData = network.getMenuCategories(id) as MutableLiveData<ApiResult<BaseResponse<CategoriesResponse>?>>
+    fun categoriesByRestaurantId(id: String):LiveData<ApiResult<BaseResponse<CategoriesResponse>?>> {
+        return network.getMenuCategories(id)
     }
 
     fun itemsByCategories(

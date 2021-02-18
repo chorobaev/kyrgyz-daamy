@@ -1,9 +1,11 @@
 package com.timelysoft.amore.ui.food
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
@@ -98,7 +100,7 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
                 if (it.firstOrNull() != null) {
                     AppPreferences.restaurant = it.first().id
                     AppPreferences.bankPay = it.first().onlinePaymentSupported
-
+                    initData()
                     if (it.first().files.isEmpty()) {
                         urls.add("")
                     } else {
@@ -115,14 +117,15 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
                 }
                 tabLayout.setupWithViewPager(viewPager)
                 restaurant_detail_title.text = it.first().name
-                initData()
+
 
             }
         })
     }
 
     private fun initData() {
-        viewModel.categoriesLiveData.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.categoriesByRestaurantId(AppPreferences.restaurant).observe(viewLifecycleOwner, Observer { response ->
+
             response.doIfSuccess { categoriesResponse ->
                 if (categoriesResponse != null) {
 
@@ -145,7 +148,7 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
                 }
             }
             response.doIfNetwork {
-                toast(it)
+                Log.d("NETWORK_ERROR","Error")
             }
         })
 

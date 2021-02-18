@@ -37,27 +37,26 @@ class NewsFragment : Fragment(), NewsListener {
         initToolbar()
         initData()
 
-
     }
 
     private fun initData() {
         loadingShow()
-                        viewModel.news(AppPreferences.restaurant)
-                            .observe(viewLifecycleOwner, Observer { news ->
-                                loadingHide()
-                                news.doIfSuccess {
-                                    val adapter =
-                                        NewsAdapter(this, it?.data as ArrayList<NewsResponse>)
-                                    discount_rv.adapter = adapter
-                                }
+        viewModel.news(AppPreferences.restaurant)
+            .observe(viewLifecycleOwner, Observer { news ->
+                loadingHide()
+                news.doIfSuccess {
+                    val adapter =
+                        NewsAdapter(this, it?.data as ArrayList<NewsResponse>)
+                    discount_rv.adapter = adapter
+                }
 
-                                news.doIfError { errorBody ->
-                                    errorBody?.getErrors { msg ->
-                                        toast(msg)
-                                    }
-                                }
-                            })
+                news.doIfError { errorBody ->
+                    errorBody?.getErrors { msg ->
+                        toast(msg)
                     }
+                }
+            })
+    }
 
     private fun initToolbar() {
         toolbar_back.setOnClickListener {

@@ -15,7 +15,6 @@ class ExpandableHeaderItem(val category: Category, val listener : OnExpandableAd
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.root.nameOfFood.text = category.name
-        viewHolder.itemView.setBackgroundResource(R.drawable.background_categories)
 
         viewHolder.itemView.setOnClickListener {
             expandableGroup.onToggleExpanded()

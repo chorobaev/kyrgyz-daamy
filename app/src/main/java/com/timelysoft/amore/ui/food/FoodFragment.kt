@@ -132,6 +132,13 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
                     categoryAdapter.set(categoriesResponse.data.categories as ArrayList<Category>)
                     food_category_rv.apply {
                         adapter = categoryAdapter
+                        addItemDecoration(
+                        CustomPositionItemDecoration(
+                            ContextCompat.getDrawable(
+                                context,
+                                R.drawable.divider
+                            )!!
+                        ))
                         setHasFixedSize(true)
                     }
                 }

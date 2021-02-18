@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="1dp"
@@ -18,43 +19,18 @@
         android:layout_height="match_parent"
         android:padding="4dp">
 
-        <LinearLayout
-            android:id="@+id/amountLinearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/basket_name">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:text="Количество : "/>
-
-
-            <TextView
-                android:id="@+id/item_modifier_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="0.5"
-                android:paddingHorizontal="5dp"
-                android:text="1 x"
-                android:textSize="16sp" />
-
-
-        </LinearLayout>
-
 
         <TextView
+            app:layout_constraintWidth_default="wrap"
             android:id="@+id/basket_name"
-            android:layout_width="250dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
+            android:layout_marginTop="4dp"
             android:maxLines="2"
+            android:ellipsize="end"
             android:text="Delicious food"
+            app:layout_constraintEnd_toStartOf="@id/barrier2"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +42,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/amountLinearLayout">
+            app:layout_constraintTop_toBottomOf="@+id/basket_name">
 
             <TextView
                 android:id="@+id/priceOfFood"
@@ -143,6 +119,15 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/item_basket_sum" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/basket_delete"
+            app:barrierDirection="left"
+            app:layout_constraintEnd_toEndOf="@id/basket_delete"
+            app:constraint_referenced_ids="basket_delete,basket_edit" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

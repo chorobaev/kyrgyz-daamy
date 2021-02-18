@@ -20,9 +20,8 @@ class BasketAdapter(
     GenericRecyclerAdapter<MenuItem>(items) {
 
     override fun bind(item: MenuItem, holder: ViewHolder) = with(holder.itemView) {
-        item_modifier_amount.text = "${item.amount} x"
         amountPrice.text = "${item.price} сом"
-        basket_name.text = item.name
+        basket_name.text =  "${item.amount} x ${item.name}"
         if (item.modifierGroups.isNotEmpty()) {
             item_basket_recycler.adapter =
                 CustomAdapterForMod(item.modifierGroups as ArrayList<BaseModifierGroup>, Mode.Basket, null)

@@ -12,7 +12,6 @@ object AppPreferences {
     const val baseUrl = "https://saturn.carbis.ru:5849/"
     const val HEADER_CACHE_CONTROL = "Cache-Control"
 
-    //fun group() = "242faadb-8abe-421c-ffa6-08d89114aa62"
 
     fun group() = "4ba28cd5-43a5-41a1-f3b2-08d8cf0dfc1c"
 

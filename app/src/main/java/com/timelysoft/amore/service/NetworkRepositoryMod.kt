@@ -16,17 +16,17 @@ class NetworkRepositoryMod(
 
     private var error = "Проверьте интернет подключение"
 
-    fun getToken(authBody: AuthBody)=
-        liveData(dispatcher){
+    fun getToken(authBody: AuthBody) =
+        liveData(dispatcher) {
             try {
                 val tokenBody = apiService.getAccessToken(authBody)
-                when{
-                    tokenBody.isSuccessful->emit(ApiResult.Success(tokenBody.body()?.data))
-                    else->{
+                when {
+                    tokenBody.isSuccessful -> emit(ApiResult.Success(tokenBody.body()?.data))
+                    else -> {
                         emit(ApiResult.Error(tokenBody.errorBody()))
                     }
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 emit(ApiResult.NetworkError(error))
             }
         }
@@ -89,9 +89,10 @@ class NetworkRepositoryMod(
                 val restaurants = apiService.restaurants(AppPreferences.group())
                 when {
                     restaurants.isSuccessful -> {
-                         emit(ApiResult.Success(restaurants.body()!!.data))}
+                        emit(ApiResult.Success(restaurants.body()!!.data))
+                    }
                     else -> {
-                        ApiResult.Error(restaurants.errorBody()!!)
+                        emit(ApiResult.Error(restaurants.errorBody()!!))
                     }
                 }
 

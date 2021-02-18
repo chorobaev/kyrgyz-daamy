@@ -26,7 +26,6 @@ class CategoryAdapter(
 
          */
         holder.itemView.icExpand.visibility = View.GONE
-        holder.itemView.setBackgroundResource(R.drawable.background_categories)
 
         holder.itemView.setOnClickListener {
             listener.onCategoryClick(item)

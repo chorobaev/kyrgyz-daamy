@@ -83,7 +83,7 @@ class OrderDetailFragment : Fragment(), PayTypeListener {
             }
 
         }
-        order_detail_sum.text = order!!.amount + " сом"
+        order_detail_sum.text = order!!.amount + " ${AppPreferences.currencyName}"
 
 
     }

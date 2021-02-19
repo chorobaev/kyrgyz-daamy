@@ -7,6 +7,9 @@ import android.content.SharedPreferences
 object AppPreferences {
     var change: Boolean = false
 
+
+
+
     const val baseUrlCRM = "https://kaynar-test.timelysoft.org:8041/"
    // const val baseUrl = "https://delivery-test.timelysoft.org:8051/"
     const val baseUrl = "https://saturn.carbis.ru:5849/"
@@ -29,6 +32,12 @@ object AppPreferences {
         operation(editor)
         editor.apply()
     }
+
+    var currencyName : String?
+        set(value) = preferences.edit{
+            it.putString("currencyName",value)
+        }
+        get() = preferences.getString("currencyName","")
 
 
     var categoryId: String?

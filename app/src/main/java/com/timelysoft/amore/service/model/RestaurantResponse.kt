@@ -6,7 +6,8 @@ import com.timelysoft.amore.service.response.File
 data class RestaurantResponse(
         @SerializedName("cityId")val cityId: Int,
         @SerializedName("crmId")val crmId: Int,
-        @SerializedName("currencyId")val currencyId: String,
+        @SerializedName("currencyId")val currencyId:String,
+        @SerializedName("currency") val currency: Currency,
         @SerializedName("files")val files: List<File>,
         @SerializedName("id")val id: String,
         @SerializedName("logo")val logo: File,

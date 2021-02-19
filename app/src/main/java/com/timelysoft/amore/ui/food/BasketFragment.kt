@@ -16,6 +16,7 @@ import com.timelysoft.amore.bottomsheet.basket.FoodAddUpdateBottomSheet
 import com.timelysoft.amore.bottomsheet.basket.FoodAddUpdateListener
 import com.timelysoft.amore.bottomsheet.basket.Mode
 import com.timelysoft.amore.extension.toast
+import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.response.MenuItem
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_basket.*
@@ -49,7 +50,7 @@ class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
         initToolbar()
 
         BasketCommands.sumOfBasket.observe(viewLifecycleOwner, Observer {
-            basket_sum.text = "$it сом"
+            basket_sum.text = "$it ${AppPreferences.currencyName}"
         })
 
 

@@ -8,6 +8,7 @@ import com.timelysoft.amore.adapter.food.CustomAdapterForMod
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
 import com.timelysoft.amore.bottomsheet.basket.Mode
+import com.timelysoft.amore.service.AppPreferences
 
 import com.timelysoft.amore.service.response.BaseModifierGroup
 import com.timelysoft.amore.service.response.MenuItem
@@ -20,13 +21,13 @@ class BasketAdapter(
     GenericRecyclerAdapter<MenuItem>(items) {
 
     override fun bind(item: MenuItem, holder: ViewHolder) = with(holder.itemView) {
-        amountPrice.text = "${item.price} сом"
+        amountPrice.text = "${item.price} ${AppPreferences.currencyName}"
         basket_name.text =  "${item.amount} x ${item.name}"
         if (item.modifierGroups.isNotEmpty()) {
             item_basket_recycler.adapter =
                 CustomAdapterForMod(item.modifierGroups as ArrayList<BaseModifierGroup>, Mode.Basket, null)
         }
-        sumAmount.text = "${item.priceWithMod} сом"
+        sumAmount.text = "${item.priceWithMod} ${AppPreferences.currencyName}"
 
         
         basket_edit.setOnClickListener {

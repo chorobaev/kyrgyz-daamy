@@ -7,6 +7,7 @@ import com.timelysoft.amore.R
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
 import com.timelysoft.amore.extension.loadImage
+import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.response.MenuItem
 import com.timelysoft.amore.ui.food.FoodAddToBasket
 import kotlinx.android.synthetic.main.item_food.view.*
@@ -21,7 +22,7 @@ class FoodAdapter(
 
         holder.itemView.food_image.loadImage(item.imageLink)
         holder.itemView.food_title.text = item.name
-        holder.itemView.food_price.text = (item.price).toString() + " Сом"
+        holder.itemView.food_price.text = (item.price).toString() + " ${AppPreferences.currencyName}"
         holder.itemView.food_description.visibility = View.GONE
         holder.itemView.setOnClickListener {
             listener.onFoodClick(item, holder.adapterPosition)

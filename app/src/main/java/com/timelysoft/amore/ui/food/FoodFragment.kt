@@ -5,12 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.timelysoft.amore.R
 import com.xwray.groupie.ExpandableGroup
 import com.timelysoft.amore.adapter.category.CategoryAdapter
@@ -28,6 +32,8 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_food.*
 import kotlinx.android.synthetic.main.fragment_food.view.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -77,22 +83,40 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
 
             } else {
                 loadRestaurant()
+                initData()
             }
         }
-
-
 
     }
 
     private fun loadRestaurant() {
+        val intent = activity?.intent
+        val urls = intent?.getStringArrayListExtra("urls")
+        val name = intent?.getStringExtra("restaurant_name")
+        if (urls != null && name != null) {
+            val adapter = ImagePageAdapter(urls)
+            viewPager.adapter = adapter
+            if (urls.size == 1) {
+                tabLayout.visibility = View.GONE
+            }
+            tabLayout.setupWithViewPager(viewPager)
+            restaurant_detail_title.text = name
+        }
+        /*
         viewModel.restaurants().observe(viewLifecycleOwner, Observer { restaurants ->
+            restaurants.doIfLoading {
+                val shimmerRestaurantAdapter = ShimmerRestaurantAdapter(Layout.ShimmerRestaurant, 1)
+                viewPager.adapter  = shimmerRestaurantAdapter
+            }
 
             restaurants.doIfError { errorBody ->
+                viewPager.visibility  = View.GONE
                 errorBody?.getErrors { msg ->
                     toast(msg)
                 }
             }
             restaurants.doIfNetwork { msg ->
+                viewPager.visibility  = View.GONE
                 toast(msg)
             }
             restaurants.doIfSuccess {
@@ -110,17 +134,12 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
                     }
 
                 }
-                val adapter = ImagePageAdapter(urls)
-                viewPager.adapter = adapter
-                if (urls.size == 1) {
-                    tabLayout.visibility = View.GONE
-                }
-                tabLayout.setupWithViewPager(viewPager)
-                restaurant_detail_title.text = it.first().name
 
 
             }
         })
+
+         */
     }
 
     private fun initData() {
@@ -150,11 +169,13 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
                 }
             }
             response.doIfError { errorBody ->
+                food_category_rv.visibility = View.GONE
                 errorBody?.getErrors { msg ->
                     toast(msg)
                 }
             }
             response.doIfNetwork {
+                food_category_rv.visibility = View.GONE
                 Log.d("NETWORK_ERROR","Error")
             }
         })

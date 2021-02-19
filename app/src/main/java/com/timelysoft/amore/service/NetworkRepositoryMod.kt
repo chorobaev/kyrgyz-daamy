@@ -88,6 +88,7 @@ class NetworkRepositoryMod(
             try {
                 val menu = apiService.getCategoriesForRestaurant(id)
                 if (menu.isSuccessful) {
+                    delay(1000)
                     emit(ApiResult.Success(menu.body()))
                 } else {
                     emit(ApiResult.Error(menu.errorBody()))
@@ -101,8 +102,10 @@ class NetworkRepositoryMod(
     fun restaurants() =
         liveData(dispatcher) {
             try {
+                emit(ApiResult.Loading("loading"))
                 val restaurants = apiService.restaurants(AppPreferences.group())
                     if(restaurants.isSuccessful) {
+                        delay(1000)
                          emit(ApiResult.Success(restaurants.body()!!.data))}
                     else {
                                            emit(ApiResult.Error(restaurants.errorBody()!!))

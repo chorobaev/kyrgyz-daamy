@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.timelysoft.amore.R
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
+import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.response.ResponseProductOrderState
 import kotlinx.android.synthetic.main.item_order_items.view.*
 
@@ -14,10 +15,10 @@ class OrderItemsAdapter(items: ArrayList<ResponseProductOrderState> = ArrayList(
         holder.itemView.order_detail_count.text = "${item.count} x"
         holder.itemView.order_detail_name.text = item.name
         holder.itemView.order_detail_price.text =
-            (item.price * item.count).toString() + " сом"
+            (item.price * item.count).toString() + " ${AppPreferences.currencyName}"
         holder.itemView.order_detail_discount.text =
             discount(item.discounted)
-        holder.itemView.order_detail_total.text = "Итог " + item.total.toString() + " сом"
+        holder.itemView.order_detail_total.text = "Итог " + item.total.toString() + " ${AppPreferences.currencyName}"
 
     }
 
@@ -27,14 +28,14 @@ class OrderItemsAdapter(items: ArrayList<ResponseProductOrderState> = ArrayList(
 
     private fun discount(discount: Int): String {
         return when {
-            discount == 0 -> "Скидка 0 сом"
+            discount == 0 -> "Скидка 0 ${AppPreferences.currencyName}"
             discount > 0 -> {
-                "Скидка ${discount * -1} сом"
+                "Скидка ${discount * -1} ${AppPreferences.currencyName}"
             }
             discount < 0 -> {
-                "Наценка +${discount * -1} сом"
+                "Наценка +${discount * -1} ${AppPreferences.currencyName}"
             }
-            else -> "Скидка 0 сом"
+            else -> "Скидка 0 ${AppPreferences.currencyName}"
         }
     }
 }

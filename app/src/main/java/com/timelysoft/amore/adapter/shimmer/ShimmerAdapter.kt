@@ -25,5 +25,6 @@ class ShimmeringAdapter(private val layout: Layout, private val count: Int )  :
 }
 enum class Layout(val layout: Int){
     Menu(R.layout.item_recycler_view),
-    MenuItem(R.layout.menu_shimmer_item)
+    MenuItem(R.layout.menu_shimmer_item),
+    ShimmerRestaurant(R.layout.shimmer_for_restaurant)
 }

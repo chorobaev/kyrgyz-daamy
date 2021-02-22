@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
@@ -31,8 +32,11 @@ class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        return inflater.inflate(R.layout.fragment_basket, container, false)
+        val view = inflater.inflate(R.layout.fragment_basket, container, false)
+        view.findViewById<TextView>(R.id.basket_sum).apply {
+            text = "0 ${AppPreferences.currencyName}"
+        }
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

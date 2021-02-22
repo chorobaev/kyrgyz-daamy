@@ -2,6 +2,7 @@ package com.timelysoft.amore.adapter.food
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.timelysoft.amore.R
 import com.timelysoft.amore.base.GenericRecyclerAdapter
@@ -11,6 +12,8 @@ import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.response.MenuItem
 import com.timelysoft.amore.ui.food.FoodAddToBasket
 import kotlinx.android.synthetic.main.item_food.view.*
+
+
 
 class FoodAdapter(
     private val listener: FoodListener,

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -42,7 +43,7 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
         if (!hasInitializedRootView) {
             hasInitializedRootView = true
             toolbar_back.setImageResource(R.drawable.ic_back)
-
+            val liveData  = MediatorLiveData
             val foodAdapter = FoodAdapter(this, this)
 
 

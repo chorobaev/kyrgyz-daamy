@@ -16,6 +16,10 @@ interface ApiServiceMod {
         @Path("restaurantgroupid") restaurantgroupid: String = AppPreferences.group()
     ): Response<BaseResponse<RestaurantGroupResponse>>
 
+    @GET("Schedule/{restaurantId}")
+    suspend fun getSchedules(
+        @Path("restaurantId") restaurantId: String = AppPreferences.restaurant
+    ):Response<BaseResponse<ScheduleResponse>>
     @Cacheable
     @GET("restaurants/{restaurantId}/public")
     suspend fun getRestaurantById(

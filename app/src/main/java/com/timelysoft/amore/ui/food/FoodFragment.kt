@@ -26,6 +26,7 @@ import com.timelysoft.amore.extension.getErrors
 import com.timelysoft.amore.extension.toast
 import com.timelysoft.amore.service.*
 import com.timelysoft.amore.service.response.Category
+import com.timelysoft.amore.service.response.ScheduleResponse
 import com.timelysoft.amore.ui.base.BaseFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
-class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick, OnChildItemListener {
+class FoodFragment : BaseFragment(), CategoryListener{
     private val viewModel: FoodViewModel by sharedViewModel()
     private val categoryAdapter = CategoryAdapter(this)
 
@@ -77,16 +78,33 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
         if (!hasInitializedRootView){
             hasInitializedRootView = true
             initToolbar()
+            loadRestaurant()
+            initData()
+            /*
             if (categoryList != null) {
 
                 implementExpandableAdapter(generateExpandableHeader(categoryList!!))
 
             } else {
-                loadRestaurant()
-                initData()
+
             }
+
+             */
         }
 
+    }
+
+    private fun getSchedules(){
+        viewModel.getSchedules().observe(viewLifecycleOwner, Observer {response->
+
+            response.doIfSuccess { scheduleResponse ->
+                scheduleResponse.schedules.forEach {
+
+                }
+
+            }
+
+        })
     }
 
     private fun loadRestaurant() {
@@ -200,7 +218,7 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
 
         }
     }
-
+/*
     private fun generateExpandableHeader(list: List<Category>): List<ExpandableHeaderItem> {
         return list.map {
             ExpandableHeaderItem(it, this)
@@ -231,43 +249,17 @@ class FoodFragment : BaseFragment(), CategoryListener, OnExpandableAdapterClick,
         }
     }
 
+ */
+
 
 
     override fun onCategoryClick(item: Category) {
-
-        if (item.categories != null) {
-
-            val bundle = Bundle()
-            bundle.putString("categoryName", item.name)
-            bundle.putParcelableArrayList("categories", item.categories as ArrayList<Category>)
-            findNavController().navigate(R.id.nav_food, bundle)
-
-        }
-
-    }
-
-    override fun onItemClick(category: Category) {
-        if (category.categories == null && category.hasProducts) {
-            viewModel.setCategoryId(category.id, category.name)
+        if (item.hasProducts){
+            viewModel.setCategoryId(item.id, item.name)
             findNavController().navigate(R.id.nav_food_item)
-        }
 
-    }
-
-    override fun onChildClick(category: Category) {
-        when {
-            category.categories != null -> {
-                val bundle = Bundle()
-                bundle.putParcelableArrayList("categories", category.categories as ArrayList<Category>)
-                findNavController().navigate(R.id.nav_food, bundle)
-            }
-            else -> {
-                if (category.hasProducts) {
-                    viewModel.setCategoryId(category.id, category.name)
-                    findNavController().navigate(R.id.nav_food_item)
-                }
-            }
         }
     }
+
 
 }

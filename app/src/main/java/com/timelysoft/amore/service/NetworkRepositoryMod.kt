@@ -47,6 +47,19 @@ class NetworkRepositoryMod(
             }
         }
 
+    fun getSchedules()= liveData(dispatcher){
+        val response = apiService.getSchedules()
+        try {
+            if (response.isSuccessful) {
+                emit(ApiResult.Success(response.body()!!.data))
+            } else {
+                emit(ApiResult.Error(response.errorBody()))
+            }
+        }catch (e: Exception){
+            emit(ApiResult.NetworkError(error))
+        }
+    }
+
 
     fun getMenuCategories(id: String) =
 

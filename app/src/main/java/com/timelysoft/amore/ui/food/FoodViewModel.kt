@@ -61,6 +61,8 @@ class FoodViewModel(private val network: NetworkRepositoryMod) :ViewModel(){
         return network.onlinePayment(restaurantId, orderId)
     }
 
+    fun getSchedules() :LiveData<ApiResult<ScheduleResponse>> = network.getSchedules()
+
     fun restaurants(): LiveData<ApiResult<List<RestaurantResponse>>> {
         return network.restaurants()
     }

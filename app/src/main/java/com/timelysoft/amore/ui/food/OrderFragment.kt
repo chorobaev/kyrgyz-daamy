@@ -148,7 +148,7 @@ class OrderFragment : Fragment() {
                     val orderValidate = OrderValidate(
                         deliveryId, 2, convertToOrderType(
                             basketItems
-                        ),if (order_date.text.toString().isNotEmpty()) order_date.text.toString()
+                        ), if (order_date.text.toString().isNotEmpty()) order_date.text.toString()
                             .toServerDate(order_time.text.toString()) else null
                     )
 
@@ -219,13 +219,13 @@ class OrderFragment : Fragment() {
                             findNavController().navigate(R.id.nav_order_detail, bundle)
                         }
 
-                        it.doIfError {errorBody->
+                        it.doIfError { errorBody ->
 
-                            errorBody?.getErrors {msg->
+                            errorBody?.getErrors { msg ->
                                 toast(msg)
                             }
                         }
-                        it.doIfNetwork {msg->
+                        it.doIfNetwork { msg ->
                             toast(msg)
                         }
 
@@ -370,7 +370,7 @@ class OrderFragment : Fragment() {
                         val builder = AlertDialog.Builder(requireContext())
                         val inflater = requireActivity().layoutInflater
                         val view = inflater.inflate(R.layout.fragment_order_waring_dialog, null)
-                         builder.setView(view)
+                        builder.setView(view)
                         val dialog = builder.create()
 
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -396,7 +396,7 @@ class OrderFragment : Fragment() {
                 }
 
                 result.doIfError {
-                    it?.getErrors {msg->
+                    it?.getErrors { msg ->
                         toast(msg)
                     }
 
@@ -453,7 +453,7 @@ class OrderFragment : Fragment() {
         }
     }
 
-    private fun setVisibility(visibility : Int){
+    private fun setVisibility(visibility: Int) {
         order_streets_out.visibility = visibility
         order_cities_out.visibility = visibility
         order_building_out.visibility = visibility
@@ -485,8 +485,8 @@ class OrderFragment : Fragment() {
         loadingShow()
         viewModel.cities().observe(viewLifecycleOwner, Observer { result ->
             loadingHide()
-            result.doIfError {errorBody->
-                errorBody?.getErrors {msg->
+            result.doIfError { errorBody ->
+                errorBody?.getErrors { msg ->
                     toast(msg)
                 }
             }
@@ -500,7 +500,7 @@ class OrderFragment : Fragment() {
                 }
                 order_cities.setAdapter(adapterAddress)
             }
-            result.doIfNetwork { msg->
+            result.doIfNetwork { msg ->
                 toast(msg)
             }
         })
@@ -526,10 +526,10 @@ class OrderFragment : Fragment() {
         viewModel.streets(cityId).observe(viewLifecycleOwner, Observer { result ->
             loadingHide()
 
-            result.doIfNetwork { msg->
+            result.doIfNetwork { msg ->
                 toast(msg)
             }
-            result.doIfSuccess {streetResponse->
+            result.doIfSuccess { streetResponse ->
                 val listOfResponse = mutableListOf<StreetResponse>()
                 streetResponse?.forEach {
                     listOfResponse.add(it)
@@ -563,8 +563,8 @@ class OrderFragment : Fragment() {
                     }
             }
 
-            result.doIfError {errorBody->
-                errorBody?.getErrors {msg->
+            result.doIfError { errorBody ->
+                errorBody?.getErrors { msg ->
                     toast(msg)
                 }
             }
@@ -575,63 +575,66 @@ class OrderFragment : Fragment() {
     }
 
     private fun isValid(): Boolean {
-        var valid  = true
+        var valid = true
 
-        if (!validateField(order_name.text.toString(), order_name_out)){
+        if (!validateField(order_name.text.toString(), order_name_out)) {
             valid = false
         }
 
-        if(!validateField(order_surname.text.toString(), order_surname_out)){
+        if (!validateField(order_surname.text.toString(), order_surname_out)) {
             valid = false
         }
-        if (!validateField(order_phone.text.toString(), order_phone_out)){
+        if (!validateField(order_phone.text.toString(), order_phone_out)) {
             valid = false
         }
-        if (!validateField(order_delivery_type.text.toString(), order_pay_delivery_out)){
+        if (!validateField(order_delivery_type.text.toString(), order_pay_delivery_out)) {
             valid = false
         }
-        if (!validateField(order_time.text.toString(), order_time_out)){
+        if (!validateField(order_time.text.toString(), order_time_out)) {
             valid = false
         }
-        if (!validateField(order_date.text.toString(), order_deliveryAt_out)){
+        if (!validateField(order_date.text.toString(), order_deliveryAt_out)) {
             valid = false
         }
-        if (order_phone.text.toString().isNotEmpty()){
+        if (order_phone.text.toString().isNotEmpty()) {
             val phoneNumber = order_phone.text.toString()
             val numbers = phoneNumber.filter {
                 it.isDigit()
             }
-            if (numbers.length <11){
+            if (numbers.length < 11) {
                 order_phone_out.error = "Введите номер полностью"
                 valid = false
-            }else{
+            } else {
                 order_phone_out.isErrorEnabled = false
             }
         }
 
         if (cityId != 0) {
-            if (!validateField(order_building.text.toString(), order_building_out)){
-                valid =false
+            if (!validateField(order_building.text.toString(), order_building_out)) {
+                valid = false
             }
         }
         if (deliveryId == 2) {
             if (addressId == 0) {
-                if (!validateField(order_cities.text.toString(),order_cities_out)){
-                    valid =false
-                }
-                else {
+                if (!validateField(order_cities.text.toString(), order_cities_out)) {
+                    valid = false
+                } else {
                     order_cities_out.isErrorEnabled = false
                 }
 
-                if (!validateField(order_streets.text.toString(), order_streets_out)){
+                if (!validateField(order_streets.text.toString(), order_streets_out)) {
                     valid = false
-                }else{
+                } else {
                     order_streets_out.isErrorEnabled = false
                 }
             } else {
-                if (!validateField(order_list_addresses.text.toString(), order_list_addresses_out)){
+                if (!validateField(
+                        order_list_addresses.text.toString(),
+                        order_list_addresses_out
+                    )
+                ) {
                     valid = false
-                }else{
+                } else {
                     order_list_addresses_out.isErrorEnabled = false
                 }
             }
@@ -641,16 +644,20 @@ class OrderFragment : Fragment() {
             val currentDayAndroid = calendar.get(Calendar.DAY_OF_MONTH)
 
             val time = order_time.text.toString()
-            val hour = time.substring(0, 2).toInt()
-            println(hour)
-            val hourAndroid = calendar.get(Calendar.HOUR_OF_DAY)
-            println(hourAndroid)
-            if (currentDayAndroid == currentDayView) {
-                if (hour - 1 < hourAndroid) {
-                    order_time_out.error = "Выбирете на час позже"
-                    valid = false
-                } else {
-                    order_time_out.isErrorEnabled = false
+            val hour = time.convertToMin()
+            if (hour > AppPreferences.dateTo!!.convertToMin()) {
+                valid = false
+                val time = AppPreferences.dateTo!!.convertToMin()-30
+                order_time_out.error = "Заказы принимаются до ${time.toHour()}"
+            } else {
+
+                if (currentDayAndroid == currentDayView) {
+                    if (hour <= AppPreferences.dateTo!!.convertToMin()-30) {
+                        order_time_out.isErrorEnabled = false
+                    } else {
+                        order_time_out.error = "Выбирете на пол часа раньше"
+                        valid = false
+                    }
                 }
             }
         }
@@ -663,11 +670,11 @@ class OrderFragment : Fragment() {
 
     }
 
-    private fun validateField(input: String, textInputLayout: TextInputLayout) :Boolean{
-        if (input.isEmpty()){
+    private fun validateField(input: String, textInputLayout: TextInputLayout): Boolean {
+        if (input.isEmpty()) {
             textInputLayout.error = requireContext().getString(R.string.validation)
             return false
-        }else{
+        } else {
             textInputLayout.isErrorEnabled = false
         }
         return true

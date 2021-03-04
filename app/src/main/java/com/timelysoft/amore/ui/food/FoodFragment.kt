@@ -5,37 +5,32 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.timelysoft.amore.App
 import com.timelysoft.amore.R
-import com.xwray.groupie.ExpandableGroup
 import com.timelysoft.amore.adapter.category.CategoryAdapter
 import com.timelysoft.amore.adapter.category.CategoryListener
 import com.timelysoft.amore.adapter.image.ImagePageAdapter
 import com.timelysoft.amore.adapter.shimmer.Layout
 import com.timelysoft.amore.adapter.shimmer.ShimmeringAdapter
-import com.timelysoft.amore.extension.getErrors
-import com.timelysoft.amore.extension.toast
+import com.timelysoft.amore.extension.*
 import com.timelysoft.amore.service.*
 import com.timelysoft.amore.service.response.Category
-import com.timelysoft.amore.service.response.ScheduleResponse
 import com.timelysoft.amore.ui.base.BaseFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_food.*
 import kotlinx.android.synthetic.main.fragment_food.view.*
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FoodFragment : BaseFragment(), CategoryListener{
@@ -77,6 +72,7 @@ class FoodFragment : BaseFragment(), CategoryListener{
         super.onViewCreated(view, savedInstanceState)
         if (!hasInitializedRootView){
             hasInitializedRootView = true
+            getSchedules()
             initToolbar()
             loadRestaurant()
             initData()
@@ -98,10 +94,38 @@ class FoodFragment : BaseFragment(), CategoryListener{
         viewModel.getSchedules().observe(viewLifecycleOwner, Observer {response->
 
             response.doIfSuccess { scheduleResponse ->
-                scheduleResponse.schedules.forEach {
 
+
+                val dateLocale = Calendar.getInstance()
+
+                val date = SimpleDateFormat("EEEE", Locale.ENGLISH).format(dateLocale.time)
+
+                val weeks = hashMapOf("Monday" to 0, "Tuesday" to 1, "Wednesday" to 2,
+                                                                        "Thursday" to 3,"Friday" to 4,"Saturday" to 5,
+                                                                        "Sunday" to 6)
+                val schedule = scheduleResponse.schedules.find {
+                    it.dayOfWeek == weeks[date]
                 }
+                if (schedule != null){
+                    val dateFrom = schedule.dateFrom.toHour().toDate()!!.formatTo("HH:mm")
+                    val dateTo = schedule.dateTo.toHour().toDate()!!.formatTo("HH:mm")
+                    val final = "$dateFrom - $dateTo"
+                    AppPreferences.dateFrom = dateFrom
+                    AppPreferences.dateTo = dateTo
+                    AppPreferences.schedule = final
 
+                    if (AppPreferences.lastDay == null || AppPreferences.lastDay !=date){
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Режим работы ресторана")
+                            .setMessage("${resources.getString(R.string.message_alert)}$dateFrom - $dateTo")
+                            .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
+                                // Respond to positive button press
+                                dialog.cancel()
+                            }
+                            .show()
+                    }
+                    AppPreferences.lastDay = date
+                }
             }
 
         })
@@ -120,44 +144,7 @@ class FoodFragment : BaseFragment(), CategoryListener{
             tabLayout.setupWithViewPager(viewPager)
             restaurant_detail_title.text = name
         }
-        /*
-        viewModel.restaurants().observe(viewLifecycleOwner, Observer { restaurants ->
-            restaurants.doIfLoading {
-                val shimmerRestaurantAdapter = ShimmerRestaurantAdapter(Layout.ShimmerRestaurant, 1)
-                viewPager.adapter  = shimmerRestaurantAdapter
-            }
 
-            restaurants.doIfError { errorBody ->
-                viewPager.visibility  = View.GONE
-                errorBody?.getErrors { msg ->
-                    toast(msg)
-                }
-            }
-            restaurants.doIfNetwork { msg ->
-                viewPager.visibility  = View.GONE
-                toast(msg)
-            }
-            restaurants.doIfSuccess {
-                val urls = arrayListOf<String>()
-                if (it.firstOrNull() != null) {
-                    AppPreferences.restaurant = it.first().id
-                    AppPreferences.bankPay = it.first().onlinePaymentSupported
-                    initData()
-                    if (it.first().files.isEmpty()) {
-                        urls.add("")
-                    } else {
-                        it.first().files.forEach { file->
-                            urls.add(AppPreferences.baseUrl + file.relativeUrl)
-                        }
-                    }
-
-                }
-
-
-            }
-        })
-
-         */
     }
 
     private fun initData() {

@@ -15,6 +15,37 @@ fun String.timeToLong(): Long {
     }
 }
 
+
+
+fun String.convertToMin():Int{
+    return substringBefore(":").toInt()*60 + substringAfter(":").toInt()
+}
+fun String.checkInBetween(dateFrom:String, dateTo:String):Boolean{
+    val minFrom = dateFrom.convertToMin()
+    val minTo = dateTo.convertToMin()
+    val current = this.convertToMin()
+    if (current in minFrom..minTo){
+        return true
+    }
+    return false
+}
+fun Int.toHour():String{
+    val hour = this /60
+    val minutes = this%60
+    return "$hour:$minutes"
+}
+
+fun String.toDate(dateFormat: String = "HH:mm", timeZone: TimeZone = TimeZone.getTimeZone("UTC")):Date? {
+    val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+    formatter.timeZone = timeZone
+    return formatter.parse(this)
+}
+fun Date.formatTo(dateFormat: String, timeZone: TimeZone = TimeZone.getDefault()): String {
+    val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+    formatter.timeZone = timeZone
+    return formatter.format(this)
+}
+
 fun String.toMyTimezone(): String {
     return try {
         val time = this.replace("T", " ").substring(0, 16)

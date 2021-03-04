@@ -91,37 +91,12 @@ interface ApiServiceMod {
         @Body orderValidate: ValidateOrder
     ): Response<BaseResponse<OrderValidateResponse>>
 
-    @Cacheable
-    @POST("orders/{restaurantId}/validate/delivery")
-    suspend fun validateDelivery(
-        @Path("restaurantId") restaurantId: String,
-        @Body validateDelivery: ValidateDelivery
-    ): Response<BaseResponse<String>>
 
-    @Cacheable
-    @POST("orders/{restaurantId}/validate/guest")
-    suspend fun validateGuest(
-        @Path("restaurantId") restaurantId: String,
-        @Body validateGuest: ValidateGuest
-    ): Response<BaseResponse<String>>
-
-    @GET("orders/{restaurantId}/state/{orderId}")
-    suspend fun orderState(
-        @Path("restaurantId") restaurantId: String,
-        @Path("orderId") orderId: String
-    ): Response<BaseResponse<OrderStateResponse>>
-
-    @Cacheable
     @GET("groups/{restaurantGroupId}/restaurants/public")
     suspend fun restaurants(@Path("restaurantGroupId") id: String = AppPreferences.group()): Response<BaseResponse<List<RestaurantResponse>>>
 
-
-    @Cacheable
-    @GET("payments/demir/{restaurantId}/creadentials/{orderId}")
-    suspend fun createOrderOnline(
-        @Path("restaurantId") id: String,
-        @Path("orderId") orderId: String
-    ): Response<BaseResponse<OnlinePaymentResponse>>
+    @GET("Schedule/{restaurantId}/IsOpen")
+    suspend fun isOpen(@Path("restaurantId") id: String = AppPreferences.restaurant):Response<Boolean>
 
     @Cacheable
     @GET("groups/{restaurantGroupId}/contractoffer")

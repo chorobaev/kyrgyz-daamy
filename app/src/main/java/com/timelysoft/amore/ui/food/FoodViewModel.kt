@@ -54,6 +54,7 @@ class FoodViewModel(private val network: NetworkRepositoryMod) :ViewModel(){
         return network.orderCreate(orderModel)
     }
 
+
     fun payOnline(
         restaurantId: String,
         orderId: String
@@ -61,11 +62,9 @@ class FoodViewModel(private val network: NetworkRepositoryMod) :ViewModel(){
         return network.onlinePayment(restaurantId, orderId)
     }
 
-    fun getSchedules() :LiveData<ApiResult<ScheduleResponse>> = network.getSchedules()
+    fun getSchedules(): LiveData<ApiResult<ScheduleResponse>> = network.getSchedules()
 
-    fun restaurants(): LiveData<ApiResult<List<RestaurantResponse>>> {
-        return network.restaurants()
-    }
+    fun isRestaurantOpen(): LiveData<ApiResult<Boolean>> = network.isOpen()
 
     fun cities(): LiveData<ApiResult<List<CityRestResponse>?>> {
         return network.cities()

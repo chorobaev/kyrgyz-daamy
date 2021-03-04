@@ -47,7 +47,7 @@ class NetworkRepositoryMod(
             }
         }
 
-    fun getSchedules()= liveData(dispatcher){
+    fun getSchedules() = liveData(dispatcher) {
         val response = apiService.getSchedules()
         try {
             if (response.isSuccessful) {
@@ -55,7 +55,7 @@ class NetworkRepositoryMod(
             } else {
                 emit(ApiResult.Error(response.errorBody()))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             emit(ApiResult.NetworkError(error))
         }
     }
@@ -64,39 +64,7 @@ class NetworkRepositoryMod(
     fun getMenuCategories(id: String) =
 
         liveData(dispatcher) {
-            /*
-            try {
-                emit(ApiResult.Loading("loading"))
-                val menuVersion = apiService.getMenuVersionForRes(id)
-                when {
-                    menuVersion.isSuccessful -> {
-                        val a = AppPreferences.version()
 
-                        if (a != menuVersion.body()?.data) {
-                            val menu =
-                                apiService.getCategoriesForRestaurant(id)
-                            if (menu.isSuccessful) {
-                                delay(1000)
-                                emit(ApiResult.Success(menu.body()))
-                            } else {
-                                emit(ApiResult.Error(menu.errorBody()))
-                            }
-                        }
-                    }
-                    else -> {
-                        val menu = apiService.getCategoriesForRestaurant(id)
-                        if (menu.isSuccessful) {
-                            emit(ApiResult.Success(menu.body()))
-                        } else {
-                            emit(ApiResult.Error(menu.errorBody()))
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
-
-             */
             emit(ApiResult.Loading("loading"))
             try {
                 val menu = apiService.getCategoriesForRestaurant(id)
@@ -107,7 +75,7 @@ class NetworkRepositoryMod(
                     emit(ApiResult.Error(menu.errorBody()))
                     println("dsdsdsdsdsds")
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 emit(ApiResult.NetworkError(error))
             }
         }
@@ -115,17 +83,15 @@ class NetworkRepositoryMod(
     fun restaurants() =
         liveData(dispatcher) {
             try {
-                emit(ApiResult.Loading("loading"))
-                val restaurants = apiService.restaurants(AppPreferences.group())
-                    if(restaurants.isSuccessful) {
-                        delay(1000)
-                         emit(ApiResult.Success(restaurants.body()!!.data))}
-                    else {
-                                           emit(ApiResult.Error(restaurants.errorBody()!!))
-                    }
+                val restaurants = apiService.restaurants()
+                if (restaurants.isSuccessful) {
+                    emit(ApiResult.Success(restaurants.body()!!.data))
+                } else {
+                    emit(ApiResult.Error(restaurants.errorBody()!!))
+                }
 
             } catch (throwable: Exception) {
-                emit(ApiResult.NetworkError(throwable.message!!))
+                emit(ApiResult.NetworkError(error))
             }
         }
 
@@ -161,6 +127,19 @@ class NetworkRepositoryMod(
             }
         } catch (e: Exception) {
             emit(ApiResult.NetworkError(e.printStackTrace().toString()))
+        }
+    }
+
+    fun isOpen() = liveData(dispatcher) {
+        try {
+            val response = apiService.isOpen()
+            if (response.isSuccessful){
+                emit(ApiResult.Success(response.body()!!) )
+            }else{
+                emit(ApiResult.Error(response.errorBody()))
+            }
+        }catch (e:Exception){
+            emit(ApiResult.NetworkError(error))
         }
     }
 

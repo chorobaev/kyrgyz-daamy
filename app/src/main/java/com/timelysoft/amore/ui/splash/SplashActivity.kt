@@ -26,11 +26,11 @@ class SplashActivity : AppCompatActivity() {
 
             restaurants.doIfError { errorBody ->
                 errorBody?.getErrors { msg ->
-                    Toast.makeText(this, "", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                 }
             }
             restaurants.doIfNetwork { msg ->
-                Toast.makeText(this, "", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
             }
             restaurants.doIfSuccess {
                 val intent = Intent(this, MainActivity::class.java)

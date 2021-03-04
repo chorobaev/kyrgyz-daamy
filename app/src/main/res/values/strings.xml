@@ -77,7 +77,9 @@
     <string name="sign_out">Выйти</string>
     <string name="confirm_sign_out">Вы уверены, что хотите выйти из аккаунта?</string>
     <string name="cancel">Отмена</string>
+    <string name="message_alert">Сегодня ресторан работает: </string>
     <string name="out">Выход</string>
+    <string name="accept">Ок</string>
 
     <string name="delete">Удаление</string>
     <string name="confirm_delete">Вы уверены, что хотите удалить блюдо?</string>

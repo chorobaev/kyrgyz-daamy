@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.timelysoft.amore.App
 import com.timelysoft.amore.R
 import com.timelysoft.amore.adapter.basket.BasketAdapter
 import com.timelysoft.amore.adapter.basket.BasketListener
@@ -16,8 +17,10 @@ import com.timelysoft.amore.adapter.food.BasketCommands
 import com.timelysoft.amore.bottomsheet.basket.FoodAddUpdateBottomSheet
 import com.timelysoft.amore.bottomsheet.basket.FoodAddUpdateListener
 import com.timelysoft.amore.bottomsheet.basket.Mode
+import com.timelysoft.amore.extension.getErrors
+import com.timelysoft.amore.extension.snackbar
 import com.timelysoft.amore.extension.toast
-import com.timelysoft.amore.service.AppPreferences
+import com.timelysoft.amore.service.*
 import com.timelysoft.amore.service.response.MenuItem
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_basket.*
@@ -44,11 +47,32 @@ class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
         initData()
 
         basket_pay.setOnClickListener {
-            if (!BasketCommands.basketIsEmpty()) {
-                findNavController().navigate(R.id.nav_order)
-            } else {
+            if (!BasketCommands.basketIsEmpty()){
+                viewModel.isRestaurantOpen().observe(viewLifecycleOwner, Observer {response->
+                    response.doIfSuccess {
+                        if (it){
+                            findNavController().navigate(R.id.nav_order)
+                        }else{
+                            snackbar("Вы можете сделать заказ в промежутке: ${AppPreferences.schedule}")
+                        }
+
+                    }
+
+                    response.doIfError {
+                        it?.getErrors {msg->
+                            toast(msg)
+                        }
+                    }
+
+                    response.doIfNetwork {
+                        toast(it)
+                    }
+
+                })
+            }else{
                 toast("Ваша корзина пуста")
             }
+
         }
 
         initToolbar()
@@ -76,7 +100,6 @@ class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
 
     override fun onClickItem(item: MenuItem, position: Int) {
         menuItem = item
-
 
         val bottom =
             FoodAddUpdateBottomSheet(

@@ -18,7 +18,13 @@ fun String.timeToLong(): Long {
 
 
 fun String.convertToMin():Int{
-    return substringBefore(":").toInt()*60 + substringAfter(":").toInt()
+
+    return if (substringBefore(":").toInt() == 0) {
+        24*60 + substringAfter(":").toInt()
+    }else{
+        substringBefore(":").toInt()*60 + substringAfter(":").toInt()
+    }
+
 }
 fun String.checkInBetween(dateFrom:String, dateTo:String):Boolean{
     val minFrom = dateFrom.convertToMin()

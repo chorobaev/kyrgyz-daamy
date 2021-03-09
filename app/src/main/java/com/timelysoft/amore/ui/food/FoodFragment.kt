@@ -100,9 +100,9 @@ class FoodFragment : BaseFragment(), CategoryListener{
 
                 val date = SimpleDateFormat("EEEE", Locale.ENGLISH).format(dateLocale.time)
 
-                val weeks = hashMapOf("Monday" to 0, "Tuesday" to 1, "Wednesday" to 2,
-                                                                        "Thursday" to 3,"Friday" to 4,"Saturday" to 5,
-                                                                        "Sunday" to 6)
+                val weeks = hashMapOf("Monday" to 1, "Tuesday" to 2, "Wednesday" to 3,
+                                                                        "Thursday" to 4,"Friday" to 5,"Saturday" to 6,
+                                                                        "Sunday" to 0)
                 val schedule = scheduleResponse.schedules.find {
                     it.dayOfWeek == weeks[date]
                 }
@@ -117,7 +117,7 @@ class FoodFragment : BaseFragment(), CategoryListener{
                     if (AppPreferences.lastDay == null || AppPreferences.lastDay !=date){
                         MaterialAlertDialogBuilder(requireContext())
                             .setTitle("Режим работы ресторана")
-                            .setMessage("${resources.getString(R.string.message_alert)}$dateFrom - $dateTo")
+                            .setMessage("${resources.getString(R.string.message_alert)} с $dateFrom до $dateTo")
                             .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
                                 // Respond to positive button press
                                 dialog.cancel()
@@ -205,7 +205,8 @@ class FoodFragment : BaseFragment(), CategoryListener{
 
         }
     }
-/*
+    /*
+
     private fun generateExpandableHeader(list: List<Category>): List<ExpandableHeaderItem> {
         return list.map {
             ExpandableHeaderItem(it, this)
@@ -236,7 +237,8 @@ class FoodFragment : BaseFragment(), CategoryListener{
         }
     }
 
- */
+     */
+
 
 
 

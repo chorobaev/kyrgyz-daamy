@@ -17,14 +17,15 @@ import com.timelysoft.amore.adapter.food.BasketCommands
 import com.timelysoft.amore.bottomsheet.basket.FoodAddUpdateBottomSheet
 import com.timelysoft.amore.bottomsheet.basket.FoodAddUpdateListener
 import com.timelysoft.amore.bottomsheet.basket.Mode
-import com.timelysoft.amore.extension.getErrors
-import com.timelysoft.amore.extension.snackbar
-import com.timelysoft.amore.extension.toast
+import com.timelysoft.amore.extension.*
 import com.timelysoft.amore.service.*
 import com.timelysoft.amore.service.response.MenuItem
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_basket.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
 
@@ -47,32 +48,22 @@ class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
         initData()
 
         basket_pay.setOnClickListener {
-            if (!BasketCommands.basketIsEmpty()){
-                viewModel.isRestaurantOpen().observe(viewLifecycleOwner, Observer {response->
-                    response.doIfSuccess {
-                        if (it){
-                            findNavController().navigate(R.id.nav_order)
-                        }else{
-                            snackbar("Вы можете сделать заказ в промежутке: ${AppPreferences.schedule}")
-                        }
+            if (!BasketCommands.basketIsEmpty()) {
+                val date = Calendar.getInstance().time
+                val time = date.formatTo("HH:mm")
+                if (AppPreferences.dateFrom != null && AppPreferences.dateTo != null) {
+                    if (time.checkInBetween(AppPreferences.dateFrom!!, AppPreferences.dateTo!!)) {
 
+                        findNavController().navigate(R.id.nav_order)
+                    } else {
+                        snackbar("Вы можете сделать заказ в промежутке: ${AppPreferences.schedule}")
                     }
 
-                    response.doIfError {
-                        it?.getErrors {msg->
-                            toast(msg)
-                        }
-                    }
 
-                    response.doIfNetwork {
-                        toast(it)
-                    }
-
-                })
-            }else{
-                toast("Ваша корзина пуста")
+                } else {
+                    toast("  корзина пуста")
+                }
             }
-
         }
 
         initToolbar()
@@ -88,7 +79,6 @@ class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
     override fun addOrUpdateFoodBasket(hashMap: HashMap<Int, List<MenuItem>>, count: Int) {
         TODO("Not yet implemented")
     }
-
 
 
     private fun initData() {
@@ -115,6 +105,7 @@ class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
     override fun onDeleteItem(position: Int) {
         viewModel.deleteMenuItem(position)
     }
+
     private fun initToolbar() {
         val navHostFragment: NavHostFragment = this.parentFragment as NavHostFragment
 

@@ -42,7 +42,7 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (hasInitializedRootView) {
+        if (!hasInitializedRootView) {
             hasInitializedRootView = true
             toolbar_back.setImageResource(R.drawable.ic_back)
             val foodAdapter = FoodAdapter(this, this)

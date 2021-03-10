@@ -26,7 +26,34 @@ fun String.convertToMin():Int{
     }
 
 }
-fun String.checkInBetween(dateFrom:String, dateTo:String):Boolean{
+
+fun String.checkInBetween2(dateFrom: String, dateTo: String):Boolean{
+    val time1 = SimpleDateFormat("HH:mm", Locale.getDefault()).parse(dateFrom)
+    val calendar1 = Calendar.getInstance()
+    time1?.let {
+        calendar1.time = time1
+        calendar1.add(Calendar.DATE, 1)
+    }
+
+
+    val time2 = SimpleDateFormat("HH:mm", Locale.getDefault()).parse(dateTo)
+    val calendar2 = Calendar.getInstance()
+    time2?.let {
+        calendar2.time = it
+        calendar2.add(Calendar.DATE, 1)
+    }
+
+    val d = SimpleDateFormat("HH:mm", Locale.getDefault()).parse(this)
+    val calendar3 = Calendar.getInstance()
+    d?.let {
+        calendar3.time = d
+        calendar3.add(Calendar.DATE, 1)
+    }
+    val x = calendar3.time
+
+    return x.after(calendar1.time) && x.before(calendar2.time)
+}
+fun String.checkInBetween(dateFrom: String, dateTo: String):Boolean{
     val minFrom = dateFrom.convertToMin()
     val minTo = dateTo.convertToMin()
     val current = this.convertToMin()

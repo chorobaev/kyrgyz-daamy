@@ -41,7 +41,6 @@ class FoodFragment : BaseFragment(), CategoryListener{
     private lateinit var viewPager: ViewPager
     private var categoryId: String? = null
     private var categoryName: String? = null
-    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,16 +75,7 @@ class FoodFragment : BaseFragment(), CategoryListener{
             initToolbar()
             loadRestaurant()
             initData()
-            /*
-            if (categoryList != null) {
 
-                implementExpandableAdapter(generateExpandableHeader(categoryList!!))
-
-            } else {
-
-            }
-
-             */
         }
 
     }

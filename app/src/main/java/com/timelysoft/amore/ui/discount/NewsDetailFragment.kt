@@ -31,7 +31,6 @@ class NewsDetailFragment : Fragment() {
         initArguments()
         initToolbar()
         initData()
-        news_name.text = newsModel?.name
     }
 
     private fun initArguments() {
@@ -43,9 +42,7 @@ class NewsDetailFragment : Fragment() {
     }
 
     private fun initData() {
-        if (newsModel!!.boldDescription.isNotEmpty()) {
-            discount_detail_bold_card.visibility = View.VISIBLE
-        }
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             discount_detail_description.text =
             Html.fromHtml(newsModel?.description, Html.FROM_HTML_MODE_COMPACT).trim()

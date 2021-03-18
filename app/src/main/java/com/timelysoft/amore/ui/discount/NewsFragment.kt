@@ -1,28 +1,30 @@
 package com.timelysoft.amore.ui.discount
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.timelysoft.amore.R
 import com.timelysoft.amore.adapter.news.NewsAdapter
 import com.timelysoft.amore.adapter.news.NewsListener
-import com.timelysoft.amore.extension.getErrors
-import com.timelysoft.amore.extension.loadingHide
-import com.timelysoft.amore.extension.loadingShow
-import com.timelysoft.amore.extension.toast
+import com.timelysoft.amore.extension.*
 import com.timelysoft.amore.service.*
 import com.timelysoft.amore.service.response.NewsResponse
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.no_internet_layout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class NewsFragment : Fragment(), NewsListener {
     private val viewModel: NewsViewModel by viewModel()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +39,16 @@ class NewsFragment : Fragment(), NewsListener {
         initToolbar()
         initData()
 
+        update.setOnClickListener {
+            if (isConnectedOrConnecting()){
+                discount_rv.visibility = View.VISIBLE
+                noInternetLayout.visibility = View.GONE
+                initData()
+            }
+        }
+
     }
+
 
     private fun initData() {
         loadingShow()
@@ -54,6 +65,11 @@ class NewsFragment : Fragment(), NewsListener {
                     errorBody?.getErrors { msg ->
                         toast(msg)
                     }
+                }
+                news.doIfNetwork {
+                    //toast(it)
+                    discount_rv.visibility = View.GONE
+                    noInternetLayout.visibility = View.VISIBLE
                 }
             })
     }

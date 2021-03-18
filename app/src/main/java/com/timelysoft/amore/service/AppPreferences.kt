@@ -17,7 +17,7 @@ object AppPreferences {
 
     //fun group() = "C6CA8037-3667-400B-80C8-08D8C13995D1"
     fun group() = "4ba28cd5-43a5-41a1-f3b2-08d8cf0dfc1c"
-
+    fun idOfRestaurant() = "d1946984-d536-4bf0-1fd2-08d8cf124852"
     private const val NAME = "Amore"
     private const val MODE = Context.MODE_PRIVATE
     lateinit var preferences: SharedPreferences

@@ -20,6 +20,8 @@ import com.timelysoft.amore.service.*
 import com.timelysoft.amore.service.response.MenuItem
 import com.timelysoft.amore.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.app_toolbar.*
+import kotlinx.android.synthetic.main.food_items_fragment.*
+import kotlinx.android.synthetic.main.no_internet_layout.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,6 +29,8 @@ import kotlin.collections.ArrayList
 class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
     private val viewModel: FoodViewModel by sharedViewModel()
     private lateinit var recyclerView: RecyclerView
+    private var foodAdapter: FoodAdapter? = null
+    private var categoryId:String ? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +49,7 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
         if (!hasInitializedRootView) {
             hasInitializedRootView = true
             toolbar_back.setImageResource(R.drawable.ic_back)
-            val foodAdapter = FoodAdapter(this, this)
+            foodAdapter = FoodAdapter(this, this)
 
 
             viewModel.categoryNameLiveData.observe(viewLifecycleOwner, Observer {
@@ -57,33 +61,49 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
                 findNavController().popBackStack()
             }
 
-            viewModel.categoryLiveData.observe(viewLifecycleOwner, Observer { categoryId ->
-                viewModel.itemsByCategories(categoryId)
-                    .observe(viewLifecycleOwner, Observer {
-                        it.doIfSuccess { itemsResponse ->
-                            foodAdapter.set(itemsResponse.menuItems as ArrayList<MenuItem>)
-                            recyclerView.adapter = foodAdapter
-                            viewModel._categoryItemResponse.value = itemsResponse
-                        }
-                        it.doIfError { errorBody ->
-                            errorBody?.getErrors { msg ->
-                                toast(msg)
-                            }
+            viewModel.categoryLiveData.observe(viewLifecycleOwner, Observer {
+                categoryId = it
+                loadData(it)
 
-                        }
-                        it.doIfNetwork { msg ->
-                            toast(msg)
-                        }
-                        it.doIfLoading {
-                            val shimmeringAdapter = ShimmeringAdapter(Layout.MenuItem, 4)
-                            recyclerView.adapter = shimmeringAdapter
-                        }
-                    })
             })
+
+            update.setOnClickListener {
+                if (isConnectedOrConnecting()){
+                    food_rv.visibility = View.VISIBLE
+                    noInternetLayout.visibility = View.GONE
+                    categoryId?.let { it1 -> loadData(it1) }
+                }
+            }
 
         }
 
 
+    }
+
+    private fun loadData(categoryId: String){
+        loadingShow()
+        viewModel.itemsByCategories(categoryId)
+            .observe(viewLifecycleOwner, Observer {
+                it.doIfSuccess { itemsResponse ->
+                    loadingHide()
+                    foodAdapter?.set(itemsResponse.menuItems as ArrayList<MenuItem>)
+                    recyclerView.adapter = foodAdapter
+                    viewModel._categoryItemResponse.value = itemsResponse
+                }
+                it.doIfError { errorBody ->
+                    loadingHide()
+                    errorBody?.getErrors { msg ->
+                        toast(msg)
+                    }
+
+                }
+                it.doIfNetwork { msg ->
+                    loadingHide()
+                    food_rv.visibility = View.GONE
+                    noInternetLayout.visibility = View.VISIBLE
+                }
+
+            })
     }
 
     override fun addToBasket(item: MenuItem, position: Int) {

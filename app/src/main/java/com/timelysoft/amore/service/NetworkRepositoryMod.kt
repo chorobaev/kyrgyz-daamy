@@ -48,8 +48,8 @@ class NetworkRepositoryMod(
         }
 
     fun getSchedules() = liveData(dispatcher) {
+        try{
         val response = apiService.getSchedules()
-        try {
             if (response.isSuccessful) {
                 emit(ApiResult.Success(response.body()!!.data))
             } else {
@@ -69,7 +69,6 @@ class NetworkRepositoryMod(
             try {
                 val menu = apiService.getCategoriesForRestaurant(id)
                 if (menu.isSuccessful) {
-                    delay(1000)
                     emit(ApiResult.Success(menu.body()))
                 } else {
                     emit(ApiResult.Error(menu.errorBody()))
@@ -79,7 +78,7 @@ class NetworkRepositoryMod(
                 emit(ApiResult.NetworkError(error))
             }
         }
-
+/*
     fun restaurants() =
         liveData(dispatcher) {
             try {
@@ -96,18 +95,21 @@ class NetworkRepositoryMod(
         }
 
 
+
+ */
+
     fun restaurantById(restaurantId: String) = liveData(dispatcher) {
 
         try {
             val response = apiService.getRestaurantById(restaurantId)
             when {
-                response.isSuccessful -> emit(ApiResult.Success(response.body()!!))
+                response.isSuccessful -> emit(ApiResult.Success(response.body()!!.data))
                 else -> {
                     emit(ApiResult.Error(response.errorBody()!!))
                 }
             }
         } catch (exception: Exception) {
-            emit(ApiResult.NetworkError(exception.message!!))
+            emit(ApiResult.NetworkError(error))
         }
     }
 
@@ -117,7 +119,6 @@ class NetworkRepositoryMod(
             val response = apiService.getItemsByCategory(categoryId)
             when {
                 response.isSuccessful -> {
-                    delay(1000)
                     emit(ApiResult.Success(response.body()!!.data))
                 }
                 else -> {
@@ -126,7 +127,7 @@ class NetworkRepositoryMod(
 
             }
         } catch (e: Exception) {
-            emit(ApiResult.NetworkError(e.printStackTrace().toString()))
+            emit(ApiResult.NetworkError(error))
         }
     }
 

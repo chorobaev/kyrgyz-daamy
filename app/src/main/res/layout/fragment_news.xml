@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,9 +7,18 @@
     android:orientation="vertical"
     tools:context=".ui.discount.NewsFragment">
 
-    <include layout="@layout/app_toolbar" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/app_toolbar" />
+
+    <include
+        android:id="@+id/noInternetLayout"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        layout="@layout/no_internet_layout"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         android:id="@+id/discount_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,4 +26,4 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

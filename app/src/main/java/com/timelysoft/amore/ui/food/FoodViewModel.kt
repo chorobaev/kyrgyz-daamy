@@ -64,8 +64,11 @@ class FoodViewModel(private val network: NetworkRepositoryMod) :ViewModel(){
 
     fun getSchedules(): LiveData<ApiResult<ScheduleResponse>> = network.getSchedules()
 
-    fun isRestaurantOpen(): LiveData<ApiResult<Boolean>> = network.isOpen()
 
+
+    fun getRestaurantData(): LiveData<ApiResult<RestaurantResponse>>{
+        return network.restaurantById(AppPreferences.idOfRestaurant())
+    }
     fun cities(): LiveData<ApiResult<List<CityRestResponse>?>> {
         return network.cities()
     }

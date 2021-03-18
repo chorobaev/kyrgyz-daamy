@@ -10,6 +10,12 @@
 
         layout="@layout/app_toolbar" />
 
+    <include
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:id="@+id/noInternetLayout"
+        layout="@layout/no_internet_layout"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/food_rv"

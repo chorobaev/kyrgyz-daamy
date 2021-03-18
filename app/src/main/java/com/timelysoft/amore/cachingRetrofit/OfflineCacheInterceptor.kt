@@ -2,6 +2,7 @@ package com.timelysoft.amore.cachingRetrofit
 
 import android.util.Log
 import com.timelysoft.amore.App
+import kotlinx.io.IOException
 import okhttp3.CacheControl
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -9,6 +10,8 @@ import retrofit2.Invocation
 import java.util.concurrent.TimeUnit
 
 class OfflineCacheInterceptor : Interceptor {
+
+    @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
         val invocation : Invocation? = request.tag(Invocation::class.java)
@@ -30,5 +33,6 @@ class OfflineCacheInterceptor : Interceptor {
             }
         }
         return chain.proceed(request)
+
     }
 }

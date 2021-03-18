@@ -11,14 +11,11 @@ import retrofit2.http.Path
 
 interface ApiServiceMod {
 
-    @GET("groups/{restaurantgroupid}/public")
-    suspend fun getRestaurantsByGroupId(
-        @Path("restaurantgroupid") restaurantgroupid: String = AppPreferences.group()
-    ): Response<BaseResponse<RestaurantGroupResponse>>
+
 
     @GET("Schedule/{restaurantId}")
     suspend fun getSchedules(
-        @Path("restaurantId") restaurantId: String = AppPreferences.restaurant
+        @Path("restaurantId") restaurantId: String = AppPreferences.idOfRestaurant()
     ):Response<BaseResponse<ScheduleResponse>>
     @Cacheable
     @GET("restaurants/{restaurantId}/public")

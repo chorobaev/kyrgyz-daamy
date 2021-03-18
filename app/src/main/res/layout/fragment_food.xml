@@ -9,8 +9,14 @@
     <include
         android:id="@+id/main_toolbar"
         layout="@layout/app_toolbar" />
+
+    <include
+        android:id="@+id/noInternetLayout"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/main_toolbar"
+        layout="@layout/no_internet_layout"/>
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/constraintLayoutFood"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -56,8 +62,7 @@
         android:layout_marginBottom="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutFood"
         app:layout_constraintStart_toStartOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,10 +13,10 @@ android {
         applicationId "com.timelysoft.amore"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 3
+        versionCode 4
         versionName "1.0.0"
         vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "andro idx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {

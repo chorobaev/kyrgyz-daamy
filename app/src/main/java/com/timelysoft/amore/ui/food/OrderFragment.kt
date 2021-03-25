@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.widget.addTextChangedListener
@@ -60,10 +61,14 @@ class OrderFragment : Fragment() {
         getAutoCities()
         showWarning()
 
-
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val date = Utils.convertDate(day, month + 1, year)
+        order_date.setText(date)
         order_date.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                val calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
 
                 val dialog = DatePickerDialog(
                     view.context,
@@ -71,11 +76,11 @@ class OrderFragment : Fragment() {
                     { _, year, month, dayOfMonth ->
                         order_date.setText(Utils.convertDate(dayOfMonth, month + 1, year))
                     },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
+                    year,
+                    month,
+                    day
                 )
-                dialog.datePicker.maxDate = System.currentTimeMillis() - 1000
+                dialog.datePicker.minDate = System.currentTimeMillis() - 1000
                 dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 dialog.show()
 
@@ -641,25 +646,92 @@ class OrderFragment : Fragment() {
         }
         if (order_time.text!!.isNotEmpty() && order_date.text!!.isNotEmpty()) {
             val currentDayView = order_date.text?.substring(0, 2)?.toInt()
+            Log.d("CurrentDayView",currentDayView.toString())
+            val currentMonthView = order_date.text?.substring(3, 5)?.toInt()
+            Log.d("CurrentMonthView",currentMonthView.toString())
+
             val currentDayAndroid = calendar.get(Calendar.DAY_OF_MONTH)
+            Log.d("CurrentDayAndroid",currentDayAndroid.toString())
+
+            val currentMonthAndroid = calendar.get(Calendar.MONTH)+1
+            Log.d("CurrentMonthAndroid",currentMonthAndroid.toString())
+
+            val date = Calendar.getInstance().time
+
+            val currentTime = date.formatTo("HH:mm").convertToMin(DateFromTo.DateTo)
 
             val time = order_time.text.toString()
-            val hour = time.convertToMin()
-            if (hour > AppPreferences.dateTo!!.convertToMin()) {
-                valid = false
-                val time = AppPreferences.dateTo!!.convertToMin()-30
-                order_time_out.error = "Заказы принимаются до ${time.toHour()}"
-            } else {
 
-                if (currentDayAndroid == currentDayView) {
-                    if (hour <= AppPreferences.dateTo!!.convertToMin()-30) {
+            val hour = time.convertToMin(DateFromTo.DateFrom)
+
+            val minusThirtyTime = AppPreferences.dateTo!!.convertToMin(DateFromTo.DateTo) - 30
+
+            val closedTime = AppPreferences.dateTo!!.convertToMin(DateFromTo.DateTo)
+
+
+            if (currentDayView != currentDayAndroid || currentMonthView != currentMonthAndroid) {
+                Log.d("CurrentDayNo","dasd")
+                val calendar1 = Calendar.getInstance()
+                calendar1[Calendar.DAY_OF_MONTH] = currentDayView!!
+                calendar1[Calendar.MONTH] = currentMonthView!!
+                val dayOfWeek = calendar1[Calendar.DAY_OF_WEEK]
+                val schedule = Schedules.scheduleList.find {
+                    it.dayOfWeek == dayOfWeek
+                }
+                schedule?.let {
+                    Log.d("Schedule","NotNull")
+
+                    val dateFrom = schedule.dateFrom.toHour().toDate()!!.formatTo("HH:mm")
+                    val dateTo = schedule.dateTo.toHour().toDate()!!.formatTo("HH:mm")
+
+                    if (hour in schedule.dateFrom.toHour().toDate()!!.formatTo("HH:mm")
+                            .convertToMin(DateFromTo.DateFrom)
+                            .rangeTo(closedTime)
+                    ) {
+
                         order_time_out.isErrorEnabled = false
                     } else {
-                        order_time_out.error = "Выбирете на пол часа раньше"
+
+                        order_time_out.error = "График: $dateFrom-$dateTo"
                         valid = false
                     }
+                }?: Log.d("Schedule","Null")
+
+
+
+            } else {
+                Log.d("CurrentDAY: ","+")
+                if (currentTime + 60 <= hour) {
+                    Log.d("CurrentDAYINCOND: ","+")
+
+                    if (hour > closedTime) {
+                        valid = false
+                        //val time = AppPreferences.dateTo!!.convertToMin(DateFromTo.DateTo) - 30
+                        //order_time_out.error = "Заказы принимаются до ${time.toHour()}"
+                        order_time_out.error = "Ресторан закрывается в ${AppPreferences.dateTo}"
+                    } else {
+                        if (currentTime in minusThirtyTime..closedTime) {
+                            valid = false
+                            order_time_out.error = "Заказы принимаются на пол часа раньше"
+                        } else {
+                            if (hour <= closedTime) {
+                                order_time_out.isErrorEnabled = false
+                            } else {
+                                    order_time_out.error =
+                                        "Ресторан закрывается в ${AppPreferences.dateTo}"
+                                    valid = false
+
+                            }
+                        }
+
+                    }
+                } else {
+                    Log.d("CurrentDAYINCOND: ","-")
+                    order_time_out.error = "Минимум на час позже чем сейчас"
+                    valid = false
                 }
             }
+
         }
 
         if (!order_warning_checkbox.isChecked) {

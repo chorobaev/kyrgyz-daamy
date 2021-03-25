@@ -111,8 +111,11 @@ class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.Co
                     "Sunday" to 0
                 )
                 val schedule = scheduleResponse.schedules.find {
+                    Schedules.scheduleList.add(it)
                     it.dayOfWeek == weeks[date]
                 }
+                Log.d("DateFrom ",schedule?.dateFrom.toString())
+                Log.d("DateTo",schedule?.dateTo.toString())
                 if (schedule != null) {
                     val dateFrom = schedule.dateFrom.toHour().toDate()!!.formatTo("HH:mm")
                     val dateTo = schedule.dateTo.toHour().toDate()!!.formatTo("HH:mm")

@@ -17,16 +17,22 @@ fun String.timeToLong(): Long {
 
 
 
-fun String.convertToMin():Int{
+fun String.convertToMin(date: DateFromTo):Int{
 
-    return if (substringBefore(":").toInt() == 0) {
-        24*60 + substringAfter(":").toInt()
+    return if (date == DateFromTo.DateTo){
+        if (substringBefore(":").toInt() == 0) {
+            24*60 + substringAfter(":").toInt()
+        }else{
+            substringBefore(":").toInt()*60 + substringAfter(":").toInt()
+        }
     }else{
         substringBefore(":").toInt()*60 + substringAfter(":").toInt()
+
     }
 
 }
 
+//17:45
 fun String.checkInBetween2(dateFrom: String, dateTo: String):Boolean{
     val time1 = SimpleDateFormat("HH:mm", Locale.getDefault()).parse(dateFrom)
     val calendar1 = Calendar.getInstance()
@@ -37,30 +43,44 @@ fun String.checkInBetween2(dateFrom: String, dateTo: String):Boolean{
 
 
     val time2 = SimpleDateFormat("HH:mm", Locale.getDefault()).parse(dateTo)
+    /*
     val calendar2 = Calendar.getInstance()
     time2?.let {
         calendar2.time = it
         calendar2.add(Calendar.DATE, 1)
     }
 
+     */
+
     val d = SimpleDateFormat("HH:mm", Locale.getDefault()).parse(this)
     val calendar3 = Calendar.getInstance()
+    /*
     d?.let {
         calendar3.time = d
         calendar3.add(Calendar.DATE, 1)
     }
     val x = calendar3.time
 
-    return x.after(calendar1.time) && x.before(calendar2.time)
+     */
+
+    return d in time1..time2//x.after(calendar1.time) && x.before(calendar2.time)
 }
+
+
+
 fun String.checkInBetween(dateFrom: String, dateTo: String):Boolean{
-    val minFrom = dateFrom.convertToMin()
-    val minTo = dateTo.convertToMin()
-    val current = this.convertToMin()
+    val minFrom = dateFrom.convertToMin(DateFromTo.DateFrom)
+    val minTo = dateTo.convertToMin(DateFromTo.DateTo)
+    val current = this.convertToMin(DateFromTo.DateFrom)
     if (current in minFrom..minTo){
         return true
     }
     return false
+}
+
+enum class DateFromTo{
+    DateFrom,
+    DateTo
 }
 fun Int.toHour():String{
     val hour = this /60

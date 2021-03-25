@@ -110,7 +110,7 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
         val date = Calendar.getInstance().time
         val time = date.formatTo("HH:mm")
         if (AppPreferences.dateFrom != null && AppPreferences.dateTo != null) {
-            if (time.checkInBetween2(AppPreferences.dateFrom!!, AppPreferences.dateTo!!)) {
+            if (time.checkInBetween(AppPreferences.dateFrom!!, AppPreferences.dateTo!!)) {
                 if (item.modifierGroups.isNotEmpty()) {
                     val bottom =
                         FoodAddUpdateBottomSheet(

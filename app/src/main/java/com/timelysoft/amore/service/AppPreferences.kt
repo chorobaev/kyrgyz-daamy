@@ -10,7 +10,6 @@ object AppPreferences {
 
 
 
-    const val baseUrlCRM = "https://kaynar-test.timelysoft.org:8041/"
     //const val baseUrl = "https://deliverycarbis-test.timelysoft.org:5096/"
     const val baseUrl = "https://saturn.carbis.ru:5849/"
     const val HEADER_CACHE_CONTROL = "Cache-Control"

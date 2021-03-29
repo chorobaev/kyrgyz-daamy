@@ -15,27 +15,18 @@
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/main_toolbar"
         layout="@layout/no_internet_layout"/>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayoutFood"
-        app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="restaurant_image,restaurant_detail_title" />
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/restaurant_detail_image_viewPager"
+    <ImageView
         android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/main_toolbar"
         android:layout_height="200dp"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@id/restaurant_image"/>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_marginHorizontal="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/restaurant_detail_image_viewPager"
-        app:tabBackground="@drawable/tab_bg"
-        app:tabGravity="center"
-        app:tabIndicatorHeight="0dp" />
 
         <TextView
             android:id="@+id/restaurant_detail_title"
@@ -51,18 +42,16 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/restaurant_image" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/food_category_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutFood"
+        app:layout_constraintTop_toBottomOf="@id/restaurant_detail_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </androidx.constraintlayout.widget.ConstraintLayout>

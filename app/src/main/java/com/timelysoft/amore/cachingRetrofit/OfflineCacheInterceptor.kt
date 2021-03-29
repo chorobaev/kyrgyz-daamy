@@ -29,7 +29,9 @@ class OfflineCacheInterceptor : Interceptor {
                     .build()
             }
             else{
+
                 Log.d("CacheInterceptor : ", "was not called")
+
             }
         }
         return chain.proceed(request)

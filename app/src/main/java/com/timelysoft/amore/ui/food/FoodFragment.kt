@@ -1,8 +1,6 @@
 package com.timelysoft.amore.ui.food
 
-import android.content.Context
-import android.content.IntentFilter
-import android.net.ConnectivityManager
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,12 +34,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.ConnectivityReceiverListener
+class FoodFragment : BaseFragment(), CategoryListener{
     private val viewModel: FoodViewModel by sharedViewModel()
     private val categoryAdapter = CategoryAdapter(this)
 
     private var categoryList: ArrayList<Category>? = null
-    private lateinit var viewPager: ViewPager
     private var categoryId: String? = null
     private var categoryName: String? = null
 
@@ -61,8 +58,7 @@ class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.Co
         val view =
             getPersistentView(inflater, container, savedInstanceState, R.layout.fragment_food)
 
-        viewPager = view?.findViewById(R.id.restaurant_detail_image_viewPager)!!
-        view.main_toolbar.visibility = View.GONE
+        view?.main_toolbar?.visibility = View.GONE
 
         return view
     }
@@ -74,11 +70,10 @@ class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.Co
             hasInitializedRootView = true
             initToolbar()
             init()
-
             update.setOnClickListener {
                 if (isConnectedOrConnecting()) {
                     food_category_rv.visibility = View.VISIBLE
-                    constraintLayoutFood.visibility = View.VISIBLE
+                    group.visibility = View.VISIBLE
                     noInternetLayout.visibility = View.GONE
                     init()
                 }
@@ -114,8 +109,7 @@ class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.Co
                     Schedules.scheduleList.add(it)
                     it.dayOfWeek == weeks[date]
                 }
-                Log.d("DateFrom ",schedule?.dateFrom.toString())
-                Log.d("DateTo",schedule?.dateTo.toString())
+
                 if (schedule != null) {
                     val dateFrom = schedule.dateFrom.toHour().toDate()!!.formatTo("HH:mm")
                     val dateTo = schedule.dateTo.toHour().toDate()!!.formatTo("HH:mm")
@@ -156,7 +150,7 @@ class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.Co
             }
             restaurants.doIfNetwork { msg ->
                 food_category_rv.visibility = View.GONE
-                constraintLayoutFood.visibility = View.GONE
+                group.visibility = View.GONE
                 noInternetLayout.visibility = View.VISIBLE
                 //Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
             }
@@ -167,19 +161,7 @@ class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.Co
                 AppPreferences.currencyName = it.currency.name
                 AppPreferences.restaurant = it.id
                 AppPreferences.bankPay = it.onlinePaymentSupported
-                if (it.files.isEmpty()) {
-                    urls.add("")
-                } else {
-                    it.files.forEach { file ->
-                        urls.add(AppPreferences.baseUrl + file.relativeUrl)
-                    }
-                }
-                val adapter = ImagePageAdapter(urls)
-                viewPager.adapter = adapter
-                if (urls.size == 1) {
-                    tabLayout.visibility = View.GONE
-                }
-                tabLayout.setupWithViewPager(viewPager)
+                restaurant_image.loadImageCoil(AppPreferences.baseUrl + it.files.first().relativeUrl)
                 restaurant_detail_title.text = it.name
 
             }
@@ -187,7 +169,7 @@ class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.Co
 
 
     }
-
+//keyAlias: amore password: amore123 password:0312490131Bo
     private fun initData() {
         viewModel.categoriesByRestaurantId(AppPreferences.idOfRestaurant())
             .observe(viewLifecycleOwner, Observer { response ->
@@ -229,21 +211,10 @@ class FoodFragment : BaseFragment(), CategoryListener{ //ConnectivityReceiver.Co
     }
 
     private fun initToolbar() {
-        val navHostFragment: NavHostFragment = this.parentFragment as NavHostFragment
 
-        val count = navHostFragment.childFragmentManager.backStackEntryCount
-        if (count > 0) {
-            toolbar_back.visibility = View.VISIBLE
-            toolbar_text.text = categoryName
-        } else {
-            toolbar_text.text = getString(R.string.menu_food)
-        }
         toolbar_back.setOnClickListener {
-            if (count > 0) {
                 findNavController().popBackStack()
             }
-
-        }
     }
 
 

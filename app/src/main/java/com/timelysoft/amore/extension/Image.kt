@@ -1,21 +1,24 @@
 package com.timelysoft.amore.extension
 
 import android.widget.ImageView
+import coil.load
+import coil.loadAny
+import coil.size.Scale
+import coil.size.ViewSizeResolver
+import coil.transform.BlurTransformation
+import coil.transform.CircleCropTransformation
+import coil.transform.RoundedCornersTransformation
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
+
 import com.timelysoft.amore.R
 
 
-fun ImageView.loadImage(url: String?) {
-    try {
-        Glide.with(context)
-            .load(url)
-            .error(R.drawable.img_placeholder_loading)
-            .thumbnail(Glide.with(this).load(R.drawable.img_placeholder_not_found))
-            .into(this)
-    } catch (e: Exception) {
-          
+
+fun ImageView.loadImageCoil(url:String){
+    this.load(url){
+        placeholder(R.drawable.img_placeholder_loading)
+        error(R.drawable.img_placeholder_not_found)
+        transformations(RoundedCornersTransformation())
     }
 }
 

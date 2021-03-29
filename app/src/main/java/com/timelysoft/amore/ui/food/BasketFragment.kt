@@ -29,7 +29,7 @@ import kotlin.collections.HashMap
 
 class BasketFragment : Fragment(), BasketListener, FoodAddUpdateListener {
 
-    val viewModel: FoodViewModel by sharedViewModel()
+    private val viewModel: FoodViewModel by sharedViewModel()
     var menuItem: MenuItem? = null
 
     override fun onCreateView(

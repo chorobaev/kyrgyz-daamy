@@ -102,8 +102,18 @@
     <string name="basket_title">Корзина</string>
     <string name="no_connection">Нет подключения к интернету
     </string>
-
-
+    <string name="listOfAddresses">Список адресов</string>
+    <string name="order_delivery_type">Заказ</string>
+    <string name="order_streets">Улица</string>
+    <string name="order_building">Дом</string>
+    <string name="order_apartments">Квартира</string>
+    <string name="order_floor">Этаж</string>
+    <string name="order_entry">Вход</string>
+    <string name="order_entry_code">Код</string>
+    <string name="order_time">Время</string>
+    <string name="order_warning_tb">Я согласен с условиями соглашения</string>
+    <string name="choose_street_order">Выбирите улицу</string>
+    <string name="order_cities">Город</string>
 
 
 </resources>

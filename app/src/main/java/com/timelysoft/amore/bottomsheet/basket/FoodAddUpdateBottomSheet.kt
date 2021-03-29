@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.amore.R
 import com.timelysoft.amore.adapter.food.CustomAdapterForMod
 import com.timelysoft.amore.adapter.food.ItemModGroupListener
-import com.timelysoft.amore.extension.loadImage
+import com.timelysoft.amore.extension.loadImageCoil
 import com.timelysoft.amore.extension.toast
 import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.response.BaseModifierGroup
@@ -112,7 +112,7 @@ class FoodAddUpdateBottomSheet(
         }
         food_order_title.text = menuItem.name
         food_order_cost.text = menuItem.price.toString() + " ${AppPreferences.currencyName}"
-        food_order_photo.loadImage("https://images.carbis.ru/amore/${menuItem.code}.png")
+        food_order_photo.loadImageCoil("https://images.carbis.ru/amore/${menuItem.code}.png")
         food_order_description.visibility = View.VISIBLE
         food_order_description.text = menuItem.recipe
 

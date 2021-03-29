@@ -17,10 +17,10 @@
         <ImageView
             android:id="@+id/food_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:maxHeight="280dp"
-            android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            android:adjustViewBounds="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

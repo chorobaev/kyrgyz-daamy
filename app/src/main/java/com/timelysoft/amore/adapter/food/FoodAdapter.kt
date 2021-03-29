@@ -2,12 +2,11 @@ package com.timelysoft.amore.adapter.food
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.timelysoft.amore.R
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
-import com.timelysoft.amore.extension.loadImage
+import com.timelysoft.amore.extension.loadImageCoil
 import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.response.MenuItem
 import com.timelysoft.amore.ui.food.FoodAddToBasket
@@ -23,7 +22,7 @@ class FoodAdapter(
     GenericRecyclerAdapter<MenuItem>(menuItems) {
     override fun bind(item: MenuItem, holder: ViewHolder) {
 
-        holder.itemView.food_image.loadImage(item.imageLink)
+        holder.itemView.food_image.loadImageCoil(item.imageLink)
         holder.itemView.food_title.text = item.name
         holder.itemView.food_price.text = (item.price).toString() + " ${AppPreferences.currencyName}"
         holder.itemView.food_description.visibility = View.GONE

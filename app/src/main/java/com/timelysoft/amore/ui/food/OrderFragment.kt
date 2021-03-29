@@ -120,7 +120,6 @@ class OrderFragment : Fragment() {
                 timePickerDialog.show()
 
             }
-
             false
         }
 
@@ -336,10 +335,7 @@ class OrderFragment : Fragment() {
             order_phone_out.isErrorEnabled = false
 
         }
-        order_type.addTextChangedListener {
-            order_type_out.isErrorEnabled = false
 
-        }
         order_building.addTextChangedListener {
             order_building_out.isErrorEnabled = false
         }
@@ -420,11 +416,6 @@ class OrderFragment : Fragment() {
             android.R.layout.simple_dropdown_item_1line,
             discountType
         )
-        order_type.setAdapter(discountTypeAdapter)
-        order_type.setOnItemClickListener { _, _, position, _ ->
-            discountId = (position + 1)
-        }
-
         val orderType = listOf("Самовывоз", "Доставка")
         val payTypeAdapter =
             ArrayAdapter(

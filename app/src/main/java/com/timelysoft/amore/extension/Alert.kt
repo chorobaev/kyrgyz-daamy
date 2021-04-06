@@ -25,10 +25,6 @@ fun Fragment.loadingShow() {
     }
 }
 
-fun Fragment.successfullyAdded(){
-
-}
-
 
 fun Fragment.loadingHide(time: Long = 0) {
     try {

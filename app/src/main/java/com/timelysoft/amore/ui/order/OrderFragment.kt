@@ -1,4 +1,4 @@
-package com.timelysoft.amore.ui.food
+package com.timelysoft.amore.ui.order
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -12,30 +12,34 @@ import android.text.Html
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import com.timelysoft.amore.R
+import com.timelysoft.amore.databinding.FragmentOrderBinding
+import com.timelysoft.amore.databinding.FragmentOrderWaringDialogBinding
 import com.timelysoft.amore.extension.*
 import com.timelysoft.amore.service.*
 import com.timelysoft.amore.service.model.AddressInfo
 import com.timelysoft.amore.service.response.*
 import com.timelysoft.amore.service.response.MenuItem
+import com.timelysoft.amore.ui.food.Schedules
+import com.timelysoft.amore.ui.viewBinding
 import com.timelysoft.amore.utils.AutoCompleteAdapter
 import com.timelysoft.amore.utils.Utils
-import kotlinx.android.synthetic.main.app_toolbar.*
-import kotlinx.android.synthetic.main.fragment_order.*
-import kotlinx.android.synthetic.main.fragment_order_waring_dialog.view.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class OrderFragment : Fragment() {
-    private val viewModel: FoodViewModel by viewModel()
+@AndroidEntryPoint
+class OrderFragment : Fragment(R.layout.fragment_order) {
+    private val viewModel by viewModels<OrderViewModel>()
     private var cityId: Int = 0
     private var streetId: Int = 0
     private var addressId: Int = 0
@@ -43,14 +47,7 @@ class OrderFragment : Fragment() {
     private var deliveryId = -1
     private val calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        return inflater.inflate(R.layout.fragment_order, container, false)
-
-    }
+    private val binding by viewBinding(FragmentOrderBinding::bind)
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -66,15 +63,15 @@ class OrderFragment : Fragment() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val date = Utils.convertDate(day, month + 1, year)
-        order_date.setText(date)
-        order_date.setOnTouchListener { _, event ->
+        binding.orderDate.setText(date)
+        binding.orderDate.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
 
                 val dialog = DatePickerDialog(
                     view.context,
                     android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                     { _, year, month, dayOfMonth ->
-                        order_date.setText(Utils.convertDate(dayOfMonth, month + 1, year))
+                        binding.orderDate.setText(Utils.convertDate(dayOfMonth, month + 1, year))
                     },
                     year,
                     month,
@@ -87,7 +84,7 @@ class OrderFragment : Fragment() {
             }
             false
         }
-        order_time.setOnTouchListener { _, event ->
+        binding.orderTime.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val dateAndTime = Calendar.getInstance()
 
@@ -97,15 +94,15 @@ class OrderFragment : Fragment() {
                         dateAndTime[Calendar.MINUTE] = minute
                         if (minute < 10) {
                             if (hourOfDay < 10) {
-                                order_time.setText("0$hourOfDay:0$minute")
+                                binding.orderTime.setText("0$hourOfDay:0$minute")
                             } else {
-                                order_time.setText("$hourOfDay:0$minute")
+                                binding.orderTime.setText("$hourOfDay:0$minute")
                             }
                         } else {
                             if (hourOfDay < 10) {
-                                order_time.setText("0$hourOfDay:$minute")
+                                binding.orderTime.setText("0$hourOfDay:$minute")
                             } else {
-                                order_time.setText("$hourOfDay:$minute")
+                                binding.orderTime.setText("$hourOfDay:$minute")
                             }
                         }
 
@@ -124,36 +121,45 @@ class OrderFragment : Fragment() {
         }
 
 
-        order_validate.setOnClickListener {
+        binding.orderValidate.setOnClickListener {
             if (isValid()) {
                 loadingShow()
-                viewModel.getBasketElements().observe(viewLifecycleOwner, Observer { basketItems ->
+                viewModel.getBasketElements().observe(viewLifecycleOwner, { basketItems ->
                     val orderModel = Order()
                     orderModel.discountType = discountId
                     orderModel.deliveryType = deliveryId
-                    orderModel.products = convertToProductType(basketItems)
+                    val mList = mutableListOf<MenuItem>()
+                    basketItems.values.forEach {
+                        mList.add(it)
+                    }
+                    orderModel.products = convertToProductType(mList)
                     val questValidate = GuestValidate(
-                        order_phone.text.toString(),
-                        order_name.text.toString(),
-                        order_surname.text.toString(),
+                        binding.orderPhone.text.toString(),
+                        binding.orderName.text.toString(),
+                        binding.orderSurname.text.toString(),
                         "middle",
                         AddressInfo(
                             1,
                             cityId,
                             streetId,
-                            order_building.text.toString(),
-                            order_entry.text.toString(),
-                            order_entry_code.text.toString(),
-                            order_floor.text.toString(),
-                            order_apartments_text.text.toString(),
-                            order_comment.text.toString()
+                            binding.orderBuilding.text.toString(),
+                            binding.orderEntry.text.toString(),
+                            binding.orderEntryCode.text.toString(),
+                            binding.orderFloor.text.toString(),
+                            binding.orderApartmentsText.text.toString(),
+                            binding.orderComment.text.toString()
                         )
                     )
                     val orderValidate = OrderValidate(
-                        deliveryId, 2, convertToOrderType(
-                            basketItems
-                        ), if (order_date.text.toString().isNotEmpty()) order_date.text.toString()
-                            .toServerDate(order_time.text.toString()) else null
+                        deliveryId,
+                        2,
+                        convertToOrderType(
+                            mList
+                        ),
+                        if (binding.orderDate.text.toString()
+                                .isNotEmpty()
+                        ) binding.orderDate.text.toString()
+                            .toServerDate(binding.orderTime.text.toString()) else null
                     )
 
                     val validateOrder = ValidateOrder(questValidate, orderValidate)
@@ -168,9 +174,9 @@ class OrderFragment : Fragment() {
                             if (deliveryId == 1) {
                                 guestModel = Guest(
                                     null,
-                                    order_name.text.toString(),
-                                    order_phone.text.toString(),
-                                    order_surname.text.toString()
+                                    binding.orderName.text.toString(),
+                                    binding.orderPhone.text.toString(),
+                                    binding.orderSurname.text.toString()
                                 )
                             } else {
                                 if (streetId == -1) {
@@ -179,16 +185,16 @@ class OrderFragment : Fragment() {
                                             1,
                                             cityId,
                                             streetId,
-                                            order_building.text.toString(),
-                                            order_entry.text.toString(),
-                                            order_entry_code.text.toString(),
-                                            order_floor.text.toString(),
-                                            order_apartments_text.text.toString(),
-                                            order_comment.text.toString()
+                                            binding.orderBuilding.text.toString(),
+                                            binding.orderEntry.text.toString(),
+                                            binding.orderEntryCode.text.toString(),
+                                            binding.orderFloor.text.toString(),
+                                            binding.orderApartmentsText.text.toString(),
+                                            binding.orderComment.text.toString()
                                         ),
-                                        order_name.text.toString(),
-                                        order_phone.text.toString(),
-                                        order_surname.text.toString()
+                                        binding.orderName.text.toString(),
+                                        binding.orderPhone.text.toString(),
+                                        binding.orderSurname.text.toString()
                                     )
                                 } else if (streetId != 0) {
                                     guestModel = Guest(
@@ -196,26 +202,26 @@ class OrderFragment : Fragment() {
                                             1,
                                             cityId,
                                             streetId,
-                                            order_building.text.toString(),
-                                            order_entry.text.toString(),
-                                            order_entry_code.text.toString(),
-                                            order_floor.text.toString(),
-                                            order_apartments_text.text.toString(),
-                                            order_comment.text.toString()
+                                            binding.orderBuilding.text.toString(),
+                                            binding.orderEntry.text.toString(),
+                                            binding.orderEntryCode.text.toString(),
+                                            binding.orderFloor.text.toString(),
+                                            binding.orderApartmentsText.text.toString(),
+                                            binding.orderComment.text.toString()
                                         ),
-                                        order_name.text.toString(),
-                                        order_phone.text.toString(),
-                                        order_surname.text.toString()
+                                        binding.orderName.text.toString(),
+                                        binding.orderPhone.text.toString(),
+                                        binding.orderSurname.text.toString()
                                     )
                                     if (addressId != 0) {
                                         guestModel.addressInfo?.cityId = addressId
                                     }
                                 }
                             }
-                            orderModel.comment = order_comment.text.toString()
+                            orderModel.comment = binding.orderComment.text.toString()
                             orderModel.deliverAt =
-                                order_date.text.toString()
-                                    .toServerDate(order_time.text.toString())
+                                binding.orderDate.text.toString()
+                                    .toServerDate(binding.orderTime.text.toString())
 
                             val createOrder = CreateOrder(guestModel, orderModel)
                             bundle.putParcelable("result", it as OrderValidateResponse)
@@ -229,8 +235,18 @@ class OrderFragment : Fragment() {
                                 toast(msg)
                             }
                         }
-                        it.doIfNetwork { msg ->
-                            toast(msg)
+                        it.doIfNetwork { errorTypes ->
+                            when (errorTypes) {
+                                is ErrorTypes.TimeOutError -> {
+                                    toast(errorTypes.msg)
+                                }
+                                is ErrorTypes.ConnectionError -> {
+                                    toast(errorTypes.msg)
+                                }
+                                is ErrorTypes.EmptyResultError -> {
+                                    toast(errorTypes.msg)
+                                }
+                            }
                         }
 
 
@@ -324,37 +340,37 @@ class OrderFragment : Fragment() {
 
     private fun initViews() {
 
-        order_name.addTextChangedListener {
-            order_name_out.isErrorEnabled = false
+        binding.orderName.addTextChangedListener {
+            binding.orderNameOut.isErrorEnabled = false
         }
-        order_surname.addTextChangedListener {
-            order_surname_out.isErrorEnabled = false
+        binding.orderSurname.addTextChangedListener {
+            binding.orderSurnameOut.isErrorEnabled = false
 
         }
-        order_phone.addTextChangedListener {
-            order_phone_out.isErrorEnabled = false
+        binding.orderPhone.addTextChangedListener {
+            binding.orderPhoneOut.isErrorEnabled = false
 
         }
 
-        order_building.addTextChangedListener {
-            order_building_out.isErrorEnabled = false
+        binding.orderBuilding.addTextChangedListener {
+            binding.orderBuildingOut.isErrorEnabled = false
         }
-        order_delivery_type.addTextChangedListener {
-            order_pay_delivery_out.isErrorEnabled = false
+        binding.orderDeliveryType.addTextChangedListener {
+            binding.orderPayDeliveryOut.isErrorEnabled = false
 
         }
-        order_date.addTextChangedListener {
-            order_deliveryAt_out.isErrorEnabled = false
+        binding.orderDate.addTextChangedListener {
+            binding.orderDeliveryAtOut.isErrorEnabled = false
         }
-        order_time.addTextChangedListener {
-            order_time_out.isErrorEnabled = false
+        binding.orderTime.addTextChangedListener {
+            binding.orderTimeOut.isErrorEnabled = false
 
         }
-        order_cities.addTextChangedListener {
-            order_cities_out.isErrorEnabled = false
+        binding.orderCities.addTextChangedListener {
+            binding.orderCitiesOut.isErrorEnabled = false
         }
-        order_streets.addTextChangedListener {
-            order_streets_out.isErrorEnabled = false
+        binding.orderStreets.addTextChangedListener {
+            binding.orderStreetsOut.isErrorEnabled = false
         }
 
 
@@ -362,38 +378,36 @@ class OrderFragment : Fragment() {
 
     private fun showWarning() {
 
-        order_warning_tv.setOnClickListener {
+        binding.orderWarningTv.setOnClickListener {
             loadingShow()
-            viewModel.warning().observe(viewLifecycleOwner, Observer { result ->
+            viewModel.warning().observe(viewLifecycleOwner, { result ->
                 loadingHide()
                 result.doIfSuccess { response ->
-                    if (response != null) {
-                        val builder = AlertDialog.Builder(requireContext())
-                        val inflater = requireActivity().layoutInflater
-                        val view = inflater.inflate(R.layout.fragment_order_waring_dialog, null)
-                        builder.setView(view)
-                        val dialog = builder.create()
+                    val builder = AlertDialog.Builder(requireContext())
+                    val inflater = requireActivity().layoutInflater
+                    val bindingWarnings = FragmentOrderWaringDialogBinding.inflate(inflater)
+                    builder.setView(view)
+                    val dialog = builder.create()
 
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                            view.warning_msg.text =
-                                Html.fromHtml(response, Html.FROM_HTML_MODE_LEGACY).trim()
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        bindingWarnings.warningMsg.text =
+                            Html.fromHtml(response.data, Html.FROM_HTML_MODE_LEGACY).trim()
 
-                        } else {
-                            view.warning_msg.text = Html.fromHtml(response)
+                    } else {
+                        bindingWarnings.warningMsg.text = Html.fromHtml(response.data)
 
-                        }
-
-                        view.warning_yes.setOnClickListener {
-                            order_warning_checkbox.isChecked = true
-                            dialog.dismiss()
-                        }
-                        view.warning_no.setOnClickListener {
-                            order_warning_checkbox.isChecked = false
-                            dialog.dismiss()
-                        }
-
-                        dialog.show()
                     }
+
+                    bindingWarnings.warningYes.setOnClickListener {
+                        binding.orderWarningCheckbox.isChecked = true
+                        dialog.dismiss()
+                    }
+                    bindingWarnings.warningNo.setOnClickListener {
+                        binding.orderWarningCheckbox.isChecked = false
+                        dialog.dismiss()
+                    }
+
+                    dialog.show()
                 }
 
                 result.doIfError {
@@ -423,26 +437,24 @@ class OrderFragment : Fragment() {
                 android.R.layout.simple_dropdown_item_1line,
                 orderType
             )
-        order_delivery_type.setAdapter(payTypeAdapter)
+        binding.orderDeliveryType.setAdapter(payTypeAdapter)
 
         if (addressId != 0 || cityId != 0) {
-            order_list_addresses_out.visibility = View.VISIBLE
-            order_streets_out.visibility = View.VISIBLE
-            order_cities_out.visibility = View.VISIBLE
-            order_building_out.visibility = View.VISIBLE
-            order_apartment.visibility = View.VISIBLE
+            binding.orderStreetsOut.visibility = View.VISIBLE
+            binding.orderCitiesOut.visibility = View.VISIBLE
+            binding.orderBuildingOut.visibility = View.VISIBLE
+            binding.orderApartment.visibility = View.VISIBLE
         }
-        order_delivery_type.setOnItemClickListener { _, _, position, _ ->
+        binding.orderDeliveryType.setOnItemClickListener { _, _, position, _ ->
             deliveryId = position + 1
             if (position == 0) {
                 cityId = 0
                 streetId = 0
                 setVisibility(View.GONE)
-                order_cities.text = null
-                order_streets.text = null
-                order_building.text = null
-                order_apartments_text.text = null
-                order_list_addresses.text = null
+                binding.orderCities.text = null
+                binding.orderStreets.text = null
+                binding.orderBuilding.text = null
+                binding.orderApartmentsText.text = null
             } else {
                 setVisibility(View.VISIBLE)
             }
@@ -450,13 +462,13 @@ class OrderFragment : Fragment() {
     }
 
     private fun setVisibility(visibility: Int) {
-        order_streets_out.visibility = visibility
-        order_cities_out.visibility = visibility
-        order_building_out.visibility = visibility
-        order_apartment.visibility = visibility
-        order_entryCode_out.visibility = visibility
-        order_entry_out.visibility = visibility
-        order_floor_out.visibility = visibility
+        binding.orderStreetsOut.visibility = visibility
+        binding.orderCitiesOut.visibility = visibility
+        binding.orderBuildingOut.visibility = visibility
+        binding.orderApartment.visibility = visibility
+        binding.orderEntryCodeOut.visibility = visibility
+        binding.orderEntryOut.visibility = visibility
+        binding.orderFloorOut.visibility = visibility
     }
 
 
@@ -465,10 +477,10 @@ class OrderFragment : Fragment() {
 
         val count = navHostFragment.childFragmentManager.backStackEntryCount
         if (count > 0) {
-            toolbar_back.visibility = View.VISIBLE
+            binding.toolbar.toolbarBack.visibility = View.VISIBLE
         }
-        toolbar_text.text = getString(R.string.menu_order)
-        toolbar_back.setOnClickListener {
+        binding.toolbar.toolbarText.text = getString(R.string.menu_order)
+        binding.toolbar.toolbarBack.setOnClickListener {
             if (count > 0) {
                 findNavController().popBackStack()
             }
@@ -479,7 +491,7 @@ class OrderFragment : Fragment() {
 
     private fun getAutoCities() {
         loadingShow()
-        viewModel.cities().observe(viewLifecycleOwner, Observer { result ->
+        viewModel.cities().observe(viewLifecycleOwner, { result ->
             loadingHide()
             result.doIfError { errorBody ->
                 errorBody?.getErrors { msg ->
@@ -487,47 +499,71 @@ class OrderFragment : Fragment() {
                 }
             }
             result.doIfSuccess {
-                val adapterAddress = it?.let { it1 ->
+
+                val adapterAddress =
                     ArrayAdapter(
                         requireContext(),
                         android.R.layout.simple_dropdown_item_1line,
-                        it1
+                        it.data
                     )
+                binding.orderCities.setAdapter(adapterAddress)
+            }
+            result.doIfNetwork { errorType ->
+                when (errorType) {
+                    is ErrorTypes.TimeOutError -> {
+                        toast(errorType.msg)
+                    }
+                    is ErrorTypes.ConnectionError -> {
+                        toast(errorType.msg)
+                    }
+                    is ErrorTypes.EmptyResultError -> {
+                        toast(errorType.msg)
+                    }
                 }
-                order_cities.setAdapter(adapterAddress)
+
             }
-            result.doIfNetwork { msg ->
-                toast(msg)
-            }
+
         })
 
-        order_cities.onItemClickListener =
+
+        binding.orderCities.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, position, _ ->
-                val item = order_cities.adapter.getItem(position) as CityRestResponse
+                val item = binding.orderCities.adapter.getItem(position) as CityRestResponse
                 cityId = item.id
                 streetId = 0
                 addressId = 0
-                order_cities.showDropDown()
+                binding.orderCities.showDropDown()
                 getAutoStreets()
 
-                order_streets.setAdapter(null)
-                order_streets.setText("")
-                order_list_addresses.text = null
+                binding.orderStreets.apply {
+                    setAdapter(null)
+                    setText("")
+                }
             }
     }
 
 
     private fun getAutoStreets() {
         loadingShow()
-        viewModel.streets(cityId).observe(viewLifecycleOwner, Observer { result ->
+        viewModel.streets(cityId).observe(viewLifecycleOwner, { result ->
             loadingHide()
 
-            result.doIfNetwork { msg ->
-                toast(msg)
+            result.doIfNetwork { errorType ->
+                when (errorType) {
+                    is ErrorTypes.TimeOutError -> {
+                        toast(errorType.msg)
+                    }
+                    is ErrorTypes.ConnectionError -> {
+                        toast(errorType.msg)
+                    }
+                    is ErrorTypes.EmptyResultError -> {
+                        toast(errorType.msg)
+                    }
+                }
             }
             result.doIfSuccess { streetResponse ->
                 val listOfResponse = mutableListOf<StreetResponse>()
-                streetResponse?.forEach {
+                streetResponse.data.forEach {
                     listOfResponse.add(it)
                 }
                 listOfResponse.add(
@@ -542,19 +578,19 @@ class OrderFragment : Fragment() {
                     android.R.layout.simple_dropdown_item_1line,
                     items = listOfResponse
                 )
-                order_streets.setAdapter(a)
-                order_streets.onItemClickListener =
+                binding.orderStreets.setAdapter(a)
+                binding.orderStreets.onItemClickListener =
                     AdapterView.OnItemClickListener { _, _, position, _ ->
                         val item =
-                            order_streets.adapter.getItem(position) as StreetResponse
+                            binding.orderStreets.adapter.getItem(position) as StreetResponse
                         streetId = item.id
                         addressId = 0
                         if (streetId == -1) {
-                            order_building_out.hint = "Введите адрес"
-                            order_apartment.hint = "Введите адрес"
+                            binding.orderBuildingOut.hint = "Введите адрес"
+                            binding.orderApartment.hint = "Введите адрес"
                         } else {
-                            order_building_out.hint = "Дом"
-                            order_apartment.hint = "Квартира"
+                            binding.orderBuildingOut.hint = "Дом"
+                            binding.orderApartment.hint = "Квартира"
                         }
                     }
             }
@@ -573,85 +609,79 @@ class OrderFragment : Fragment() {
     private fun isValid(): Boolean {
         var valid = true
 
-        if (!validateField(order_name.text.toString(), order_name_out)) {
+        if (!validateField(binding.orderName.text.toString(), binding.orderNameOut)) {
             valid = false
         }
 
-        if (!validateField(order_surname.text.toString(), order_surname_out)) {
+        if (!validateField(binding.orderSurname.text.toString(), binding.orderSurnameOut)) {
             valid = false
         }
-        if (!validateField(order_phone.text.toString(), order_phone_out)) {
+        if (!validateField(binding.orderPhone.text.toString(), binding.orderPhoneOut)) {
             valid = false
         }
-        if (!validateField(order_delivery_type.text.toString(), order_pay_delivery_out)) {
+        if (!validateField(
+                binding.orderDeliveryType.text.toString(),
+                binding.orderPayDeliveryOut
+            )
+        ) {
             valid = false
         }
-        if (!validateField(order_time.text.toString(), order_time_out)) {
+        if (!validateField(binding.orderTime.text.toString(), binding.orderTimeOut)) {
             valid = false
         }
-        if (!validateField(order_date.text.toString(), order_deliveryAt_out)) {
+        if (!validateField(binding.orderDate.text.toString(), binding.orderDeliveryAtOut)) {
             valid = false
         }
-        if (order_phone.text.toString().isNotEmpty()) {
-            val phoneNumber = order_phone.text.toString()
+        if (binding.orderPhone.text.toString().isNotEmpty()) {
+            val phoneNumber = binding.orderPhone.text.toString()
             val numbers = phoneNumber.filter {
                 it.isDigit()
             }
             if (numbers.length < 11) {
-                order_phone_out.error = "Введите номер полностью"
+                binding.orderPhoneOut.error = "Введите номер полностью"
                 valid = false
             } else {
-                order_phone_out.isErrorEnabled = false
+                binding.orderPhoneOut.isErrorEnabled = false
             }
         }
 
         if (cityId != 0) {
-            if (!validateField(order_building.text.toString(), order_building_out)) {
+            if (!validateField(binding.orderBuilding.text.toString(), binding.orderBuildingOut)) {
                 valid = false
             }
         }
         if (deliveryId == 2) {
             if (addressId == 0) {
-                if (!validateField(order_cities.text.toString(), order_cities_out)) {
+                if (!validateField(binding.orderCities.text.toString(), binding.orderCitiesOut)) {
                     valid = false
                 } else {
-                    order_cities_out.isErrorEnabled = false
+                    binding.orderCitiesOut.isErrorEnabled = false
                 }
 
-                if (!validateField(order_streets.text.toString(), order_streets_out)) {
+                if (!validateField(binding.orderStreets.text.toString(), binding.orderStreetsOut)) {
                     valid = false
                 } else {
-                    order_streets_out.isErrorEnabled = false
-                }
-            } else {
-                if (!validateField(
-                        order_list_addresses.text.toString(),
-                        order_list_addresses_out
-                    )
-                ) {
-                    valid = false
-                } else {
-                    order_list_addresses_out.isErrorEnabled = false
+                    binding.orderStreetsOut.isErrorEnabled = false
                 }
             }
         }
-        if (order_time.text!!.isNotEmpty() && order_date.text!!.isNotEmpty()) {
-            val currentDayView = order_date.text?.substring(0, 2)?.toInt()
-            Log.d("CurrentDayView",currentDayView.toString())
-            val currentMonthView = order_date.text?.substring(3, 5)?.toInt()
-            Log.d("CurrentMonthView",currentMonthView.toString())
+        if (binding.orderTime.text!!.isNotEmpty() && binding.orderDate.text!!.isNotEmpty()) {
+            val currentDayView = binding.orderDate.text?.substring(0, 2)?.toInt()
+            Log.d("CurrentDayView", currentDayView.toString())
+            val currentMonthView = binding.orderDate.text?.substring(3, 5)?.toInt()
+            Log.d("CurrentMonthView", currentMonthView.toString())
 
             val currentDayAndroid = calendar.get(Calendar.DAY_OF_MONTH)
-            Log.d("CurrentDayAndroid",currentDayAndroid.toString())
+            Log.d("CurrentDayAndroid", currentDayAndroid.toString())
 
-            val currentMonthAndroid = calendar.get(Calendar.MONTH)+1
-            Log.d("CurrentMonthAndroid",currentMonthAndroid.toString())
+            val currentMonthAndroid = calendar.get(Calendar.MONTH) + 1
+            Log.d("CurrentMonthAndroid", currentMonthAndroid.toString())
 
             val date = Calendar.getInstance().time
 
             val currentTime = date.formatTo("HH:mm").convertToMin(DateFromTo.DateTo)
 
-            val time = order_time.text.toString()
+            val time = binding.orderTime.text.toString()
 
             val hour = time.convertToMin(DateFromTo.DateFrom)
 
@@ -661,7 +691,7 @@ class OrderFragment : Fragment() {
 
 
             if (currentDayView != currentDayAndroid || currentMonthView != currentMonthAndroid) {
-                Log.d("CurrentDayNo","dasd")
+                Log.d("CurrentDayNo", "dasd")
                 val calendar1 = Calendar.getInstance()
                 calendar1[Calendar.DAY_OF_MONTH] = currentDayView!!
                 calendar1[Calendar.MONTH] = currentMonthView!!
@@ -670,7 +700,7 @@ class OrderFragment : Fragment() {
                     it.dayOfWeek == dayOfWeek
                 }
                 schedule?.let {
-                    Log.d("Schedule","NotNull")
+                    Log.d("Schedule", "NotNull")
 
                     val dateFrom = schedule.dateFrom.toHour().toDate()!!.formatTo("HH:mm")
                     val dateTo = schedule.dateTo.toHour().toDate()!!.formatTo("HH:mm")
@@ -680,52 +710,52 @@ class OrderFragment : Fragment() {
                             .rangeTo(closedTime)
                     ) {
 
-                        order_time_out.isErrorEnabled = false
+                        binding.orderTimeOut.isErrorEnabled = false
                     } else {
 
-                        order_time_out.error = "График: $dateFrom-$dateTo"
+                        binding.orderTimeOut.error = "График: $dateFrom-$dateTo"
                         valid = false
                     }
-                }?: Log.d("Schedule","Null")
-
+                } ?: Log.d("Schedule", "Null")
 
 
             } else {
-                Log.d("CurrentDAY: ","+")
+                Log.d("CurrentDAY: ", "+")
                 if (currentTime + 60 <= hour) {
-                    Log.d("CurrentDAYINCOND: ","+")
+                    Log.d("CurrentDAYINCOND: ", "+")
 
                     if (hour > closedTime) {
                         valid = false
                         //val time = AppPreferences.dateTo!!.convertToMin(DateFromTo.DateTo) - 30
                         //order_time_out.error = "Заказы принимаются до ${time.toHour()}"
-                        order_time_out.error = "Ресторан закрывается в ${AppPreferences.dateTo}"
+                        binding.orderTimeOut.error =
+                            "Ресторан закрывается в ${AppPreferences.dateTo}"
                     } else {
                         if (currentTime in minusThirtyTime..closedTime) {
                             valid = false
-                            order_time_out.error = "Заказы принимаются на пол часа раньше"
+                            binding.orderTimeOut.error = "Заказы принимаются на пол часа раньше"
                         } else {
                             if (hour <= closedTime) {
-                                order_time_out.isErrorEnabled = false
+                                binding.orderTimeOut.isErrorEnabled = false
                             } else {
-                                    order_time_out.error =
-                                        "Ресторан закрывается в ${AppPreferences.dateTo}"
-                                    valid = false
+                                binding.orderTimeOut.error =
+                                    "Ресторан закрывается в ${AppPreferences.dateTo}"
+                                valid = false
 
                             }
                         }
 
                     }
                 } else {
-                    Log.d("CurrentDAYINCOND: ","-")
-                    order_time_out.error = "Минимум на час позже чем сейчас"
+                    Log.d("CurrentDAYINCOND: ", "-")
+                    binding.orderTimeOut.error = "Минимум на час позже чем сейчас"
                     valid = false
                 }
             }
 
         }
 
-        if (!order_warning_checkbox.isChecked) {
+        if (!binding.orderWarningCheckbox.isChecked) {
             toast("Без соглашения не можете заказать")
             valid = false
         }

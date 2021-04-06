@@ -2,7 +2,7 @@ package com.timelysoft.amore.service.response
 
 import com.google.gson.annotations.SerializedName
 
-data class BaseModifierGroup(
+class BaseModifierGroup(
     @SerializedName("schemeId") var schemeId : Int,
     @SerializedName("groupId") var groupId : String,
     @SerializedName("name") var name : String,
@@ -12,4 +12,8 @@ data class BaseModifierGroup(
     @SerializedName("changesPrice") var changesPrice : Boolean,
     @SerializedName("modifiers") var modifiers: MutableList<BaseModifier>,
     var modifiersList : HashMap<Int, BaseModifier>
-)
+){
+    override fun toString(): String {
+        return "[$schemeId,$groupId,$modifiersList]"
+    }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <ConstraintSet android:id="@+id/start"/>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@id/restaurant_image"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </Constraint>
+        <Constraint
+            android:id="@id/restaurant_detail_title"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/restaurant_image"
+            app:layout_constraintTop_toTopOf="@id/restaurant_image">
+
+        </Constraint>
+    </ConstraintSet>
+
+    <Transition
+        app:constraintSetEnd="@id/end"
+        app:constraintSetStart="@+id/start" >
+        <OnSwipe
+            app:dragDirection="dragUp"
+            app:touchAnchorId="@+id/food_category_rv"
+            app:touchAnchorSide="top"
+            />
+    </Transition>
+</MotionScene>

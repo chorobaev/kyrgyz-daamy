@@ -6,9 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.timelysoft.amore.R
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
+import com.timelysoft.amore.base.viewHolderFrom
+import com.timelysoft.amore.databinding.ItemOrderDiscountBinding
 import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.response.Discount
-import kotlinx.android.synthetic.main.item_order_discount.view.*
 
 
 class OrderDiscountAdapter(
@@ -16,20 +17,10 @@ class OrderDiscountAdapter(
     private val isHistory: Boolean = false
 ) :
     GenericRecyclerAdapter<Discount>(items) {
-    override fun bind(item: Discount, holder: ViewHolder) {
-        holder.itemView.order_discount_name.text = item.name
-        if (isHistory) {
-            holder.itemView.order_discount_total.text =  "${item.total } ${AppPreferences.currencyName}"
-        } else {
-            holder.itemView.order_discount_total.text = discount(item.total.toDouble())
-        }
 
 
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return super.onCreateViewHolder(parent, R.layout.item_order_discount)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = parent.viewHolderFrom(ItemOrderDiscountBinding::inflate)
 
     private fun discount(discount: Double): String {
         return when {
@@ -41,6 +32,15 @@ class OrderDiscountAdapter(
                 "+${discount * -1} ${AppPreferences.currencyName}"
             }
             else -> "Скидка 0 ${AppPreferences.HEADER_CACHE_CONTROL}"
+        }
+    }
+
+    override fun bind(item: Discount, holder: ViewHolder<*>) = with(holder.binding as ItemOrderDiscountBinding) {
+        orderDiscountName.text = item.name
+        if (isHistory) {
+            orderDiscountTotal.text =  "${item.total } ${AppPreferences.currencyName}"
+        } else {
+            orderDiscountTotal.text = discount(item.total.toDouble())
         }
     }
 

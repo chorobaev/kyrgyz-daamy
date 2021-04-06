@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="2dp">
+
     <include
         android:id="@+id/toolbar"
-
         layout="@layout/app_toolbar" />
 
     <include
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         android:id="@+id/noInternetLayout"
-        layout="@layout/no_internet_layout"/>
+        layout="@layout/no_internet_layout"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

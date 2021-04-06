@@ -114,6 +114,13 @@
     <string name="order_warning_tb">Я согласен с условиями соглашения</string>
     <string name="choose_street_order">Выбирите улицу</string>
     <string name="order_cities">Город</string>
+    <string name="condition_of_using">Условия использования</string>
+    <string name="agree">Да, согласен</string>
+    <string name="not_agree">Нет</string>
 
+
+    <string name="reason_network">Проверьте интернет соединение</string>
+    <string name="reason_empty_body">Данные не найдены</string>
+    <string name="reason_timeout">Время ожидания сервера истекло</string>
 
 </resources>

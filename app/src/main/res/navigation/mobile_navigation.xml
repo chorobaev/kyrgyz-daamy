@@ -10,7 +10,14 @@
         android:id="@+id/nav_food_item"
         android:name="com.timelysoft.amore.ui.food.FoodItemsFragment"
         android:label="Список блюд"
-        tools:layout="@layout/food_items_fragment"/>
+        tools:layout="@layout/food_items_fragment">
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+        <argument
+            android:name="categoryName"
+            app:argType="string" />
+    </fragment>
 
 
     <fragment
@@ -18,14 +25,21 @@
         android:name="com.timelysoft.amore.ui.food.FoodFragment"
         android:label="@string/menu_food"
         tools:layout="@layout/fragment_food">
-        <action
-            android:id="@+id/toNavFood"
-            app:popUpTo="@id/nav_food"
-            app:popUpToInclusive="true"
-            app:destination="@+id/nav_food" />
+
         <action
             android:id="@+id/toNavFoodItem"
-            app:destination="@+id/nav_food_item"/>
+            app:destination="@+id/nav_food_item">
+            <argument
+                android:name="categoryId"
+                android:defaultValue="0"
+                app:argType="string"
+                app:nullable="false"/>
+            <argument
+                android:name="categoryName"
+                app:argType="string"
+                app:nullable="false"
+                android:defaultValue="Блюда"/>
+        </action>
 
     </fragment>
 

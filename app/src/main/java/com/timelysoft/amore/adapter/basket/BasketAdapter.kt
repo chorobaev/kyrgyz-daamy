@@ -3,16 +3,17 @@ package com.timelysoft.amore.adapter.basket
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.timelysoft.amore.R
 import com.timelysoft.amore.adapter.food.CustomAdapterForMod
 import com.timelysoft.amore.base.GenericRecyclerAdapter
 import com.timelysoft.amore.base.ViewHolder
+import com.timelysoft.amore.base.viewHolderFrom
 import com.timelysoft.amore.bottomsheet.basket.Mode
+import com.timelysoft.amore.databinding.ItemBasketBinding
 import com.timelysoft.amore.service.AppPreferences
-
 import com.timelysoft.amore.service.response.BaseModifierGroup
 import com.timelysoft.amore.service.response.MenuItem
-import kotlinx.android.synthetic.main.item_basket.view.*
 
 class BasketAdapter(
     private val listener: BasketListener,
@@ -20,26 +21,29 @@ class BasketAdapter(
 ) :
     GenericRecyclerAdapter<MenuItem>(items) {
 
-    override fun bind(item: MenuItem, holder: ViewHolder) = with(holder.itemView) {
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = parent.viewHolderFrom(ItemBasketBinding::inflate)
+
+    override fun bind(item: MenuItem, holder: ViewHolder<*>) = with(holder.binding as ItemBasketBinding) {
+
         amountPrice.text = "${item.price} ${AppPreferences.currencyName}"
-        basket_name.text =  "${item.amount} x ${item.name}"
+        basketName.text =  "${item.amount} x ${item.name}"
         if (item.modifierGroups.isNotEmpty()) {
-            item_basket_recycler.adapter =
+            itemBasketRecycler.adapter =
                 CustomAdapterForMod(item.modifierGroups as ArrayList<BaseModifierGroup>, Mode.Basket, null)
         }
         sumAmount.text = "${item.priceWithMod} ${AppPreferences.currencyName}"
 
-        
-        basket_edit.setOnClickListener {
-            listener.onClickItem(item, holder.adapterPosition)
+
+        basketEdit.setOnClickListener {
+            listener.onClickItem(item)
         }
 
-        basket_delete.setOnClickListener {
-            listener.onDeleteItem(holder.adapterPosition)
+        basketDelete.setOnClickListener {
+            listener.onDeleteItem(item)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return super.onCreateViewHolder(parent, R.layout.item_basket)
-    }
+
 }

@@ -15,7 +15,9 @@ data class MenuItem(
         @SerializedName("imageLink") val imageLink : String,
         @SerializedName("weight")val weight: Int,
         var amount: Int,
-        var isSame : Boolean,
-        var priceWithMod : Int,
-        var positionInList : Int
-)
+        var priceWithMod : Int
+){
+        override fun toString(): String {
+                return "[$code,$modifierGroups,$name]"
+        }
+}

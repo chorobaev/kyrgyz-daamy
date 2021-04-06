@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
-import com.timelysoft.amore.extension.loadImageWithoutCorner
+import com.timelysoft.amore.extension.loadImageGlide
 
 class ImagePageAdapter(private val images: ArrayList<String> = ArrayList()) : PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -17,7 +17,7 @@ class ImagePageAdapter(private val images: ArrayList<String> = ArrayList()) : Pa
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val image = ImageView(container.context)
-        image.loadImageWithoutCorner(images[position])
+        image.loadImageGlide(images[position])
         image.adjustViewBounds = true
         image.scaleType = ImageView.ScaleType.FIT_XY
         container.addView(image)

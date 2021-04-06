@@ -1,37 +1,27 @@
-package com.timelysoft.amore.ui.food
+package com.timelysoft.amore.ui.pay
 
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.timelysoft.amore.R
+import com.timelysoft.amore.databinding.FragmentPayBinding
 import com.timelysoft.amore.extension.loadingHide
 import com.timelysoft.amore.extension.loadingShow
-import kotlinx.android.synthetic.main.app_toolbar.*
-import kotlinx.android.synthetic.main.fragment_pay.*
+import com.timelysoft.amore.ui.viewBinding
 import java.net.URLDecoder
 
 
-class PayFragment : Fragment() {
-    private var orderId = ""
+class PayFragment : Fragment(R.layout.fragment_pay) {
     private val bundle = Bundle()
     private val successRegex = Regex("payment.*success")
     private val failRegex = Regex("payment.*failed")
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        bundle.putBoolean("loading", true)
-        return inflater.inflate(R.layout.fragment_pay, container, false)
-    }
+    private val binding by viewBinding(FragmentPayBinding::bind)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,18 +29,15 @@ class PayFragment : Fragment() {
         initToolbar()
         loadingShow()
 
-        //val credentials = requireArguments().getParcelable<RobokassaCredentialsData>("robokassa")
-        //val credentialsData = Gson().toJson(credentials)
-        //val url = requireArguments().getString("url")
-        web_view.settings.javaScriptEnabled = true
+
+        binding.webView.settings.javaScriptEnabled = true
         val html = requireArguments().getString("html")
 
-       // web_view.postUrl(url, credentialsData.toUtf8Bytes())
-        //web_view.loadUrl(url)
-       web_view.loadData(html, "text/html; charset=utf-8", "UTF-8")
+
+        binding.webView.loadData(html, "text/html; charset=utf-8", "UTF-8")
         loadingHide()
 
-        web_view.webViewClient = object : WebViewClient() {
+        binding.webView.webViewClient = object : WebViewClient() {
 
 
             override fun onLoadResource(view: WebView?, url: String?) {
@@ -78,17 +65,16 @@ class PayFragment : Fragment() {
 
         val count = navHostFragment.childFragmentManager.backStackEntryCount
         if (count > 0) {
-            toolbar_back.visibility = View.VISIBLE
+            binding.toolbar.toolbarBack.visibility = View.VISIBLE
         }
-        toolbar_text.text = getString(R.string.menu_pay)
-        toolbar_back.setOnClickListener {
+        binding.toolbar.toolbarText.text = getString(R.string.menu_pay)
+        binding.toolbar.toolbarBack.setOnClickListener {
             if (count > 0) {
                 findNavController().popBackStack()
             }
 
         }
     }
-
 
 
 }

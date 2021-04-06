@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.food.OrderFragment">
+    tools:context=".ui.order.OrderFragment">
 
     <include
+        android:id="@+id/toolbar"
         layout="@layout/app_toolbar"/>
 
 

@@ -1,48 +1,37 @@
 package com.timelysoft.amore.ui.discount
 
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.timelysoft.amore.R
 import com.timelysoft.amore.adapter.news.NewsAdapter
 import com.timelysoft.amore.adapter.news.NewsListener
+import com.timelysoft.amore.databinding.FragmentNewsBinding
 import com.timelysoft.amore.extension.*
 import com.timelysoft.amore.service.*
 import com.timelysoft.amore.service.response.NewsResponse
-import kotlinx.android.synthetic.main.app_toolbar.*
-import kotlinx.android.synthetic.main.fragment_news.*
-import kotlinx.android.synthetic.main.no_internet_layout.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.timelysoft.amore.ui.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
-class NewsFragment : Fragment(), NewsListener {
-    private val viewModel: NewsViewModel by viewModel()
+@AndroidEntryPoint
+class NewsFragment : Fragment(R.layout.fragment_news), NewsListener {
+    private val viewModel: NewsViewModel by viewModels()
 
+    private val binding by viewBinding(FragmentNewsBinding::bind)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        return inflater.inflate(R.layout.fragment_news, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
         initData()
 
-        update.setOnClickListener {
+        binding.noInternetLayout.update.setOnClickListener {
             if (isConnectedOrConnecting()){
-                discount_rv.visibility = View.VISIBLE
-                noInternetLayout.visibility = View.GONE
+                binding.discountRv.visibility = View.VISIBLE
+                binding.noInternetLayout.root.visibility = View.GONE
                 initData()
             }
         }
@@ -53,12 +42,12 @@ class NewsFragment : Fragment(), NewsListener {
     private fun initData() {
         loadingShow()
         viewModel.news(AppPreferences.restaurant)
-            .observe(viewLifecycleOwner, Observer { news ->
+            .observe(viewLifecycleOwner, { news ->
                 loadingHide()
                 news.doIfSuccess {
                     val adapter =
-                        NewsAdapter(this, it?.data as ArrayList<NewsResponse>)
-                    discount_rv.adapter = adapter
+                        NewsAdapter(this, it.data as ArrayList<NewsResponse>)
+                    binding.discountRv.adapter = adapter
                 }
 
                 news.doIfError { errorBody ->
@@ -66,19 +55,29 @@ class NewsFragment : Fragment(), NewsListener {
                         toast(msg)
                     }
                 }
-                news.doIfNetwork {
-                    //toast(it)
-                    discount_rv.visibility = View.GONE
-                    noInternetLayout.visibility = View.VISIBLE
+                news.doIfNetwork {errorType->
+                    when(errorType){
+                        is ErrorTypes.TimeOutError->{
+                            toast(errorType.msg)
+                        }
+                        is ErrorTypes.ConnectionError->{
+                            binding.discountRv.visibility = View.GONE
+                            binding.noInternetLayout.root.visibility = View.VISIBLE
+                        }
+                        is ErrorTypes.EmptyResultError->{
+                            toast(errorType.msg)
+                        }
+                    }
+
                 }
             })
     }
 
     private fun initToolbar() {
-        toolbar_back.setOnClickListener {
+        binding.toolbar.toolbarBack.setOnClickListener {
             findNavController().popBackStack()
         }
-        toolbar_text.text = getString(R.string.menu_discount)
+        binding.toolbar.toolbarText.text = getString(R.string.menu_discount)
     }
 
     override fun onDiscountCLick(item: NewsResponse) {

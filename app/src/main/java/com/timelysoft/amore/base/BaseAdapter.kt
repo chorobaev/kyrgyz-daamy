@@ -1,14 +1,14 @@
 package com.timelysoft.amore.base
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 
 abstract class GenericRecyclerAdapter<T>(private var items: ArrayList<T>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    abstract fun bind(item: T, holder: ViewHolder)
+    abstract fun bind(item: T, holder: ViewHolder<*>)
 
     fun set(items: ArrayList<T>) {
         this.items = items
@@ -28,23 +28,29 @@ abstract class GenericRecyclerAdapter<T>(private var items: ArrayList<T>) :
 
     override fun getItemCount(): Int = items.count()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(viewType, parent, false)
-        return ViewHolder(view)
-    }
 
     fun position(position: Int): T {
         return items[position]
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        bind(items[position], holder as ViewHolder)
+        bind(items[position], holder as ViewHolder<*>)
     }
 
 }
 
-class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class ViewHolder<T:ViewBinding> private constructor(val binding: T) : RecyclerView.ViewHolder(binding.root) {
+
+    constructor(
+        parent: ViewGroup,
+        creator: (inflater: LayoutInflater, root: ViewGroup, attachToRoot: Boolean) -> T
+    ) : this(creator(
+        LayoutInflater.from(parent.context),
+        parent,
+        false
+    ))
 
 }
+fun <T : ViewBinding> ViewGroup.viewHolderFrom(
+    creator: (inflater: LayoutInflater, root: ViewGroup, attachToRoot: Boolean) -> T
+): ViewHolder<T> = ViewHolder(this, creator)

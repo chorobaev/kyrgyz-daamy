@@ -7,7 +7,9 @@
     android:orientation="vertical"
     tools:context=".ui.discount.NewsDetailFragment">
 
-    <include layout="@layout/app_toolbar" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/app_toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"

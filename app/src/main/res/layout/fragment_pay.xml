@@ -4,9 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.food.PayFragment">
+    tools:context=".ui.pay.PayFragment">
 
-    <include layout="@layout/app_toolbar" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/app_toolbar" />
 
     <WebView
         android:id="@+id/web_view"

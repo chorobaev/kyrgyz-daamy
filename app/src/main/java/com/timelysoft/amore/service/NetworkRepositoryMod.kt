@@ -1,63 +1,29 @@
 package com.timelysoft.amore.service
 
+import android.content.Context
 import androidx.lifecycle.liveData
-import com.timelysoft.amore.service.model.AuthBody
-
+import com.timelysoft.amore.R
+import com.timelysoft.amore.service.model.BaseResponse
 import com.timelysoft.amore.service.response.CreateOrder
 import com.timelysoft.amore.service.response.ValidateOrder
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.io.IOException
+import retrofit2.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
-class NetworkRepositoryMod(
-    private val apiService: ApiServiceMod,
-    private val dispatcher: CoroutineDispatcher
+@Singleton
+class NetworkRepositoryMod @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val apiService: ApiServiceMod
 ) {
+    private val dispatcher = Dispatchers.IO
 
-    private var error = "Проверьте интернет подключение"
-
-    fun getToken(authBody: AuthBody) =
-        liveData(dispatcher) {
-            try {
-                val tokenBody = apiService.getAccessToken(authBody)
-                when {
-                    tokenBody.isSuccessful -> emit(ApiResult.Success(tokenBody.body()?.data))
-                    else -> {
-                        emit(ApiResult.Error(tokenBody.errorBody()))
-                    }
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
-        }
-
-    fun getExceptionMessage(token: String) =
-        liveData(dispatcher) {
-            try {
-                val exception = apiService.getException(token)
-                when {
-                    exception.isSuccessful -> emit(ApiResult.Success(exception.body()!!.errors))
-                    else -> {
-                        emit(ApiResult.Error(exception.errorBody()!!))
-                    }
-
-                }
-            } catch (throwable: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
-        }
 
     fun getSchedules() = liveData(dispatcher) {
-        try{
-        val response = apiService.getSchedules()
-            if (response.isSuccessful) {
-                emit(ApiResult.Success(response.body()!!.data))
-            } else {
-                emit(ApiResult.Error(response.errorBody()))
-            }
-        } catch (e: Exception) {
-            emit(ApiResult.NetworkError(error))
-        }
+        emit(safeExecute { apiService.getSchedules() })
     }
 
 
@@ -66,221 +32,97 @@ class NetworkRepositoryMod(
         liveData(dispatcher) {
 
             emit(ApiResult.Loading("loading"))
-            try {
-                val menu = apiService.getCategoriesForRestaurant(id)
-                if (menu.isSuccessful) {
-                    emit(ApiResult.Success(menu.body()))
-                } else {
-                    emit(ApiResult.Error(menu.errorBody()))
-                    println("dsdsdsdsdsds")
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
-        }
-/*
-    fun restaurants() =
-        liveData(dispatcher) {
-            try {
-                val restaurants = apiService.restaurants()
-                if (restaurants.isSuccessful) {
-                    emit(ApiResult.Success(restaurants.body()!!.data))
-                } else {
-                    emit(ApiResult.Error(restaurants.errorBody()!!))
-                }
-
-            } catch (throwable: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
+            emit(safeExecute { apiService.getCategoriesForRestaurant(id) })
         }
 
-
-
- */
 
     fun restaurantById(restaurantId: String) = liveData(dispatcher) {
 
-        try {
-            val response = apiService.getRestaurantById(restaurantId)
-            when {
-                response.isSuccessful -> emit(ApiResult.Success(response.body()!!.data))
-                else -> {
-                    emit(ApiResult.Error(response.errorBody()!!))
-                }
-            }
-        } catch (exception: Exception) {
-            emit(ApiResult.NetworkError(error))
-        }
+        emit(safeExecute {
+            apiService.getRestaurantById(restaurantId)
+        })
     }
 
     fun foodItemByCategoryId(categoryId: String) = liveData(dispatcher) {
-        try {
-            emit(ApiResult.Loading("loading"))
-            val response = apiService.getItemsByCategory(categoryId)
-            when {
-                response.isSuccessful -> {
-                    emit(ApiResult.Success(response.body()!!.data))
-                }
-                else -> {
-                    emit(ApiResult.Error(response.errorBody()!!))
-                }
+        emit(ApiResult.Loading("loading"))
+        emit(safeExecute { apiService.getItemsByCategory(categoryId) })
 
-            }
-        } catch (e: Exception) {
-            emit(ApiResult.NetworkError(error))
-        }
     }
 
-    fun isOpen() = liveData(dispatcher) {
-        try {
-            val response = apiService.isOpen()
-            if (response.isSuccessful){
-                emit(ApiResult.Success(response.body()!!) )
-            }else{
-                emit(ApiResult.Error(response.errorBody()))
-            }
-        }catch (e:Exception){
-            emit(ApiResult.NetworkError(error))
-        }
-    }
 
     fun groupNews() = liveData(dispatcher) {
 
-        val response = apiService.getRestraurantGroupInfo()
-        when {
-            response.isSuccessful -> {
-                emit(ApiResult.Success(response.body()))
-            }
-            else -> {
-                emit(ApiResult.Error(response.errorBody()))
-            }
-        }
+        emit(safeExecute {
+            apiService.getRestraurantGroupInfo()
+        })
 
     }
 
     fun news(restaurantId: String) = liveData(dispatcher) {
-        try {
-            val response = apiService.getRestaurantInfo(restaurantId)
-            when {
-                response.isSuccessful -> {
-                    emit(ApiResult.Success(response.body()))
-                }
-                else -> {
-                    emit(ApiResult.Error(response.errorBody()))
-                }
-            }
-        } catch (e: Exception) {
-            emit(ApiResult.NetworkError(error))
-        }
+        emit(safeExecute {
+            apiService.getRestaurantInfo(restaurantId)
+        })
 
     }
 
     fun cities() =
         liveData(dispatcher) {
-            try {
-                val response =
-                    apiService.getCitiesForRes()
-                when {
-                    response.isSuccessful -> {
-                        emit(ApiResult.Success(response.body()?.data))
-                    }
-                    else -> {
-                        emit(ApiResult.Error(response.errorBody()))
-                    }
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
+            emit(safeExecute { apiService.getCitiesForRes() })
         }
 
     fun streets(id: Int) =
         liveData(dispatcher) {
-            try {
-                val response =
-                    apiService.getStreetsForCities(id)
-                when {
-                    response.isSuccessful -> {
-                        emit(ApiResult.Success(response.body()?.data))
-                    }
-                    else -> {
-                        emit(ApiResult.Error(response.errorBody()))
-                    }
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
+            emit(safeExecute { apiService.getStreetsForCities(id) })
         }
 
     fun orderValidate(orderModel: ValidateOrder) =
         liveData(dispatcher) {
-
-            try {
-                val response = apiService.validateOrder(AppPreferences.restaurant, orderModel)
-                when {
-                    response.isSuccessful -> {
-                        emit(ApiResult.Success(response.body()?.data))
-                    }
-                    else -> {
-                        emit(ApiResult.Error(response.errorBody()))
-                    }
-
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
+            emit(safeExecute {
+                apiService.validateOrder(AppPreferences.restaurant, orderModel)
+            })
         }
 
     fun orderCreate(orderModel: CreateOrder) =
         liveData(dispatcher) {
-            try {
-                val response =
-                    apiService.createOrder(AppPreferences.restaurant, orderModel)
-                when {
-                    response.isSuccessful -> {
-                        emit(ApiResult.Success(response.body()?.data))
-                    }
-                    else -> {
-                        emit(ApiResult.Error(response.errorBody()))
-                    }
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
+            emit(safeExecute {
+                apiService.createOrder(AppPreferences.restaurant, orderModel)
+            })
         }
 
     fun onlinePayment(restaurantId: String, orderId: String) =
         liveData(dispatcher) {
-
-            try {
-                val response = apiService.getPaymentLink(restaurantId, orderId)
-                when {
-                    response.isSuccessful -> {
-                        emit(ApiResult.Success(response.body()?.data))
-                    }
-                    else -> {
-                        emit(ApiResult.Error(response.errorBody()))
-                    }
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
-            }
+            emit(safeExecute {
+                apiService.getPaymentLink(restaurantId, orderId)
+            })
         }
 
     fun warning() =
         liveData(dispatcher) {
-            try {
-                val response =
-                    apiService.warning()
-                when {
-                    response.isSuccessful -> {
-                        emit(ApiResult.Success(response.body()?.data))
-                    }
-                    else -> {
-                        emit(ApiResult.Error(response.errorBody()))
-                    }
-                }
-            } catch (e: Exception) {
-                emit(ApiResult.NetworkError(error))
+            emit(safeExecute { apiService.warning() })
+        }
+
+
+    private inline fun <T> safeExecute(
+        block: () -> Response<T>
+    ):ApiResult<T> {
+        return try {
+            block().extractResponseBody()
+        } catch (e: Exception) {
+            if (e is IOException) {
+                ApiResult.NetworkError(ErrorTypes.TimeOutError(context.getString(R.string.reason_timeout)))
+            } else {
+                ApiResult.NetworkError(ErrorTypes.ConnectionError(context.getString(R.string.reason_network)))
             }
+        }
+    }
+
+
+    private fun <T> Response<T>.extractResponseBody() =
+        if (isSuccessful) {
+            body()?.let {
+                ApiResult.Success(it)
+            } ?: ApiResult.NetworkError(ErrorTypes.EmptyResultError(context.getString(R.string.reason_empty_body)))
+        } else {
+            ApiResult.Error(errorBody())
         }
 }

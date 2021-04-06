@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.food.BasketFragment">
+    tools:context=".ui.basket.BasketFragment">
 
     <include
         android:id="@+id/basket_toolbar"

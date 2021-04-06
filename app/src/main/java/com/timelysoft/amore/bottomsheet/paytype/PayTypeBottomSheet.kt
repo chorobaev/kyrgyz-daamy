@@ -6,40 +6,44 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.amore.R
+import com.timelysoft.amore.databinding.FragmentPayTypeBinding
 import com.timelysoft.amore.service.AppPreferences
-import kotlinx.android.synthetic.main.fragment_pay_type.*
+import org.koin.android.ext.android.bind
 
 class PayTypeBottomSheet(
     private val listener: PayTypeListener
 ) : BottomSheetDialogFragment() {
+
+    private lateinit var binding: FragmentPayTypeBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_pay_type, container, false)
+        binding = FragmentPayTypeBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pay_type_1.setOnClickListener {
+        binding.payType1.setOnClickListener {
             listener.onClickPay(1)
             dismiss()
         }
 
-        pay_type_3.setOnClickListener {
+        binding.payType3.setOnClickListener {
             listener.onClickPay(2)
         }
         if (!AppPreferences.bankPay) {
-            pay_type_2.visibility = View.GONE
-            layoutCards.visibility =View.GONE
-            textViewOnlinePay.visibility = View.GONE
-            demirBankOnlinePayment.visibility = View.GONE
+            binding.payType2.visibility = View.GONE
+            binding.layoutCards.visibility =View.GONE
+            binding.textViewOnlinePay.visibility = View.GONE
+            binding.demirBankOnlinePayment.visibility = View.GONE
         }
 
-        pay_type_2.setOnClickListener {
+        binding.payType2.setOnClickListener {
             listener.onClickPay(3)
             dismiss()
         }

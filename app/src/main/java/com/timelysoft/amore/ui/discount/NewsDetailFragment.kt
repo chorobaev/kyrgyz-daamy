@@ -9,15 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.timelysoft.amore.R
 import com.timelysoft.amore.adapter.image.ImagePageAdapter
+import com.timelysoft.amore.databinding.FragmentNewsDetailBinding
 import com.timelysoft.amore.service.AppPreferences
 import com.timelysoft.amore.service.response.NewsResponse
-import kotlinx.android.synthetic.main.app_toolbar.*
-import kotlinx.android.synthetic.main.fragment_news_detail.*
+import com.timelysoft.amore.ui.viewBinding
 
 
-class NewsDetailFragment : Fragment() {
+class NewsDetailFragment : Fragment(R.layout.fragment_news_detail) {
     private var newsModel: NewsResponse? = null
 
+    private val binding by viewBinding(FragmentNewsDetailBinding::bind)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,27 +45,27 @@ class NewsDetailFragment : Fragment() {
     private fun initData() {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            discount_detail_description.text =
+            binding.discountDetailDescription.text =
             Html.fromHtml(newsModel?.description, Html.FROM_HTML_MODE_COMPACT).trim()
-            discount_detail_body.text = Html.fromHtml(newsModel?.boldDescription, Html.FROM_HTML_MODE_LEGACY).trim()
+            binding.discountDetailBody.text = Html.fromHtml(newsModel?.boldDescription, Html.FROM_HTML_MODE_LEGACY).trim()
         } else {
-            discount_detail_description.text = Html.fromHtml(newsModel?.description)
-            discount_detail_body.text = Html.fromHtml(newsModel?.boldDescription)
+            binding.discountDetailDescription.text = Html.fromHtml(newsModel?.description)
+            binding.discountDetailBody.text = Html.fromHtml(newsModel?.boldDescription)
         }
 
 
         val images = newsModel?.files?.map {
             AppPreferences.baseUrl + it.relativeUrl
         }
-        discount_detail_view_pager.adapter = ImagePageAdapter(images as ArrayList<String>)
+        binding.discountDetailViewPager.adapter = ImagePageAdapter(images as ArrayList<String>)
     }
 
     private fun initToolbar() {
-        toolbar_back.visibility = View.VISIBLE
-        toolbar_back.setOnClickListener {
+        binding.toolbar.toolbarBack.visibility = View.VISIBLE
+        binding.toolbar.toolbarBack.setOnClickListener {
             findNavController().popBackStack()
         }
-        toolbar_text.text =getString(R.string.menu_discount)
+        binding.toolbar.toolbarText.text =getString(R.string.menu_discount)
 
     }
 }

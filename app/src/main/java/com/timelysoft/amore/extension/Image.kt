@@ -22,7 +22,7 @@ fun ImageView.loadImageCoil(url:String){
     }
 }
 
-fun ImageView.loadImageWithoutCorner(url: String?) {
+fun ImageView.loadImageGlide(url: String?) {
     try {
         Glide.with(context)
             .load(url)
@@ -32,5 +32,4 @@ fun ImageView.loadImageWithoutCorner(url: String?) {
             .into(this)
     } catch (e: Exception) {
     }
-
 }

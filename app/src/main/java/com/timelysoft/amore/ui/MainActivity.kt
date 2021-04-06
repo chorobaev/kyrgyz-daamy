@@ -2,6 +2,7 @@ package com.timelysoft.amore.ui
 
 
 import android.os.Bundle
+import androidx.activity.viewModels
 
 
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -11,10 +12,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.timelysoft.amore.BasketCommands
 import com.timelysoft.amore.R
-import com.timelysoft.amore.adapter.food.BasketCommands
 import com.timelysoft.amore.extension.setupWithNavController
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
 
     private var currentNavController: LiveData<NavController>? = null
 
@@ -26,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        BasketCommands.sumOfBasket.observe(this, Observer {
+        BasketCommands.sumOfBasket.observe(this, {
             val badge = bottomNavigationView.getOrCreateBadge(R.id.basket_navigation)
             badge.number = it
             badge.maxCharacterCount = 10

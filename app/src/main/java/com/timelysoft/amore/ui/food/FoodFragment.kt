@@ -34,18 +34,6 @@ class FoodFragment : BaseFragment(), CategoryListener {
 
     private val binding by viewBinding(FragmentFoodBinding::bind)
 
-    private var categoryList: ArrayList<Category>? = null
-    private var categoryId: String? = null
-    private var categoryName: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            categoryName = requireArguments().getString("categoryName")
-            categoryList = requireArguments().getParcelableArrayList("categories")
-            categoryId = requireArguments().getString("CategoryId")
-        }
-    }
 
 
     override fun onCreateView(

@@ -40,7 +40,6 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return getPersistentView(inflater, container, savedInstanceState, R.layout.food_items_fragment)
     }
 

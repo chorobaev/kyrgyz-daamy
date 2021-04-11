@@ -1,6 +1,7 @@
 package com.timelysoft.amore.service.response
 
 import com.google.gson.annotations.SerializedName
+import kotlin.collections.ArrayList
 
 class BaseModifierGroup(
     @SerializedName("schemeId") var schemeId : Int,
@@ -10,7 +11,7 @@ class BaseModifierGroup(
     @SerializedName("minimumSelected") var minimumSelected : Int,
     @SerializedName("freeCount") var freeCount : Int,
     @SerializedName("changesPrice") var changesPrice : Boolean,
-    @SerializedName("modifiers") var modifiers: MutableList<BaseModifier>,
+    @SerializedName("modifiers") var modifiers: MutableList<BaseModifier> = ArrayList(),
     var modifiersList : HashMap<Int, BaseModifier>
 ){
     override fun toString(): String {

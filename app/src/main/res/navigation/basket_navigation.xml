@@ -8,13 +8,13 @@
 
     <fragment
         android:id="@+id/nav_basket"
-        android:name="com.timelysoft.amore.ui.basket.BasketFragment"
+        android:name="io.flaterlab.kyrgyzdaamy.ui.basket.BasketFragment"
         android:label="@string/menu_basket"
         tools:layout="@layout/fragment_basket"/>
 
     <fragment
         android:id="@+id/nav_pay"
-        android:name="com.timelysoft.amore.ui.pay.PayFragment"
+        android:name="io.flaterlab.kyrgyzdaamy.ui.pay.PayFragment"
         android:label="@string/menu_pay"
         tools:layout="@layout/fragment_pay">
         <action
@@ -27,14 +27,14 @@
 
     <fragment
         android:id="@+id/nav_order"
-        android:name="com.timelysoft.amore.ui.order.OrderFragment"
+        android:name="io.flaterlab.kyrgyzdaamy.ui.order.OrderFragment"
         android:label="@string/menu_order"
         tools:layout="@layout/fragment_order" />
 
 
     <fragment
         android:id="@+id/nav_order_detail"
-        android:name="com.timelysoft.amore.ui.order.OrderDetailFragment"
+        android:name="io.flaterlab.kyrgyzdaamy.ui.order.OrderDetailFragment"
         android:label="@string/menu_order_detail"
         tools:layout="@layout/fragment_order_detail">
         <action

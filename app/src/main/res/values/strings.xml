@@ -122,5 +122,15 @@
     <string name="reason_network">Проверьте интернет соединение</string>
     <string name="reason_empty_body">Данные не найдены</string>
     <string name="reason_timeout">Время ожидания сервера истекло</string>
+    <string name="_200">200 сом</string>
+    <string name="_500">500 г</string>
+    <string name="data_time">Дата</string>
+    <string name="payment_types">Способы оплаты</string>
+    <string name="food_description">Food description</string>
+    <string name="search_title">Поиск</string>
+    <string name="signInWelcomeText">Войти</string>
+    <string name="enter_phone_number">Введите номер</string>
+    <string name="forward_text">Далее</string>
+    <string name="enter_code_auth">Введите код</string>
 
 </resources>

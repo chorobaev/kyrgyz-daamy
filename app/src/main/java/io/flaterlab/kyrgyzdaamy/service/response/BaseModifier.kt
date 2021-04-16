@@ -10,4 +10,6 @@ data class BaseModifier(
     @SerializedName("limit") val limit :Int,
     var isChecked : Boolean = false,
     var count : Int
-)
+){
+    constructor():this(0,"",0,null,1,false,0)
+}

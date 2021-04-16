@@ -58,7 +58,7 @@ class CustomAdapterForMod(
 
                 Mode.Basket -> {
                     val list = mutableListOf<BaseModifier>()
-                    item.modifiersList.values.forEach { baseModifier ->
+                    item.modifiersList?.values?.forEach { baseModifier ->
                         if (baseModifier.count > 0) {
                             list.add(baseModifier)
                         }
@@ -68,7 +68,7 @@ class CustomAdapterForMod(
                 }
                 Mode.Editable -> {
                     var sum = 0
-                    item.modifiersList.forEach {
+                    item.modifiersList?.forEach {
                         sum += it.value.count
                     }
                     listViewModifier.adapter = CustomAdapterForModifier(

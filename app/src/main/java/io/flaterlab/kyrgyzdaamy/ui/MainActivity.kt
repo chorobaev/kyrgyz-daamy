@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +42,8 @@ class MainActivity : AppCompatActivity() {
         val navGraphIds = listOf(
             R.navigation.mobile_navigation,
             R.navigation.basket_navigation,
-            R.navigation.news_navigation
+            R.navigation.news_navigation,
+            R.navigation.search_navigation
         )
         val controller = bottomNavigationView.setupWithNavController(
             navGraphIds = navGraphIds,

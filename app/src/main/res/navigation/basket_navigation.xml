@@ -32,14 +32,5 @@
         tools:layout="@layout/fragment_order" />
 
 
-    <fragment
-        android:id="@+id/nav_order_detail"
-        android:name="io.flaterlab.kyrgyzdaamy.ui.order.OrderDetailFragment"
-        android:label="@string/menu_order_detail"
-        tools:layout="@layout/fragment_order_detail">
-        <action
-            android:id="@+id/toMainGraph"
-            app:destination="@+id/mobile_navigation"/>
-    </fragment>
     <include app:graph="@navigation/mobile_navigation"/>
 </navigation>

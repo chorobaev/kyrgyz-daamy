@@ -1,45 +1,34 @@
 package io.flaterlab.kyrgyzdaamy.ui.food
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.flaterlab.kyrgyzdaamy.service.ApiResult
-import io.flaterlab.kyrgyzdaamy.service.AppPreferences
-import io.flaterlab.kyrgyzdaamy.service.NetworkRepositoryMod
-import io.flaterlab.kyrgyzdaamy.service.model.BaseResponse
-import io.flaterlab.kyrgyzdaamy.service.model.RestaurantResponse
-import io.flaterlab.kyrgyzdaamy.service.response.CategoriesResponse
-import io.flaterlab.kyrgyzdaamy.service.response.CreateOrder
-import io.flaterlab.kyrgyzdaamy.service.response.RobokassaResponse
-import io.flaterlab.kyrgyzdaamy.service.response.ScheduleResponse
+import io.flaterlab.kyrgyzdaamy.service.response.*
+import io.flaterlab.kyrgyzdaamy.ui.FirebaseRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+@ExperimentalCoroutinesApi
 @HiltViewModel
-class FoodViewModel @Inject constructor(private val network: NetworkRepositoryMod) : ViewModel() {
+class FoodViewModel @Inject constructor(private val firebaseRepository: FirebaseRepository) : ViewModel() {
 
+    private var mutableStateFlow:MutableStateFlow<List<Category>> = MutableStateFlow(arrayListOf())
 
-    fun orderCreate(orderModel: CreateOrder): LiveData<ApiResult<BaseResponse<String>>> {
-        return network.orderCreate(orderModel)
-    }
+    val stateFlow: StateFlow<List<Category>>
+        get() = mutableStateFlow
 
-    fun payOnline(
-        restaurantId: String,
-        orderId: String
-    ): LiveData<ApiResult<BaseResponse<RobokassaResponse>>> {
-        return network.onlinePayment(restaurantId, orderId)
-    }
-
-    fun getSchedules(): LiveData<ApiResult<BaseResponse<ScheduleResponse>>> {
-        return network.getSchedules()
-    }
-
-
-    fun getRestaurantData(): LiveData<ApiResult<BaseResponse<RestaurantResponse>>> {
-        return network.restaurantById(AppPreferences.idOfRestaurant())
-    }
-
-    fun categoriesByRestaurantId(): LiveData<ApiResult<BaseResponse<CategoriesResponse>>> {
-        return network.getMenuCategories(AppPreferences.idOfRestaurant())
+    init {
+        viewModelScope.launch {
+            firebaseRepository.getMenu().collect {
+                if (it != null) {
+                    mutableStateFlow.value = it
+                }
+            }
+        }
     }
 }

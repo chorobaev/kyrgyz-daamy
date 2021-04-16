@@ -35,7 +35,9 @@ abstract class GenericRecyclerAdapter<T>(private var items: ArrayList<T>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         bind(items[position], holder as ViewHolder<*>)
+
     }
+
 
 }
 

@@ -15,4 +15,8 @@
         android:id="@+id/basket_navigation"
         android:icon="@drawable/ic_basket"
         android:title="@string/basket_title"/>
+    <item
+        android:id ="@+id/search_navigation"
+        android:icon="@drawable/search_icon"
+        android:title="@string/search_title"/>
 </menu>

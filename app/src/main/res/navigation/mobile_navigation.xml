@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_food">
+    app:startDestination="@id/nav_food">
 
 
     <fragment
@@ -17,6 +17,9 @@
         <argument
             android:name="categoryName"
             app:argType="string" />
+        <argument
+            android:name="mapOfUrls"
+            app:argType="string"/>
     </fragment>
 
 
@@ -39,6 +42,11 @@
                 app:argType="string"
                 app:nullable="false"
                 android:defaultValue="Блюда"/>
+            <argument
+                android:name="mapOfUrls"
+                android:defaultValue=""
+                app:argType="string"
+                app:nullable="false"/>
         </action>
 
     </fragment>

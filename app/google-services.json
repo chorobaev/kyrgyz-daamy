@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "421286594697",
+    "project_id": "kyrgyzdaamy-5c3d3",
+    "storage_bucket": "kyrgyzdaamy-5c3d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421286594697:android:7d7301d154433bbde95e58",
+        "android_client_info": {
+          "package_name": "io.flaterlab.kyrgyzdaamy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "421286594697-7ijcoc5qjkvgksse2drum2krcbi0at1p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.flaterlab.kyrgyzdaamy",
+            "certificate_hash": "fcf10e733d7c52956010828febf3d9f58b58ee1b"
+          }
+        },
+        {
+          "client_id": "421286594697-i9h1lnjsuba99em549f0iesccl9rih2q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvrs-34-gp90prr-RIMehhuZJiYXqmlr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "421286594697-i9h1lnjsuba99em549f0iesccl9rih2q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

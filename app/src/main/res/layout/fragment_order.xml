@@ -67,7 +67,21 @@
                     android:scrollHorizontally="true"
                     android:digits="0123456789"
                     android:maxLines="1"
-                    app:met_mask="+7(###)###-##-##"/>
+                    app:met_mask="+(###)##-##-##"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_height="wrap_content"
+                android:hint="@string/payment_types"
+                android:id="@+id/payment_types">
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/payment_type_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,40 +103,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/order_list_addresses_out"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:hint="@string/listOfAddresses">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/order_list_addresses"
-                    android:focusableInTouchMode="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/order_cities_out"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:hint="@string/order_cities">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/order_cities"
-                    android:focusableInTouchMode="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/order_streets_out"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
@@ -132,7 +112,6 @@
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:singleLine="true"
-                    android:focusableInTouchMode="false"
                     android:id="@+id/order_streets"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -188,34 +167,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/order_entry_out"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:hint="@string/order_entry">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/order_entry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/order_entryCode_out"
-                android:visibility="gone"
-                android:hint="@string/order_entry_code">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/order_entry_code"
-                    android:inputType="text"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
 
                 android:id="@+id/order_comment_out"
                 android:layout_width="match_parent"
@@ -252,6 +203,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/order_date"
                         android:layout_width="match_parent"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/data_time"
                         android:layout_height="wrap_content"
                         android:maxLines="1" />
 
@@ -268,6 +221,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/order_time"
                         android:layout_width="match_parent"
+                        android:focusableInTouchMode="false"
                         android:layout_height="wrap_content"
                         android:inputType="text"
                         android:hint="@string/order_time"

@@ -14,7 +14,6 @@ fun String.convertToMin(date: DateFromTo): Int {
         }
     } else {
         substringBefore(":").toInt() * 60 + substringAfter(":").toInt()
-
     }
 
 }
@@ -75,14 +74,7 @@ fun Int.toHour(): String {
     return "$hour:$minutes"
 }
 
-fun String.toDate(
-    dateFormat: String = "HH:mm",
-    timeZone: TimeZone = TimeZone.getTimeZone("UTC")
-): Date? {
-    val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
-    formatter.timeZone = timeZone
-    return formatter.parse(this)
-}
+
 
 fun Date.formatTo(dateFormat: String, timeZone: TimeZone = TimeZone.getDefault()): String {
     val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())

@@ -1,12 +1,19 @@
 package io.flaterlab.kyrgyzdaamy.ui.food
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import io.flaterlab.kyrgyzdaamy.BasketCommands
 import io.flaterlab.kyrgyzdaamy.R
@@ -17,12 +24,15 @@ import io.flaterlab.kyrgyzdaamy.bottomsheet.basket.Mode
 import io.flaterlab.kyrgyzdaamy.databinding.FoodItemsFragmentBinding
 import io.flaterlab.kyrgyzdaamy.extension.*
 import io.flaterlab.kyrgyzdaamy.service.AppPreferences
-import io.flaterlab.kyrgyzdaamy.service.doIfError
-import io.flaterlab.kyrgyzdaamy.service.doIfNetwork
-import io.flaterlab.kyrgyzdaamy.service.doIfSuccess
 import io.flaterlab.kyrgyzdaamy.service.response.MenuItem
 import io.flaterlab.kyrgyzdaamy.ui.viewBinding
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 @AndroidEntryPoint
@@ -30,8 +40,6 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
 
     private val viewModel: FoodItemsViewModel by viewModels()
 
-    private var foodAdapter: FoodAdapter? = null
-    private var categoryId: String? = null
     private val navArgs: FoodItemsFragmentArgs by navArgs()
 
     private val binding by viewBinding(FoodItemsFragmentBinding::bind)
@@ -42,6 +50,14 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
         savedInstanceState: Bundle?
     ): View? {
 
+        /*lifecycleScope.launchWhenCreated {
+            viewModel.imagesLinkStateFlow.collect {
+                urls = it
+            }
+        }
+
+         */
+
         return getPersistentView(
             inflater,
             container,
@@ -50,12 +66,13 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
         )
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel.getMenuItems(navArgs.categoryId)
+        //viewModel.getItemImages(navArgs.categoryId)
 
         binding.toolbar.toolbarBack.setImageResource(R.drawable.ic_back)
-        foodAdapter = FoodAdapter(this, this)
 
 
         binding.toolbar.toolbarText.text = navArgs.categoryName
@@ -67,7 +84,7 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
         }
         if (!hasInitializedRootView) {
             hasInitializedRootView = true
-            loadData(navArgs.categoryId)
+            loadData()
 
         }
 
@@ -76,35 +93,29 @@ class FoodItemsFragment : BaseFragment(), FoodAddToBasket, FoodListener {
             if (isConnectedOrConnecting()) {
                 binding.foodRv.visibility = View.VISIBLE
                 binding.noInternetLayout.root.visibility = View.GONE
-                categoryId?.let { it1 -> loadData(it1) }
+                loadData()
             }
         }
 
+
     }
 
-    private fun loadData(categoryId: String) {
+    private fun loadData() {
         loadingShow()
-        viewModel.itemsByCategories(categoryId)
-            .observe(viewLifecycleOwner, {
-                it.doIfSuccess { itemsResponse ->
-                    loadingHide()
-                    foodAdapter?.set(itemsResponse.data.menuItems as ArrayList<MenuItem>)
-                    binding.foodRv.adapter = foodAdapter
-                }
-                it.doIfError { errorBody ->
-                    loadingHide()
-                    errorBody?.getErrors { msg ->
-                        toast(msg)
-                    }
 
-                }
-                it.doIfNetwork {
-                    loadingHide()
-                    binding.foodRv.visibility = View.GONE
-                    binding.noInternetLayout.root.visibility = View.VISIBLE
-                }
+        lifecycleScope.launchWhenStarted {
+            viewModel.menuItemsStateFlow.collectLatest {
+                loadingHide()
+                val foodAdapter = FoodAdapter(
+                    this@FoodItemsFragment,
+                    this@FoodItemsFragment,
+                    it as ArrayList<MenuItem>
+                )
+                binding.foodRv.adapter = foodAdapter
 
-            })
+            }
+        }
+
     }
 
     override fun addToBasket(item: MenuItem, position: Int) {

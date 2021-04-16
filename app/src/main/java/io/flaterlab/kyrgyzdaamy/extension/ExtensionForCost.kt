@@ -11,7 +11,7 @@ fun countPriceOfMod(baseModifierGroup: BaseModifierGroup): Int {
     var sumOfPricesOfModifiers = 0
     var freeCount = baseModifierGroup.freeCount
     if (baseModifierGroup.changesPrice) {
-        baseModifierGroup.modifiersList.values.forEachIndexed { index, baseModifier ->
+        baseModifierGroup.modifiersList?.values?.forEachIndexed { index, baseModifier ->
             val countOfModifier = baseModifier.count
             for (i in 0 until countOfModifier) {
                 if (freeCount > 0) {

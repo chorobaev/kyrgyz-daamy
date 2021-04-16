@@ -11,8 +11,9 @@ class BaseModifierGroup(
     @SerializedName("freeCount") var freeCount : Int,
     @SerializedName("changesPrice") var changesPrice : Boolean,
     @SerializedName("modifiers") var modifiers: MutableList<BaseModifier>,
-    var modifiersList : HashMap<Int, BaseModifier>
+    var modifiersList : HashMap<Int, BaseModifier>?=null
 ){
+    constructor():this(0,"","",0,0,0,false, mutableListOf(), null)
     override fun toString(): String {
         return "[$schemeId,$groupId,$modifiersList]"
     }

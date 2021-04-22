@@ -30,26 +30,32 @@
         tools:layout="@layout/fragment_food">
 
         <action
+            android:id="@+id/toAuthNavigation"
+            app:destination="@+id/auth_navigation" />
+
+        <action
             android:id="@+id/toNavFoodItem"
             app:destination="@+id/nav_food_item">
             <argument
                 android:name="categoryId"
                 android:defaultValue="0"
                 app:argType="string"
-                app:nullable="false"/>
+                app:nullable="false" />
             <argument
                 android:name="categoryName"
+                android:defaultValue="Блюда"
                 app:argType="string"
-                app:nullable="false"
-                android:defaultValue="Блюда"/>
+                app:nullable="false" />
             <argument
                 android:name="mapOfUrls"
                 android:defaultValue=""
                 app:argType="string"
-                app:nullable="false"/>
+                app:nullable="false" />
         </action>
 
     </fragment>
-
-
+    <include
+        app:graph="@navigation/auth_navigation"
+        />
+    
 </navigation>

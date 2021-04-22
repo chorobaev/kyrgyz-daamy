@@ -29,6 +29,7 @@ class FoodViewModel @Inject constructor(private val firebaseRepository: Firebase
                     mutableStateFlow.value = it
                 }
             }
+
         }
     }
 }

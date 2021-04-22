@@ -78,6 +78,7 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
         binding.orderDate.setText(date)
         binding.orderTime.setText(time)
+        binding.orderPhone.setText(AppPreferences.phoneNumber)
 
 
         binding.orderValidate.setOnClickListener {
@@ -118,7 +119,6 @@ class OrderFragment : Fragment(R.layout.fragment_order) {
 
                 val ref = db.collection("users").document(order.phoneNumber)
                 ref.set(order).addOnSuccessListener {
-                    val menuItems = mutableListOf<MenuItem>()
                     BasketCommands.listHashMap.values.forEach {menuItem->
                         ref.collection("orders").document(menuItem.name).set(menuItem).addOnSuccessListener {
                             toast("Заказ оформлен, ожидайте звонка")

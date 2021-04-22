@@ -2,21 +2,17 @@ package io.flaterlab.kyrgyzdaamy.ui.food
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Source
 import com.google.firebase.storage.FirebaseStorage
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.flaterlab.kyrgyzdaamy.R
 import io.flaterlab.kyrgyzdaamy.adapter.category.CategoryAdapter
@@ -29,6 +25,7 @@ import io.flaterlab.kyrgyzdaamy.service.*
 import io.flaterlab.kyrgyzdaamy.service.model.RestaurantResponse
 import io.flaterlab.kyrgyzdaamy.service.response.Category
 import io.flaterlab.kyrgyzdaamy.service.response.Schedule
+import io.flaterlab.kyrgyzdaamy.ui.MainActivity
 import io.flaterlab.kyrgyzdaamy.ui.viewBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -44,6 +41,9 @@ class FoodFragment : BaseFragment(), CategoryListener {
     @Inject lateinit var db: FirebaseFirestore
     private val categoryAdapter = CategoryAdapter(this)
     @Inject lateinit var storage: FirebaseStorage
+
+    @Inject lateinit var auth: FirebaseAuth
+
 
 
     private val binding by viewBinding(FragmentFoodBinding::bind)
@@ -61,19 +61,25 @@ class FoodFragment : BaseFragment(), CategoryListener {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val activity = activity as MainActivity
 
-
-        if (!hasInitializedRootView) {
-            hasInitializedRootView = true
-            init()
-        }
-        binding.noInternetLayout.update.setOnClickListener {
-            if (isConnectedOrConnecting()) {
-
-                binding.foodCategoryRv.visibility = View.VISIBLE
-                binding.group.visibility = View.VISIBLE
-                binding.noInternetLayout.root.visibility = View.GONE
+        if (auth.currentUser == null){
+            activity.hideBottomNav()
+            findNavController().navigate(FoodFragmentDirections.toAuthNavigation())
+        }else{
+            if (!hasInitializedRootView) {
+                hasInitializedRootView = true
                 init()
+                activity.showBottomNav()
+            }
+            binding.noInternetLayout.update.setOnClickListener {
+                if (isConnectedOrConnecting()) {
+
+                    binding.foodCategoryRv.visibility = View.VISIBLE
+                    binding.group.visibility = View.VISIBLE
+                    binding.noInternetLayout.root.visibility = View.GONE
+                    init()
+                }
             }
         }
 

@@ -19,4 +19,8 @@
         android:id ="@+id/search_navigation"
         android:icon="@drawable/search_icon"
         android:title="@string/search_title"/>
+    <item
+        android:id="@+id/profile_navigation"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/person_profile"/>
 </menu>

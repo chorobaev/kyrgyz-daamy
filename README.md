@@ -1,10 +1,12 @@
-# KyrgyzDaamy
+# Kyrgyz Daamy
 This is an android open source project to order food online. 
-KyrgyzDaamy is suitable for all food supplying businesses
+Kyrgyz Daamy is suitable for all food supplying businesses
 that want to be digital. Only thing is to clone this project, connect to 
 your firebase project and modify it for your needs.
 
-![](https://img.shields.io/badge/dynamic/json?&url=https://raw.githubusercontent.com/bakkeldio/SE_Project/software_engineering_2_project/version.json&query=$.version&label=Version)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![](https://img.shields.io/badge/dynamic/json?&url=https://raw.githubusercontent.com/chorobaev/kyrgyz-daamy/master/version.json&query=$.version&label=Version)
+[![](https://img.shields.io/badge/Download-apk-green)](./kyrgyz-daamy-v1.apk)
 
 # Setting up
 1. Create a firebase project. *

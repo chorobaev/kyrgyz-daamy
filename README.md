@@ -6,7 +6,7 @@ your firebase project and modify it for your needs.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![](https://img.shields.io/badge/dynamic/json?&url=https://raw.githubusercontent.com/chorobaev/kyrgyz-daamy/master/version.json&query=$.version&label=Version)
-[![](https://img.shields.io/badge/Download-apk-green)](./kyrgyz-daamy-v1.apk)
+[![](https://img.shields.io/badge/Download-apk-green)](https://github.com/chorobaev/kyrgyz-daamy/raw/master/kyrgyz-daamy-v1.apk)
 
 # Setting up
 1. Create a firebase project. *

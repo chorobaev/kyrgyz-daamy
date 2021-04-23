@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/message"
+        app:layout_constrainedHeight="true"
+        android:id="@+id/imageOtp"
+        android:src="@drawable/mail_box_img"
+        android:layout_marginBottom="25dp"/>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/phoneNumber_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:hint="@string/enter_phone_number"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.santalu.maskedittext.MaskEditText
+            android:id="@+id/phoneNumberEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789"
+            android:inputType="phone"
+            android:maxLines="1"
+            app:met_mask="+(###)###-##-##-##"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/nextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        app:layout_constraintTop_toBottomOf="@id/phoneNumber_layout"
+        android:layout_marginHorizontal="20dp"
+        android:insetBottom="0dp"
+        android:insetTop="0dp"
+        android:layout_marginTop="25dp" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupPhoneNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="nextButton,phoneNumber_layout"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:visibility="gone"
+        android:id="@+id/groupOtp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="message,
+        phoneNumber,pinView,imageOtp,resendOtpMsg,resentOtp,verifyButton"/>
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/phoneNumber"
+        android:text="@string/otp_msg"
+        android:textSize="16sp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/phoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/pinView"
+        android:textSize="16sp"
+        android:text="@string/default_number"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="30dp"/>
+
+    <com.chaos.view.PinView
+        android:id="@+id/pinView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/PinWidget.PinView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:cursorVisible="true"
+        android:layout_gravity="center"
+        android:inputType="number"
+        android:itemBackground="#65EAEAEA"
+        app:cursorColor="@color/black"
+        app:hideLineWhenFilled="true"
+        app:itemCount="6"
+        app:itemHeight="50dp"
+        app:itemRadius="5dp"
+        app:itemWidth="50dp"
+        app:lineColor="@color/colorAccent"
+        app:lineWidth="1dp"/>
+
+    <TextView
+        android:id="@+id/resendOtpMsg"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/don_t_receive_otp_msg"
+        app:layout_constraintTop_toBottomOf="@id/pinView"
+        android:gravity="center_horizontal"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/resentOtp"
+        app:layout_constraintTop_toBottomOf="@id/resendOtpMsg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:text="@string/resend_otp_btn"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/verifyButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/pinView"
+        app:layout_constraintEnd_toEndOf="@id/pinView"
+        app:layout_constrainedWidth="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/verify_string"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:layout_constraintTop_toBottomOf="@id/resentOtp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@ fun List<MenuItem>.getIndex(menuItem: MenuItem, index: Int): Int {
     } else {
 
         for (i in index until this.size) {
-            if ((this[i].code == menuItem.code && this[i].modifierGroups.isNotEmpty()) || (this[i].code == menuItem.code && this[i].modifierGroups.isEmpty())) {
+            if (this[i].name == menuItem.name) {
                 return i
             }
         }

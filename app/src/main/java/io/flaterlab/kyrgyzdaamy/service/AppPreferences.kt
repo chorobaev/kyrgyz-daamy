@@ -29,6 +29,13 @@ object AppPreferences {
         editor.apply()
     }
 
+    var phoneNumber: String?
+        set(value) = preferences.edit {
+            it.putString("phoneNumber",value)
+        }
+        get() = preferences.getString("phoneNumber","")
+
+
     var lastDay: String?
         set(value) = preferences.edit {
             it.putString("lastDay", value)

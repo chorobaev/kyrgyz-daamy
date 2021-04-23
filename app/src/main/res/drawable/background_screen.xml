@@ -6,7 +6,7 @@
     <item>
         <bitmap
             android:gravity="fill"
-            android:src="@drawable/first_screen" />
+            android:src="@drawable/kyrgyz_daamy_splash" />
     </item>
 
 </layer-list>

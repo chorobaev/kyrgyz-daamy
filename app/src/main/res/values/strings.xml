@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Amore</string>
+    <string name="app_name">KyrgyzDaamy</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -122,5 +122,23 @@
     <string name="reason_network">Проверьте интернет соединение</string>
     <string name="reason_empty_body">Данные не найдены</string>
     <string name="reason_timeout">Время ожидания сервера истекло</string>
+    <string name="_200">200 сом</string>
+    <string name="_500">500 г</string>
+    <string name="data_time">Дата</string>
+    <string name="payment_types">Способы оплаты</string>
+    <string name="food_description">Food description</string>
+    <string name="search_title">Поиск</string>
+    <string name="signInWelcomeText">Войти</string>
+    <string name="enter_phone_number">Введите номер</string>
+    <string name="forward_text">Далее</string>
+    <string name="enter_code_auth">Введите код</string>
+    <string name="otp_msg">Enter one time password sent to</string>
+    <string name="default_number">+996220677467</string>
+    <string name="verify_string">Verify</string>
+    <string name="don_t_receive_otp_msg">Dont receive the otp?</string>
+    <string name="resend_otp_btn">RESEND OTP</string>
+    <string name="next">Next</string>
+    <string name="sign_out_profile">Sign out</string>
+    <string name="person_profile">Профиль</string>
 
 </resources>

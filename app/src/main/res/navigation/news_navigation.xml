@@ -11,10 +11,5 @@
         android:label="@string/menu_discount"
         tools:layout="@layout/fragment_news" />
 
-    <fragment
-        android:id="@+id/nav_discount_detail"
-        android:name="io.flaterlab.kyrgyzdaamy.ui.discount.NewsDetailFragment"
-        android:label="@string/menu_discount_detail"
-        tools:layout="@layout/fragment_news_detail" />
 
 </navigation>

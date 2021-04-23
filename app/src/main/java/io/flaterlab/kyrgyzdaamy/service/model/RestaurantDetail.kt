@@ -7,4 +7,6 @@ data class RestaurantDetail(
         @SerializedName("address")val address: String,
         @SerializedName("onlineAddress")val onlineAddress: String,
         @SerializedName("refundReturnPolicy")val refundReturnPolicy: String
-)
+){
+        constructor():this("","","","")
+}

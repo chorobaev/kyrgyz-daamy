@@ -11,7 +11,7 @@ import io.flaterlab.kyrgyzdaamy.service.response.MenuItem
 
 object BasketCommands {
 
-    private val listHashMap = linkedMapOf<String, MenuItem>()
+    val listHashMap = linkedMapOf<String, MenuItem>()
 
     private val mutableLiveDataWithHashMap = MutableLiveData<HashMap<String, MenuItem>>()
 
@@ -25,7 +25,7 @@ object BasketCommands {
             Log.d("MenuItemToString", menuItem.toString())
 
             menuItem.modifierGroups.forEach {
-                val filteredMap = it.modifiersList.filter { list ->
+                val filteredMap = it.modifiersList?.filter { list ->
                     list.value.count != 0
                 } as HashMap<Int, BaseModifier>
                 it.modifiersList = filteredMap
@@ -52,9 +52,7 @@ object BasketCommands {
 
     private fun createNewMenuItem(menuItem: MenuItem, group: List<BaseModifierGroup>): MenuItem {
         return MenuItem(
-            menuItem.code,
             menuItem.description,
-            menuItem.isHit,
             group,
             menuItem.name,
             menuItem.price,

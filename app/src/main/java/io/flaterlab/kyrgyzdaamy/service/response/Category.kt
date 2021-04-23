@@ -16,4 +16,6 @@ data class Category (
         val hasProducts : Boolean,
         @SerializedName("categories")
         val categories : List<Category>?
-) : Parcelable
+) : Parcelable{
+        constructor(): this("",1,"",false,null)
+}

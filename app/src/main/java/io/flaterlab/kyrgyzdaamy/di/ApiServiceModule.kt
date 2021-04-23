@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -120,6 +123,18 @@ object ApiServiceModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
+    @Singleton
+    @Provides
+    fun provideFireStoreInstance():FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideFireStorageInstance():FirebaseStorage = FirebaseStorage.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideFirebaseAuth():FirebaseAuth = FirebaseAuth.getInstance()
+
 
 
     @Qualifier

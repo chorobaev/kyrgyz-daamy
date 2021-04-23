@@ -17,6 +17,7 @@ import io.flaterlab.kyrgyzdaamy.adapter.food.CustomAdapterForMod
 import io.flaterlab.kyrgyzdaamy.adapter.food.ItemModGroupListener
 import io.flaterlab.kyrgyzdaamy.databinding.FragmentFoodOrderBinding
 import io.flaterlab.kyrgyzdaamy.extension.loadImageCoil
+import io.flaterlab.kyrgyzdaamy.extension.loadImageGlide
 import io.flaterlab.kyrgyzdaamy.extension.toast
 import io.flaterlab.kyrgyzdaamy.service.AppPreferences
 import io.flaterlab.kyrgyzdaamy.service.response.BaseModifierGroup
@@ -89,7 +90,7 @@ class FoodAddUpdateBottomSheet(
         }
         binding.foodOrderTitle.text = menuItem.name
         binding.foodOrderCost.text = menuItem.price.toString() + " ${AppPreferences.currencyName}"
-        binding.foodOrderPhoto.loadImageCoil("https://images.carbis.ru/amore/${menuItem.code}.png")
+        binding.foodOrderPhoto.loadImageGlide(menuItem.imageLink)
         binding.foodOrderDescription.visibility = View.VISIBLE
         binding.foodOrderDescription.text = menuItem.recipe
 
@@ -152,9 +153,7 @@ class FoodAddUpdateBottomSheet(
 
             val prevItem = with(menuItem) {
                 MenuItem(
-                    code,
                     description,
-                    isHit,
                     modifierGroups,
                     name,
                     price,
